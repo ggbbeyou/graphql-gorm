@@ -49,14 +49,14 @@ type GeneratedMutationResolver struct{ *GeneratedResolver }
 func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[string]interface{}) (item *User, err error) {
 	principalID := getPrincipalID(ctx)
 	now := time.Now()
-	item = &User{ID: uuid.Must(uuid.NewV4()).String(), CreatedAt: now, CreatedBy: principalID}
+	item = &User{ID: uuid.Must(uuid.NewV4()).String(), CreatedAt: now.Unix(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeCreated,
 		Entity:      "User",
 		EntityID:    item.ID,
-		Date:        now,
+		Date:        now.Unix(),
 		PrincipalID: principalID,
 	})
 
@@ -74,6 +74,11 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 	if _, ok := input["email"]; ok && (item.Email != changes.Email) && (item.Email == nil || changes.Email == nil || *item.Email != *changes.Email) {
 		item.Email = changes.Email
 		event.AddNewValue("email", changes.Email)
+	}
+
+	if _, ok := input["age"]; ok && (item.Age != changes.Age) && (item.Age == nil || changes.Age == nil || *item.Age != *changes.Age) {
+		item.Age = changes.Age
+		event.AddNewValue("age", changes.Age)
 	}
 
 	if _, ok := input["firstName"]; ok && (item.FirstName != changes.FirstName) && (item.FirstName == nil || changes.FirstName == nil || *item.FirstName != *changes.FirstName) {
@@ -120,7 +125,7 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 		Type:        events.EventTypeCreated,
 		Entity:      "User",
 		EntityID:    item.ID,
-		Date:        now,
+		Date:        now.Unix(),
 		PrincipalID: principalID,
 	})
 
@@ -141,6 +146,12 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 		event.AddOldValue("email", item.Email)
 		event.AddNewValue("email", changes.Email)
 		item.Email = changes.Email
+	}
+
+	if _, ok := input["age"]; ok && (item.Age != changes.Age) && (item.Age == nil || changes.Age == nil || *item.Age != *changes.Age) {
+		event.AddOldValue("age", item.Age)
+		event.AddNewValue("age", changes.Age)
+		item.Age = changes.Age
 	}
 
 	if _, ok := input["firstName"]; ok && (item.FirstName != changes.FirstName) && (item.FirstName == nil || changes.FirstName == nil || *item.FirstName != *changes.FirstName) {
@@ -182,13 +193,29 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 	return
 }
 func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (item *User, err error) {
+	principalID := getPrincipalID(ctx)
 	item = &User{}
-	err = resolvers.GetItem(ctx, r.DB.Query(), item, &id)
+	tx := r.DB.db.Begin()
+
+	err = resolvers.GetItem(ctx, tx, item, &id)
 	if err != nil {
 		return
 	}
 
-	err = r.DB.Query().Delete(item, "id = ?", id).Error
+	// err = r.DB.Query().Delete(item, "id = ?", id).Error
+
+	item.DeletedBy = principalID
+
+	err = tx.Delete(item).Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	err = tx.Commit().Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
 
 	return
 }
@@ -196,14 +223,14 @@ func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (
 func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[string]interface{}) (item *Task, err error) {
 	principalID := getPrincipalID(ctx)
 	now := time.Now()
-	item = &Task{ID: uuid.Must(uuid.NewV4()).String(), CreatedAt: now, CreatedBy: principalID}
+	item = &Task{ID: uuid.Must(uuid.NewV4()).String(), CreatedAt: now.Unix(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeCreated,
 		Entity:      "Task",
 		EntityID:    item.ID,
-		Date:        now,
+		Date:        now.Unix(),
 		PrincipalID: principalID,
 	})
 
@@ -265,7 +292,7 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 		Type:        events.EventTypeCreated,
 		Entity:      "Task",
 		EntityID:    item.ID,
-		Date:        now,
+		Date:        now.Unix(),
 		PrincipalID: principalID,
 	})
 
@@ -326,13 +353,29 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 	return
 }
 func (r *GeneratedMutationResolver) DeleteTask(ctx context.Context, id string) (item *Task, err error) {
+	principalID := getPrincipalID(ctx)
 	item = &Task{}
-	err = resolvers.GetItem(ctx, r.DB.Query(), item, &id)
+	tx := r.DB.db.Begin()
+
+	err = resolvers.GetItem(ctx, tx, item, &id)
 	if err != nil {
 		return
 	}
 
-	err = r.DB.Query().Delete(item, "id = ?", id).Error
+	// err = r.DB.Query().Delete(item, "id = ?", id).Error
+
+	item.DeletedBy = principalID
+
+	err = tx.Delete(item).Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	err = tx.Commit().Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
 
 	return
 }

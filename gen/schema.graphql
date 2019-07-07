@@ -31,12 +31,15 @@ directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
 
 type User {
   id: ID!
-  email: String @column(gorm: "type:varchar(64) comment '父级数组';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  age: Int
   firstName: String
   lastName: String
   tasks: [Task!]! @relationship(inverse: "assignee")
-  updatedAt: Time
-  createdAt: Time!
+  deletedAt: Int
+  updatedAt: Int
+  createdAt: Int!
+  deletedBy: ID
   updatedBy: ID
   createdBy: ID
 }
@@ -48,8 +51,10 @@ type Task {
   dueDate: Time
   assignee: User @relationship(inverse: "tasks")
   assigneeId: ID
-  updatedAt: Time
-  createdAt: Time!
+  deletedAt: Int
+  updatedAt: Int
+  createdAt: Int!
+  deletedBy: ID
   updatedBy: ID
   createdBy: ID
 }
@@ -57,6 +62,7 @@ type Task {
 input UserCreateInput {
   id: ID
   email: String
+  age: Int
   firstName: String
   lastName: String
   tasksIds: [ID!]
@@ -64,6 +70,7 @@ input UserCreateInput {
 
 input UserUpdateInput {
   email: String
+  age: Int
   firstName: String
   lastName: String
   tasksIds: [ID!]
@@ -74,14 +81,20 @@ enum UserSortType {
   ID_DESC
   EMAIL_ASC
   EMAIL_DESC
+  AGE_ASC
+  AGE_DESC
   FIRST_NAME_ASC
   FIRST_NAME_DESC
   LAST_NAME_ASC
   LAST_NAME_DESC
+  DELETED_AT_ASC
+  DELETED_AT_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
   CREATED_AT_DESC
+  DELETED_BY_ASC
+  DELETED_BY_DESC
   UPDATED_BY_ASC
   UPDATED_BY_DESC
   CREATED_BY_ASC
@@ -108,6 +121,13 @@ input UserFilterType {
   email_like: String
   email_prefix: String
   email_suffix: String
+  age: Int
+  age_ne: Int
+  age_gt: Int
+  age_lt: Int
+  age_gte: Int
+  age_lte: Int
+  age_in: [Int!]
   firstName: String
   firstName_ne: String
   firstName_gt: String
@@ -128,20 +148,34 @@ input UserFilterType {
   lastName_like: String
   lastName_prefix: String
   lastName_suffix: String
-  updatedAt: Time
-  updatedAt_ne: Time
-  updatedAt_gt: Time
-  updatedAt_lt: Time
-  updatedAt_gte: Time
-  updatedAt_lte: Time
-  updatedAt_in: [Time!]
-  createdAt: Time
-  createdAt_ne: Time
-  createdAt_gt: Time
-  createdAt_lt: Time
-  createdAt_gte: Time
-  createdAt_lte: Time
-  createdAt_in: [Time!]
+  deletedAt: Int
+  deletedAt_ne: Int
+  deletedAt_gt: Int
+  deletedAt_lt: Int
+  deletedAt_gte: Int
+  deletedAt_lte: Int
+  deletedAt_in: [Int!]
+  updatedAt: Int
+  updatedAt_ne: Int
+  updatedAt_gt: Int
+  updatedAt_lt: Int
+  updatedAt_gte: Int
+  updatedAt_lte: Int
+  updatedAt_in: [Int!]
+  createdAt: Int
+  createdAt_ne: Int
+  createdAt_gt: Int
+  createdAt_lt: Int
+  createdAt_gte: Int
+  createdAt_lte: Int
+  createdAt_in: [Int!]
+  deletedBy: ID
+  deletedBy_ne: ID
+  deletedBy_gt: ID
+  deletedBy_lt: ID
+  deletedBy_gte: ID
+  deletedBy_lte: ID
+  deletedBy_in: [ID!]
   updatedBy: ID
   updatedBy_ne: ID
   updatedBy_gt: ID
@@ -190,10 +224,14 @@ enum TaskSortType {
   DUE_DATE_DESC
   ASSIGNEE_ID_ASC
   ASSIGNEE_ID_DESC
+  DELETED_AT_ASC
+  DELETED_AT_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
   CREATED_AT_DESC
+  DELETED_BY_ASC
+  DELETED_BY_DESC
   UPDATED_BY_ASC
   UPDATED_BY_DESC
   CREATED_BY_ASC
@@ -241,20 +279,34 @@ input TaskFilterType {
   assigneeId_gte: ID
   assigneeId_lte: ID
   assigneeId_in: [ID!]
-  updatedAt: Time
-  updatedAt_ne: Time
-  updatedAt_gt: Time
-  updatedAt_lt: Time
-  updatedAt_gte: Time
-  updatedAt_lte: Time
-  updatedAt_in: [Time!]
-  createdAt: Time
-  createdAt_ne: Time
-  createdAt_gt: Time
-  createdAt_lt: Time
-  createdAt_gte: Time
-  createdAt_lte: Time
-  createdAt_in: [Time!]
+  deletedAt: Int
+  deletedAt_ne: Int
+  deletedAt_gt: Int
+  deletedAt_lt: Int
+  deletedAt_gte: Int
+  deletedAt_lte: Int
+  deletedAt_in: [Int!]
+  updatedAt: Int
+  updatedAt_ne: Int
+  updatedAt_gt: Int
+  updatedAt_lt: Int
+  updatedAt_gte: Int
+  updatedAt_lte: Int
+  updatedAt_in: [Int!]
+  createdAt: Int
+  createdAt_ne: Int
+  createdAt_gt: Int
+  createdAt_lt: Int
+  createdAt_gte: Int
+  createdAt_lte: Int
+  createdAt_in: [Int!]
+  deletedBy: ID
+  deletedBy_ne: ID
+  deletedBy_gt: ID
+  deletedBy_lt: ID
+  deletedBy_gte: ID
+  deletedBy_lte: ID
+  deletedBy_in: [ID!]
   updatedBy: ID
   updatedBy_ne: ID
   updatedBy_gt: ID

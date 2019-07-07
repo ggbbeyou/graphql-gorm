@@ -128,6 +128,35 @@ func (f *UserFilterType) WhereContent(aliasPrefix string) (conditions []string, 
 		values = append(values, fmt.Sprintf("%%%s", *f.EmailSuffix))
 	}
 
+	if f.Age != nil {
+		conditions = append(conditions, aliasPrefix+"age = ?")
+		values = append(values, f.Age)
+	}
+	if f.AgeNe != nil {
+		conditions = append(conditions, aliasPrefix+"age != ?")
+		values = append(values, f.AgeNe)
+	}
+	if f.AgeGt != nil {
+		conditions = append(conditions, aliasPrefix+"age > ?")
+		values = append(values, f.AgeGt)
+	}
+	if f.AgeLt != nil {
+		conditions = append(conditions, aliasPrefix+"age < ?")
+		values = append(values, f.AgeLt)
+	}
+	if f.AgeGte != nil {
+		conditions = append(conditions, aliasPrefix+"age >= ?")
+		values = append(values, f.AgeGte)
+	}
+	if f.AgeLte != nil {
+		conditions = append(conditions, aliasPrefix+"age <= ?")
+		values = append(values, f.AgeLte)
+	}
+	if f.AgeIn != nil {
+		conditions = append(conditions, aliasPrefix+"age IN (?)")
+		values = append(values, f.AgeIn)
+	}
+
 	if f.FirstName != nil {
 		conditions = append(conditions, aliasPrefix+"firstName = ?")
 		values = append(values, f.FirstName)
@@ -210,6 +239,35 @@ func (f *UserFilterType) WhereContent(aliasPrefix string) (conditions []string, 
 		values = append(values, fmt.Sprintf("%%%s", *f.LastNameSuffix))
 	}
 
+	if f.DeletedAt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt = ?")
+		values = append(values, f.DeletedAt)
+	}
+	if f.DeletedAtNe != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt != ?")
+		values = append(values, f.DeletedAtNe)
+	}
+	if f.DeletedAtGt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt > ?")
+		values = append(values, f.DeletedAtGt)
+	}
+	if f.DeletedAtLt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt < ?")
+		values = append(values, f.DeletedAtLt)
+	}
+	if f.DeletedAtGte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt >= ?")
+		values = append(values, f.DeletedAtGte)
+	}
+	if f.DeletedAtLte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt <= ?")
+		values = append(values, f.DeletedAtLte)
+	}
+	if f.DeletedAtIn != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt IN (?)")
+		values = append(values, f.DeletedAtIn)
+	}
+
 	if f.UpdatedAt != nil {
 		conditions = append(conditions, aliasPrefix+"updatedAt = ?")
 		values = append(values, f.UpdatedAt)
@@ -266,6 +324,35 @@ func (f *UserFilterType) WhereContent(aliasPrefix string) (conditions []string, 
 	if f.CreatedAtIn != nil {
 		conditions = append(conditions, aliasPrefix+"createdAt IN (?)")
 		values = append(values, f.CreatedAtIn)
+	}
+
+	if f.DeletedBy != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy = ?")
+		values = append(values, f.DeletedBy)
+	}
+	if f.DeletedByNe != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy != ?")
+		values = append(values, f.DeletedByNe)
+	}
+	if f.DeletedByGt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy > ?")
+		values = append(values, f.DeletedByGt)
+	}
+	if f.DeletedByLt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy < ?")
+		values = append(values, f.DeletedByLt)
+	}
+	if f.DeletedByGte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy >= ?")
+		values = append(values, f.DeletedByGte)
+	}
+	if f.DeletedByLte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy <= ?")
+		values = append(values, f.DeletedByLte)
+	}
+	if f.DeletedByIn != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy IN (?)")
+		values = append(values, f.DeletedByIn)
 	}
 
 	if f.UpdatedBy != nil {
@@ -538,6 +625,35 @@ func (f *TaskFilterType) WhereContent(aliasPrefix string) (conditions []string, 
 		values = append(values, f.AssigneeIDIn)
 	}
 
+	if f.DeletedAt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt = ?")
+		values = append(values, f.DeletedAt)
+	}
+	if f.DeletedAtNe != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt != ?")
+		values = append(values, f.DeletedAtNe)
+	}
+	if f.DeletedAtGt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt > ?")
+		values = append(values, f.DeletedAtGt)
+	}
+	if f.DeletedAtLt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt < ?")
+		values = append(values, f.DeletedAtLt)
+	}
+	if f.DeletedAtGte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt >= ?")
+		values = append(values, f.DeletedAtGte)
+	}
+	if f.DeletedAtLte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt <= ?")
+		values = append(values, f.DeletedAtLte)
+	}
+	if f.DeletedAtIn != nil {
+		conditions = append(conditions, aliasPrefix+"deletedAt IN (?)")
+		values = append(values, f.DeletedAtIn)
+	}
+
 	if f.UpdatedAt != nil {
 		conditions = append(conditions, aliasPrefix+"updatedAt = ?")
 		values = append(values, f.UpdatedAt)
@@ -594,6 +710,35 @@ func (f *TaskFilterType) WhereContent(aliasPrefix string) (conditions []string, 
 	if f.CreatedAtIn != nil {
 		conditions = append(conditions, aliasPrefix+"createdAt IN (?)")
 		values = append(values, f.CreatedAtIn)
+	}
+
+	if f.DeletedBy != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy = ?")
+		values = append(values, f.DeletedBy)
+	}
+	if f.DeletedByNe != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy != ?")
+		values = append(values, f.DeletedByNe)
+	}
+	if f.DeletedByGt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy > ?")
+		values = append(values, f.DeletedByGt)
+	}
+	if f.DeletedByLt != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy < ?")
+		values = append(values, f.DeletedByLt)
+	}
+	if f.DeletedByGte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy >= ?")
+		values = append(values, f.DeletedByGte)
+	}
+	if f.DeletedByLte != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy <= ?")
+		values = append(values, f.DeletedByLte)
+	}
+	if f.DeletedByIn != nil {
+		conditions = append(conditions, aliasPrefix+"deletedBy IN (?)")
+		values = append(values, f.DeletedByIn)
 	}
 
 	if f.UpdatedBy != nil {

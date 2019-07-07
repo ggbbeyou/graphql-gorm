@@ -15,14 +15,17 @@ type UserResultType struct {
 }
 
 type User struct {
-	ID        string     `json:"id" gorm:"column:id;primary_key"`
-	Email     *string    `json:"email" gorm:"column:email"`
-	FirstName *string    `json:"firstName" gorm:"column:firstName"`
-	LastName  *string    `json:"lastName" gorm:"column:lastName"`
-	UpdatedAt *time.Time `json:"updatedAt" gorm:"column:updatedAt"`
-	CreatedAt time.Time  `json:"createdAt" gorm:"column:createdAt"`
-	UpdatedBy *string    `json:"updatedBy" gorm:"column:updatedBy"`
-	CreatedBy *string    `json:"createdBy" gorm:"column:createdBy"`
+	ID        string  `json:"id" gorm:"column:id;primary_key"`
+	Email     *string `json:"email" gorm:"type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;" validator:"required:true;type:email;"`
+	Age       *int64  `json:"age" gorm:"column:age"`
+	FirstName *string `json:"firstName" gorm:"column:firstName"`
+	LastName  *string `json:"lastName" gorm:"column:lastName"`
+	DeletedAt *int64  `json:"deletedAt" gorm:"column:deletedAt"`
+	UpdatedAt *int64  `json:"updatedAt" gorm:"column:updatedAt"`
+	CreatedAt int64   `json:"createdAt" gorm:"column:createdAt"`
+	DeletedBy *string `json:"deletedBy" gorm:"column:deletedBy"`
+	UpdatedBy *string `json:"updatedBy" gorm:"column:updatedBy"`
+	CreatedBy *string `json:"createdBy" gorm:"column:createdBy"`
 
 	Tasks []*Task `json:"tasks" gorm:"foreignkey:AssigneeID"`
 }
@@ -30,10 +33,13 @@ type User struct {
 type UserChanges struct {
 	ID        string
 	Email     *string
+	Age       *int64
 	FirstName *string
 	LastName  *string
-	UpdatedAt *time.Time
-	CreatedAt time.Time
+	DeletedAt *int64
+	UpdatedAt *int64
+	CreatedAt int64
+	DeletedBy *string
 	UpdatedBy *string
 	CreatedBy *string
 }
@@ -48,8 +54,10 @@ type Task struct {
 	Completed  *bool      `json:"completed" gorm:"column:completed"`
 	DueDate    *time.Time `json:"dueDate" gorm:"column:dueDate"`
 	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId"`
-	UpdatedAt  *time.Time `json:"updatedAt" gorm:"column:updatedAt"`
-	CreatedAt  time.Time  `json:"createdAt" gorm:"column:createdAt"`
+	DeletedAt  *int64     `json:"deletedAt" gorm:"column:deletedAt"`
+	UpdatedAt  *int64     `json:"updatedAt" gorm:"column:updatedAt"`
+	CreatedAt  int64      `json:"createdAt" gorm:"column:createdAt"`
+	DeletedBy  *string    `json:"deletedBy" gorm:"column:deletedBy"`
 	UpdatedBy  *string    `json:"updatedBy" gorm:"column:updatedBy"`
 	CreatedBy  *string    `json:"createdBy" gorm:"column:createdBy"`
 
@@ -62,8 +70,10 @@ type TaskChanges struct {
 	Completed  *bool
 	DueDate    *time.Time
 	AssigneeID *string
-	UpdatedAt  *time.Time
-	CreatedAt  time.Time
+	DeletedAt  *int64
+	UpdatedAt  *int64
+	CreatedAt  int64
+	DeletedBy  *string
 	UpdatedBy  *string
 	CreatedBy  *string
 }

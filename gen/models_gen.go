@@ -50,20 +50,34 @@ type TaskFilterType struct {
 	AssigneeIDGte *string           `json:"assigneeId_gte"`
 	AssigneeIDLte *string           `json:"assigneeId_lte"`
 	AssigneeIDIn  []string          `json:"assigneeId_in"`
-	UpdatedAt     *time.Time        `json:"updatedAt"`
-	UpdatedAtNe   *time.Time        `json:"updatedAt_ne"`
-	UpdatedAtGt   *time.Time        `json:"updatedAt_gt"`
-	UpdatedAtLt   *time.Time        `json:"updatedAt_lt"`
-	UpdatedAtGte  *time.Time        `json:"updatedAt_gte"`
-	UpdatedAtLte  *time.Time        `json:"updatedAt_lte"`
-	UpdatedAtIn   []*time.Time      `json:"updatedAt_in"`
-	CreatedAt     *time.Time        `json:"createdAt"`
-	CreatedAtNe   *time.Time        `json:"createdAt_ne"`
-	CreatedAtGt   *time.Time        `json:"createdAt_gt"`
-	CreatedAtLt   *time.Time        `json:"createdAt_lt"`
-	CreatedAtGte  *time.Time        `json:"createdAt_gte"`
-	CreatedAtLte  *time.Time        `json:"createdAt_lte"`
-	CreatedAtIn   []*time.Time      `json:"createdAt_in"`
+	DeletedAt     *int              `json:"deletedAt"`
+	DeletedAtNe   *int              `json:"deletedAt_ne"`
+	DeletedAtGt   *int              `json:"deletedAt_gt"`
+	DeletedAtLt   *int              `json:"deletedAt_lt"`
+	DeletedAtGte  *int              `json:"deletedAt_gte"`
+	DeletedAtLte  *int              `json:"deletedAt_lte"`
+	DeletedAtIn   []int             `json:"deletedAt_in"`
+	UpdatedAt     *int              `json:"updatedAt"`
+	UpdatedAtNe   *int              `json:"updatedAt_ne"`
+	UpdatedAtGt   *int              `json:"updatedAt_gt"`
+	UpdatedAtLt   *int              `json:"updatedAt_lt"`
+	UpdatedAtGte  *int              `json:"updatedAt_gte"`
+	UpdatedAtLte  *int              `json:"updatedAt_lte"`
+	UpdatedAtIn   []int             `json:"updatedAt_in"`
+	CreatedAt     *int              `json:"createdAt"`
+	CreatedAtNe   *int              `json:"createdAt_ne"`
+	CreatedAtGt   *int              `json:"createdAt_gt"`
+	CreatedAtLt   *int              `json:"createdAt_lt"`
+	CreatedAtGte  *int              `json:"createdAt_gte"`
+	CreatedAtLte  *int              `json:"createdAt_lte"`
+	CreatedAtIn   []int             `json:"createdAt_in"`
+	DeletedBy     *string           `json:"deletedBy"`
+	DeletedByNe   *string           `json:"deletedBy_ne"`
+	DeletedByGt   *string           `json:"deletedBy_gt"`
+	DeletedByLt   *string           `json:"deletedBy_lt"`
+	DeletedByGte  *string           `json:"deletedBy_gte"`
+	DeletedByLte  *string           `json:"deletedBy_lte"`
+	DeletedByIn   []string          `json:"deletedBy_in"`
 	UpdatedBy     *string           `json:"updatedBy"`
 	UpdatedByNe   *string           `json:"updatedBy_ne"`
 	UpdatedByGt   *string           `json:"updatedBy_gt"`
@@ -101,6 +115,13 @@ type UserFilterType struct {
 	EmailLike       *string           `json:"email_like"`
 	EmailPrefix     *string           `json:"email_prefix"`
 	EmailSuffix     *string           `json:"email_suffix"`
+	Age             *int              `json:"age"`
+	AgeNe           *int              `json:"age_ne"`
+	AgeGt           *int              `json:"age_gt"`
+	AgeLt           *int              `json:"age_lt"`
+	AgeGte          *int              `json:"age_gte"`
+	AgeLte          *int              `json:"age_lte"`
+	AgeIn           []int             `json:"age_in"`
 	FirstName       *string           `json:"firstName"`
 	FirstNameNe     *string           `json:"firstName_ne"`
 	FirstNameGt     *string           `json:"firstName_gt"`
@@ -121,20 +142,34 @@ type UserFilterType struct {
 	LastNameLike    *string           `json:"lastName_like"`
 	LastNamePrefix  *string           `json:"lastName_prefix"`
 	LastNameSuffix  *string           `json:"lastName_suffix"`
-	UpdatedAt       *time.Time        `json:"updatedAt"`
-	UpdatedAtNe     *time.Time        `json:"updatedAt_ne"`
-	UpdatedAtGt     *time.Time        `json:"updatedAt_gt"`
-	UpdatedAtLt     *time.Time        `json:"updatedAt_lt"`
-	UpdatedAtGte    *time.Time        `json:"updatedAt_gte"`
-	UpdatedAtLte    *time.Time        `json:"updatedAt_lte"`
-	UpdatedAtIn     []*time.Time      `json:"updatedAt_in"`
-	CreatedAt       *time.Time        `json:"createdAt"`
-	CreatedAtNe     *time.Time        `json:"createdAt_ne"`
-	CreatedAtGt     *time.Time        `json:"createdAt_gt"`
-	CreatedAtLt     *time.Time        `json:"createdAt_lt"`
-	CreatedAtGte    *time.Time        `json:"createdAt_gte"`
-	CreatedAtLte    *time.Time        `json:"createdAt_lte"`
-	CreatedAtIn     []*time.Time      `json:"createdAt_in"`
+	DeletedAt       *int              `json:"deletedAt"`
+	DeletedAtNe     *int              `json:"deletedAt_ne"`
+	DeletedAtGt     *int              `json:"deletedAt_gt"`
+	DeletedAtLt     *int              `json:"deletedAt_lt"`
+	DeletedAtGte    *int              `json:"deletedAt_gte"`
+	DeletedAtLte    *int              `json:"deletedAt_lte"`
+	DeletedAtIn     []int             `json:"deletedAt_in"`
+	UpdatedAt       *int              `json:"updatedAt"`
+	UpdatedAtNe     *int              `json:"updatedAt_ne"`
+	UpdatedAtGt     *int              `json:"updatedAt_gt"`
+	UpdatedAtLt     *int              `json:"updatedAt_lt"`
+	UpdatedAtGte    *int              `json:"updatedAt_gte"`
+	UpdatedAtLte    *int              `json:"updatedAt_lte"`
+	UpdatedAtIn     []int             `json:"updatedAt_in"`
+	CreatedAt       *int              `json:"createdAt"`
+	CreatedAtNe     *int              `json:"createdAt_ne"`
+	CreatedAtGt     *int              `json:"createdAt_gt"`
+	CreatedAtLt     *int              `json:"createdAt_lt"`
+	CreatedAtGte    *int              `json:"createdAt_gte"`
+	CreatedAtLte    *int              `json:"createdAt_lte"`
+	CreatedAtIn     []int             `json:"createdAt_in"`
+	DeletedBy       *string           `json:"deletedBy"`
+	DeletedByNe     *string           `json:"deletedBy_ne"`
+	DeletedByGt     *string           `json:"deletedBy_gt"`
+	DeletedByLt     *string           `json:"deletedBy_lt"`
+	DeletedByGte    *string           `json:"deletedBy_gte"`
+	DeletedByLte    *string           `json:"deletedBy_lte"`
+	DeletedByIn     []string          `json:"deletedBy_in"`
 	UpdatedBy       *string           `json:"updatedBy"`
 	UpdatedByNe     *string           `json:"updatedBy_ne"`
 	UpdatedByGt     *string           `json:"updatedBy_gt"`
@@ -165,10 +200,14 @@ const (
 	TaskSortTypeDueDateDesc    TaskSortType = "DUE_DATE_DESC"
 	TaskSortTypeAssigneeIDAsc  TaskSortType = "ASSIGNEE_ID_ASC"
 	TaskSortTypeAssigneeIDDesc TaskSortType = "ASSIGNEE_ID_DESC"
+	TaskSortTypeDeletedAtAsc   TaskSortType = "DELETED_AT_ASC"
+	TaskSortTypeDeletedAtDesc  TaskSortType = "DELETED_AT_DESC"
 	TaskSortTypeUpdatedAtAsc   TaskSortType = "UPDATED_AT_ASC"
 	TaskSortTypeUpdatedAtDesc  TaskSortType = "UPDATED_AT_DESC"
 	TaskSortTypeCreatedAtAsc   TaskSortType = "CREATED_AT_ASC"
 	TaskSortTypeCreatedAtDesc  TaskSortType = "CREATED_AT_DESC"
+	TaskSortTypeDeletedByAsc   TaskSortType = "DELETED_BY_ASC"
+	TaskSortTypeDeletedByDesc  TaskSortType = "DELETED_BY_DESC"
 	TaskSortTypeUpdatedByAsc   TaskSortType = "UPDATED_BY_ASC"
 	TaskSortTypeUpdatedByDesc  TaskSortType = "UPDATED_BY_DESC"
 	TaskSortTypeCreatedByAsc   TaskSortType = "CREATED_BY_ASC"
@@ -186,10 +225,14 @@ var AllTaskSortType = []TaskSortType{
 	TaskSortTypeDueDateDesc,
 	TaskSortTypeAssigneeIDAsc,
 	TaskSortTypeAssigneeIDDesc,
+	TaskSortTypeDeletedAtAsc,
+	TaskSortTypeDeletedAtDesc,
 	TaskSortTypeUpdatedAtAsc,
 	TaskSortTypeUpdatedAtDesc,
 	TaskSortTypeCreatedAtAsc,
 	TaskSortTypeCreatedAtDesc,
+	TaskSortTypeDeletedByAsc,
+	TaskSortTypeDeletedByDesc,
 	TaskSortTypeUpdatedByAsc,
 	TaskSortTypeUpdatedByDesc,
 	TaskSortTypeCreatedByAsc,
@@ -198,7 +241,7 @@ var AllTaskSortType = []TaskSortType{
 
 func (e TaskSortType) IsValid() bool {
 	switch e {
-	case TaskSortTypeIDAsc, TaskSortTypeIDDesc, TaskSortTypeTitleAsc, TaskSortTypeTitleDesc, TaskSortTypeCompletedAsc, TaskSortTypeCompletedDesc, TaskSortTypeDueDateAsc, TaskSortTypeDueDateDesc, TaskSortTypeAssigneeIDAsc, TaskSortTypeAssigneeIDDesc, TaskSortTypeUpdatedAtAsc, TaskSortTypeUpdatedAtDesc, TaskSortTypeCreatedAtAsc, TaskSortTypeCreatedAtDesc, TaskSortTypeUpdatedByAsc, TaskSortTypeUpdatedByDesc, TaskSortTypeCreatedByAsc, TaskSortTypeCreatedByDesc:
+	case TaskSortTypeIDAsc, TaskSortTypeIDDesc, TaskSortTypeTitleAsc, TaskSortTypeTitleDesc, TaskSortTypeCompletedAsc, TaskSortTypeCompletedDesc, TaskSortTypeDueDateAsc, TaskSortTypeDueDateDesc, TaskSortTypeAssigneeIDAsc, TaskSortTypeAssigneeIDDesc, TaskSortTypeDeletedAtAsc, TaskSortTypeDeletedAtDesc, TaskSortTypeUpdatedAtAsc, TaskSortTypeUpdatedAtDesc, TaskSortTypeCreatedAtAsc, TaskSortTypeCreatedAtDesc, TaskSortTypeDeletedByAsc, TaskSortTypeDeletedByDesc, TaskSortTypeUpdatedByAsc, TaskSortTypeUpdatedByDesc, TaskSortTypeCreatedByAsc, TaskSortTypeCreatedByDesc:
 		return true
 	}
 	return false
@@ -232,14 +275,20 @@ const (
 	UserSortTypeIDDesc        UserSortType = "ID_DESC"
 	UserSortTypeEmailAsc      UserSortType = "EMAIL_ASC"
 	UserSortTypeEmailDesc     UserSortType = "EMAIL_DESC"
+	UserSortTypeAgeAsc        UserSortType = "AGE_ASC"
+	UserSortTypeAgeDesc       UserSortType = "AGE_DESC"
 	UserSortTypeFirstNameAsc  UserSortType = "FIRST_NAME_ASC"
 	UserSortTypeFirstNameDesc UserSortType = "FIRST_NAME_DESC"
 	UserSortTypeLastNameAsc   UserSortType = "LAST_NAME_ASC"
 	UserSortTypeLastNameDesc  UserSortType = "LAST_NAME_DESC"
+	UserSortTypeDeletedAtAsc  UserSortType = "DELETED_AT_ASC"
+	UserSortTypeDeletedAtDesc UserSortType = "DELETED_AT_DESC"
 	UserSortTypeUpdatedAtAsc  UserSortType = "UPDATED_AT_ASC"
 	UserSortTypeUpdatedAtDesc UserSortType = "UPDATED_AT_DESC"
 	UserSortTypeCreatedAtAsc  UserSortType = "CREATED_AT_ASC"
 	UserSortTypeCreatedAtDesc UserSortType = "CREATED_AT_DESC"
+	UserSortTypeDeletedByAsc  UserSortType = "DELETED_BY_ASC"
+	UserSortTypeDeletedByDesc UserSortType = "DELETED_BY_DESC"
 	UserSortTypeUpdatedByAsc  UserSortType = "UPDATED_BY_ASC"
 	UserSortTypeUpdatedByDesc UserSortType = "UPDATED_BY_DESC"
 	UserSortTypeCreatedByAsc  UserSortType = "CREATED_BY_ASC"
@@ -251,14 +300,20 @@ var AllUserSortType = []UserSortType{
 	UserSortTypeIDDesc,
 	UserSortTypeEmailAsc,
 	UserSortTypeEmailDesc,
+	UserSortTypeAgeAsc,
+	UserSortTypeAgeDesc,
 	UserSortTypeFirstNameAsc,
 	UserSortTypeFirstNameDesc,
 	UserSortTypeLastNameAsc,
 	UserSortTypeLastNameDesc,
+	UserSortTypeDeletedAtAsc,
+	UserSortTypeDeletedAtDesc,
 	UserSortTypeUpdatedAtAsc,
 	UserSortTypeUpdatedAtDesc,
 	UserSortTypeCreatedAtAsc,
 	UserSortTypeCreatedAtDesc,
+	UserSortTypeDeletedByAsc,
+	UserSortTypeDeletedByDesc,
 	UserSortTypeUpdatedByAsc,
 	UserSortTypeUpdatedByDesc,
 	UserSortTypeCreatedByAsc,
@@ -267,7 +322,7 @@ var AllUserSortType = []UserSortType{
 
 func (e UserSortType) IsValid() bool {
 	switch e {
-	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc:
+	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeAgeAsc, UserSortTypeAgeDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeDeletedAtAsc, UserSortTypeDeletedAtDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc:
 		return true
 	}
 	return false

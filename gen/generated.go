@@ -75,6 +75,8 @@ type ComplexityRoot struct {
 		Completed  func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
 		CreatedBy  func(childComplexity int) int
+		DeletedAt  func(childComplexity int) int
+		DeletedBy  func(childComplexity int) int
 		DueDate    func(childComplexity int) int
 		ID         func(childComplexity int) int
 		Title      func(childComplexity int) int
@@ -88,8 +90,11 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
+		Age       func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		DeletedBy func(childComplexity int) int
 		Email     func(childComplexity int) int
 		FirstName func(childComplexity int) int
 		ID        func(childComplexity int) int
@@ -304,6 +309,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Task.CreatedBy(childComplexity), true
 
+	case "Task.deletedAt":
+		if e.complexity.Task.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Task.DeletedAt(childComplexity), true
+
+	case "Task.deletedBy":
+		if e.complexity.Task.DeletedBy == nil {
+			break
+		}
+
+		return e.complexity.Task.DeletedBy(childComplexity), true
+
 	case "Task.dueDate":
 		if e.complexity.Task.DueDate == nil {
 			break
@@ -353,6 +372,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TaskResultType.Items(childComplexity), true
 
+	case "User.age":
+		if e.complexity.User.Age == nil {
+			break
+		}
+
+		return e.complexity.User.Age(childComplexity), true
+
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
 			break
@@ -366,6 +392,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.CreatedBy(childComplexity), true
+
+	case "User.deletedAt":
+		if e.complexity.User.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.User.DeletedAt(childComplexity), true
+
+	case "User.deletedBy":
+		if e.complexity.User.DeletedBy == nil {
+			break
+		}
+
+		return e.complexity.User.DeletedBy(childComplexity), true
 
 	case "User.email":
 		if e.complexity.User.Email == nil {
@@ -529,12 +569,15 @@ directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
 
 type User {
   id: ID!
-  email: String @column(gorm: "type:varchar(64) comment '父级数组';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  age: Int
   firstName: String
   lastName: String
   tasks: [Task!]! @relationship(inverse: "assignee")
-  updatedAt: Time
-  createdAt: Time!
+  deletedAt: Int
+  updatedAt: Int
+  createdAt: Int!
+  deletedBy: ID
   updatedBy: ID
   createdBy: ID
 }
@@ -546,8 +589,10 @@ type Task {
   dueDate: Time
   assignee: User @relationship(inverse: "tasks")
   assigneeId: ID
-  updatedAt: Time
-  createdAt: Time!
+  deletedAt: Int
+  updatedAt: Int
+  createdAt: Int!
+  deletedBy: ID
   updatedBy: ID
   createdBy: ID
 }
@@ -555,6 +600,7 @@ type Task {
 input UserCreateInput {
   id: ID
   email: String
+  age: Int
   firstName: String
   lastName: String
   tasksIds: [ID!]
@@ -562,6 +608,7 @@ input UserCreateInput {
 
 input UserUpdateInput {
   email: String
+  age: Int
   firstName: String
   lastName: String
   tasksIds: [ID!]
@@ -572,14 +619,20 @@ enum UserSortType {
   ID_DESC
   EMAIL_ASC
   EMAIL_DESC
+  AGE_ASC
+  AGE_DESC
   FIRST_NAME_ASC
   FIRST_NAME_DESC
   LAST_NAME_ASC
   LAST_NAME_DESC
+  DELETED_AT_ASC
+  DELETED_AT_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
   CREATED_AT_DESC
+  DELETED_BY_ASC
+  DELETED_BY_DESC
   UPDATED_BY_ASC
   UPDATED_BY_DESC
   CREATED_BY_ASC
@@ -606,6 +659,13 @@ input UserFilterType {
   email_like: String
   email_prefix: String
   email_suffix: String
+  age: Int
+  age_ne: Int
+  age_gt: Int
+  age_lt: Int
+  age_gte: Int
+  age_lte: Int
+  age_in: [Int!]
   firstName: String
   firstName_ne: String
   firstName_gt: String
@@ -626,20 +686,34 @@ input UserFilterType {
   lastName_like: String
   lastName_prefix: String
   lastName_suffix: String
-  updatedAt: Time
-  updatedAt_ne: Time
-  updatedAt_gt: Time
-  updatedAt_lt: Time
-  updatedAt_gte: Time
-  updatedAt_lte: Time
-  updatedAt_in: [Time!]
-  createdAt: Time
-  createdAt_ne: Time
-  createdAt_gt: Time
-  createdAt_lt: Time
-  createdAt_gte: Time
-  createdAt_lte: Time
-  createdAt_in: [Time!]
+  deletedAt: Int
+  deletedAt_ne: Int
+  deletedAt_gt: Int
+  deletedAt_lt: Int
+  deletedAt_gte: Int
+  deletedAt_lte: Int
+  deletedAt_in: [Int!]
+  updatedAt: Int
+  updatedAt_ne: Int
+  updatedAt_gt: Int
+  updatedAt_lt: Int
+  updatedAt_gte: Int
+  updatedAt_lte: Int
+  updatedAt_in: [Int!]
+  createdAt: Int
+  createdAt_ne: Int
+  createdAt_gt: Int
+  createdAt_lt: Int
+  createdAt_gte: Int
+  createdAt_lte: Int
+  createdAt_in: [Int!]
+  deletedBy: ID
+  deletedBy_ne: ID
+  deletedBy_gt: ID
+  deletedBy_lt: ID
+  deletedBy_gte: ID
+  deletedBy_lte: ID
+  deletedBy_in: [ID!]
   updatedBy: ID
   updatedBy_ne: ID
   updatedBy_gt: ID
@@ -688,10 +762,14 @@ enum TaskSortType {
   DUE_DATE_DESC
   ASSIGNEE_ID_ASC
   ASSIGNEE_ID_DESC
+  DELETED_AT_ASC
+  DELETED_AT_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
   CREATED_AT_DESC
+  DELETED_BY_ASC
+  DELETED_BY_DESC
   UPDATED_BY_ASC
   UPDATED_BY_DESC
   CREATED_BY_ASC
@@ -739,20 +817,34 @@ input TaskFilterType {
   assigneeId_gte: ID
   assigneeId_lte: ID
   assigneeId_in: [ID!]
-  updatedAt: Time
-  updatedAt_ne: Time
-  updatedAt_gt: Time
-  updatedAt_lt: Time
-  updatedAt_gte: Time
-  updatedAt_lte: Time
-  updatedAt_in: [Time!]
-  createdAt: Time
-  createdAt_ne: Time
-  createdAt_gt: Time
-  createdAt_lt: Time
-  createdAt_gte: Time
-  createdAt_lte: Time
-  createdAt_in: [Time!]
+  deletedAt: Int
+  deletedAt_ne: Int
+  deletedAt_gt: Int
+  deletedAt_lt: Int
+  deletedAt_gte: Int
+  deletedAt_lte: Int
+  deletedAt_in: [Int!]
+  updatedAt: Int
+  updatedAt_ne: Int
+  updatedAt_gt: Int
+  updatedAt_lt: Int
+  updatedAt_gte: Int
+  updatedAt_lte: Int
+  updatedAt_in: [Int!]
+  createdAt: Int
+  createdAt_ne: Int
+  createdAt_gt: Int
+  createdAt_lt: Int
+  createdAt_gte: Int
+  createdAt_lte: Int
+  createdAt_in: [Int!]
+  deletedBy: ID
+  deletedBy_ne: ID
+  deletedBy_gt: ID
+  deletedBy_lt: ID
+  deletedBy_gte: ID
+  deletedBy_lte: ID
+  deletedBy_in: [ID!]
   updatedBy: ID
   updatedBy_ne: ID
   updatedBy_gt: ID
@@ -1908,6 +2000,37 @@ func (ec *executionContext) _Task_assigneeId(ctx context.Context, field graphql.
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Task_deletedAt(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Task",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Task_updatedAt(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1933,10 +2056,10 @@ func (ec *executionContext) _Task_updatedAt(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*time.Time)
+	res := resTmp.(*int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Task_createdAt(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
@@ -1967,10 +2090,41 @@ func (ec *executionContext) _Task_createdAt(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Task_deletedBy(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Task",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedBy, nil
+	})
+
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Task_updatedBy(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
@@ -2168,6 +2322,37 @@ func (ec *executionContext) _User_email(ctx context.Context, field graphql.Colle
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _User_age(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Age, nil
+	})
+
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _User_firstName(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2281,6 +2466,37 @@ func (ec *executionContext) _User_tasks(ctx context.Context, field graphql.Colle
 	return ec.marshalNTask2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTask(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _User_deletedAt(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _User_updatedAt(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2306,10 +2522,10 @@ func (ec *executionContext) _User_updatedAt(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*time.Time)
+	res := resTmp.(*int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_createdAt(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
@@ -2340,10 +2556,41 @@ func (ec *executionContext) _User_createdAt(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_deletedBy(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedBy, nil
+	})
+
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_updatedBy(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
@@ -3777,87 +4024,171 @@ func (ec *executionContext) unmarshalInputTaskFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
+		case "deletedAt":
+			var err error
+			it.DeletedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_ne":
+			var err error
+			it.DeletedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_gt":
+			var err error
+			it.DeletedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_lt":
+			var err error
+			it.DeletedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_gte":
+			var err error
+			it.DeletedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_lte":
+			var err error
+			it.DeletedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_in":
+			var err error
+			it.DeletedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "updatedAt":
 			var err error
-			it.UpdatedAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_ne":
 			var err error
-			it.UpdatedAtNe, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_gt":
 			var err error
-			it.UpdatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_lt":
 			var err error
-			it.UpdatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_gte":
 			var err error
-			it.UpdatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_lte":
 			var err error
-			it.UpdatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_in":
 			var err error
-			it.UpdatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt":
 			var err error
-			it.CreatedAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_ne":
 			var err error
-			it.CreatedAtNe, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_gt":
 			var err error
-			it.CreatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_lt":
 			var err error
-			it.CreatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_gte":
 			var err error
-			it.CreatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_lte":
 			var err error
-			it.CreatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_in":
 			var err error
-			it.CreatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTime(ctx, v)
+			it.CreatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy":
+			var err error
+			it.DeletedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_ne":
+			var err error
+			it.DeletedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gt":
+			var err error
+			it.DeletedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lt":
+			var err error
+			it.DeletedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gte":
+			var err error
+			it.DeletedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lte":
+			var err error
+			it.DeletedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_in":
+			var err error
+			it.DeletedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4077,6 +4408,48 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
+		case "age":
+			var err error
+			it.Age, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "age_ne":
+			var err error
+			it.AgeNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "age_gt":
+			var err error
+			it.AgeGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "age_lt":
+			var err error
+			it.AgeLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "age_gte":
+			var err error
+			it.AgeGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "age_lte":
+			var err error
+			it.AgeLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "age_in":
+			var err error
+			it.AgeIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "firstName":
 			var err error
 			it.FirstName, err = ec.unmarshalOString2ᚖstring(ctx, v)
@@ -4197,87 +4570,171 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
+		case "deletedAt":
+			var err error
+			it.DeletedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_ne":
+			var err error
+			it.DeletedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_gt":
+			var err error
+			it.DeletedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_lt":
+			var err error
+			it.DeletedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_gte":
+			var err error
+			it.DeletedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_lte":
+			var err error
+			it.DeletedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedAt_in":
+			var err error
+			it.DeletedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "updatedAt":
 			var err error
-			it.UpdatedAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_ne":
 			var err error
-			it.UpdatedAtNe, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_gt":
 			var err error
-			it.UpdatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_lt":
 			var err error
-			it.UpdatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_gte":
 			var err error
-			it.UpdatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_lte":
 			var err error
-			it.UpdatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "updatedAt_in":
 			var err error
-			it.UpdatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTime(ctx, v)
+			it.UpdatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt":
 			var err error
-			it.CreatedAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_ne":
 			var err error
-			it.CreatedAtNe, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_gt":
 			var err error
-			it.CreatedAtGt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_lt":
 			var err error
-			it.CreatedAtLt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_gte":
 			var err error
-			it.CreatedAtGte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_lte":
 			var err error
-			it.CreatedAtLte, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			it.CreatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "createdAt_in":
 			var err error
-			it.CreatedAtIn, err = ec.unmarshalOTime2ᚕᚖtimeᚐTime(ctx, v)
+			it.CreatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy":
+			var err error
+			it.DeletedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_ne":
+			var err error
+			it.DeletedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gt":
+			var err error
+			it.DeletedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lt":
+			var err error
+			it.DeletedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gte":
+			var err error
+			it.DeletedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lte":
+			var err error
+			it.DeletedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_in":
+			var err error
+			it.DeletedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4550,6 +5007,8 @@ func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj
 			})
 		case "assigneeId":
 			out.Values[i] = ec._Task_assigneeId(ctx, field, obj)
+		case "deletedAt":
+			out.Values[i] = ec._Task_deletedAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._Task_updatedAt(ctx, field, obj)
 		case "createdAt":
@@ -4557,6 +5016,8 @@ func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "deletedBy":
+			out.Values[i] = ec._Task_deletedBy(ctx, field, obj)
 		case "updatedBy":
 			out.Values[i] = ec._Task_updatedBy(ctx, field, obj)
 		case "createdBy":
@@ -4640,6 +5101,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "email":
 			out.Values[i] = ec._User_email(ctx, field, obj)
+		case "age":
+			out.Values[i] = ec._User_age(ctx, field, obj)
 		case "firstName":
 			out.Values[i] = ec._User_firstName(ctx, field, obj)
 		case "lastName":
@@ -4658,6 +5121,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				}
 				return res
 			})
+		case "deletedAt":
+			out.Values[i] = ec._User_deletedAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._User_updatedAt(ctx, field, obj)
 		case "createdAt":
@@ -4665,6 +5130,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "deletedBy":
+			out.Values[i] = ec._User_deletedBy(ctx, field, obj)
 		case "updatedBy":
 			out.Values[i] = ec._User_updatedBy(ctx, field, obj)
 		case "createdBy":
@@ -5009,6 +5476,20 @@ func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}
 
 func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNInt2int64(ctx context.Context, v interface{}) (int64, error) {
+	return graphql.UnmarshalInt64(v)
+}
+
+func (ec *executionContext) marshalNInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
+	res := graphql.MarshalInt64(v)
 	if res == graphql.Null {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5579,6 +6060,46 @@ func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.Selecti
 	return graphql.MarshalInt(v)
 }
 
+func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v interface{}) (int64, error) {
+	return graphql.UnmarshalInt64(v)
+}
+
+func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
+	return graphql.MarshalInt64(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚕint(ctx context.Context, v interface{}) ([]int, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]int, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNInt2int(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOInt2ᚕint(ctx context.Context, sel ast.SelectionSet, v []int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNInt2int(ctx, sel, v[i])
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
 	if v == nil {
 		return nil, nil
@@ -5592,6 +6113,21 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	return ec.marshalOInt2int(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint64(ctx context.Context, v interface{}) (*int64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOInt2int64(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOInt2ᚖint64(ctx context.Context, sel ast.SelectionSet, v *int64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOInt2int64(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

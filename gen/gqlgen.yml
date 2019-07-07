@@ -1,0 +1,51 @@
+# Generated with graphql-orm
+
+schema:
+  - schema.graphql
+exec:
+  filename: generated.go
+  package: gen
+model:
+  filename: models_gen.go
+  package: gen
+resolver:
+  filename: resolver.go
+  type: Resolver
+  package: gen
+
+models:
+  
+  UserResultType:
+    model: github.com/maiguangyang/graphql-gorm/gen.UserResultType
+    fields:
+      count:
+        resolver: true
+      items:
+        resolver: true
+  User:
+    model: github.com/maiguangyang/graphql-gorm/gen.User
+    fields:
+      tasks:
+        resolver: true
+  UserCreateInput:
+    model: "map[string]interface{}"
+  UserUpdateInput:
+    model: "map[string]interface{}"
+  
+  TaskResultType:
+    model: github.com/maiguangyang/graphql-gorm/gen.TaskResultType
+    fields:
+      count:
+        resolver: true
+      items:
+        resolver: true
+  Task:
+    model: github.com/maiguangyang/graphql-gorm/gen.Task
+    fields:
+      assignee:
+        resolver: true
+  TaskCreateInput:
+    model: "map[string]interface{}"
+  TaskUpdateInput:
+    model: "map[string]interface{}"
+  

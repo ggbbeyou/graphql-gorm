@@ -1,0 +1,278 @@
+# This schema is generated, please don't update it manually
+
+scalar Time
+
+directive @relationship(inverse: String!) on FIELD_DEFINITION
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  user(id: ID, q: String): User
+  users(offset: Int, limit: Int = 30, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
+  task(id: ID, q: String): Task
+  tasks(offset: Int, limit: Int = 30, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
+}
+
+type Mutation {
+  createUser(input: UserCreateInput!): User!
+  updateUser(id: ID!, input: UserUpdateInput!): User!
+  deleteUser(id: ID!): User!
+  createTask(input: TaskCreateInput!): Task!
+  updateTask(id: ID!, input: TaskUpdateInput!): Task!
+  deleteTask(id: ID!): Task!
+}
+
+directive @column(gorm: String!) on MUTATION | QUERY | FIELD
+
+directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
+
+type User {
+  id: ID!
+  email: String @column(gorm: "type:varchar(64) comment '父级数组';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  firstName: String
+  lastName: String
+  tasks: [Task!]! @relationship(inverse: "assignee")
+  updatedAt: Time
+  createdAt: Time!
+  updatedBy: ID
+  createdBy: ID
+}
+
+type Task {
+  id: ID!
+  title: String
+  completed: Boolean
+  dueDate: Time
+  assignee: User @relationship(inverse: "tasks")
+  assigneeId: ID
+  updatedAt: Time
+  createdAt: Time!
+  updatedBy: ID
+  createdBy: ID
+}
+
+input UserCreateInput {
+  id: ID
+  email: String
+  firstName: String
+  lastName: String
+  tasksIds: [ID!]
+}
+
+input UserUpdateInput {
+  email: String
+  firstName: String
+  lastName: String
+  tasksIds: [ID!]
+}
+
+enum UserSortType {
+  ID_ASC
+  ID_DESC
+  EMAIL_ASC
+  EMAIL_DESC
+  FIRST_NAME_ASC
+  FIRST_NAME_DESC
+  LAST_NAME_ASC
+  LAST_NAME_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_BY_ASC
+  UPDATED_BY_DESC
+  CREATED_BY_ASC
+  CREATED_BY_DESC
+}
+
+input UserFilterType {
+  AND: [UserFilterType!]
+  OR: [UserFilterType!]
+  id: ID
+  id_ne: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  email: String
+  email_ne: String
+  email_gt: String
+  email_lt: String
+  email_gte: String
+  email_lte: String
+  email_in: [String!]
+  email_like: String
+  email_prefix: String
+  email_suffix: String
+  firstName: String
+  firstName_ne: String
+  firstName_gt: String
+  firstName_lt: String
+  firstName_gte: String
+  firstName_lte: String
+  firstName_in: [String!]
+  firstName_like: String
+  firstName_prefix: String
+  firstName_suffix: String
+  lastName: String
+  lastName_ne: String
+  lastName_gt: String
+  lastName_lt: String
+  lastName_gte: String
+  lastName_lte: String
+  lastName_in: [String!]
+  lastName_like: String
+  lastName_prefix: String
+  lastName_suffix: String
+  updatedAt: Time
+  updatedAt_ne: Time
+  updatedAt_gt: Time
+  updatedAt_lt: Time
+  updatedAt_gte: Time
+  updatedAt_lte: Time
+  updatedAt_in: [Time!]
+  createdAt: Time
+  createdAt_ne: Time
+  createdAt_gt: Time
+  createdAt_lt: Time
+  createdAt_gte: Time
+  createdAt_lte: Time
+  createdAt_in: [Time!]
+  updatedBy: ID
+  updatedBy_ne: ID
+  updatedBy_gt: ID
+  updatedBy_lt: ID
+  updatedBy_gte: ID
+  updatedBy_lte: ID
+  updatedBy_in: [ID!]
+  createdBy: ID
+  createdBy_ne: ID
+  createdBy_gt: ID
+  createdBy_lt: ID
+  createdBy_gte: ID
+  createdBy_lte: ID
+  createdBy_in: [ID!]
+  tasks: TaskFilterType
+}
+
+type UserResultType {
+  items: [User!]!
+  count: Int!
+}
+
+input TaskCreateInput {
+  id: ID
+  title: String
+  completed: Boolean
+  dueDate: Time
+  assigneeId: ID
+}
+
+input TaskUpdateInput {
+  title: String
+  completed: Boolean
+  dueDate: Time
+  assigneeId: ID
+}
+
+enum TaskSortType {
+  ID_ASC
+  ID_DESC
+  TITLE_ASC
+  TITLE_DESC
+  COMPLETED_ASC
+  COMPLETED_DESC
+  DUE_DATE_ASC
+  DUE_DATE_DESC
+  ASSIGNEE_ID_ASC
+  ASSIGNEE_ID_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  UPDATED_BY_ASC
+  UPDATED_BY_DESC
+  CREATED_BY_ASC
+  CREATED_BY_DESC
+}
+
+input TaskFilterType {
+  AND: [TaskFilterType!]
+  OR: [TaskFilterType!]
+  id: ID
+  id_ne: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  title: String
+  title_ne: String
+  title_gt: String
+  title_lt: String
+  title_gte: String
+  title_lte: String
+  title_in: [String!]
+  title_like: String
+  title_prefix: String
+  title_suffix: String
+  completed: Boolean
+  completed_ne: Boolean
+  completed_gt: Boolean
+  completed_lt: Boolean
+  completed_gte: Boolean
+  completed_lte: Boolean
+  completed_in: [Boolean!]
+  dueDate: Time
+  dueDate_ne: Time
+  dueDate_gt: Time
+  dueDate_lt: Time
+  dueDate_gte: Time
+  dueDate_lte: Time
+  dueDate_in: [Time!]
+  assigneeId: ID
+  assigneeId_ne: ID
+  assigneeId_gt: ID
+  assigneeId_lt: ID
+  assigneeId_gte: ID
+  assigneeId_lte: ID
+  assigneeId_in: [ID!]
+  updatedAt: Time
+  updatedAt_ne: Time
+  updatedAt_gt: Time
+  updatedAt_lt: Time
+  updatedAt_gte: Time
+  updatedAt_lte: Time
+  updatedAt_in: [Time!]
+  createdAt: Time
+  createdAt_ne: Time
+  createdAt_gt: Time
+  createdAt_lt: Time
+  createdAt_gte: Time
+  createdAt_lte: Time
+  createdAt_in: [Time!]
+  updatedBy: ID
+  updatedBy_ne: ID
+  updatedBy_gt: ID
+  updatedBy_lt: ID
+  updatedBy_gte: ID
+  updatedBy_lte: ID
+  updatedBy_in: [ID!]
+  createdBy: ID
+  createdBy_ne: ID
+  createdBy_gt: ID
+  createdBy_lt: ID
+  createdBy_gte: ID
+  createdBy_lte: ID
+  createdBy_in: [ID!]
+  assignee: UserFilterType
+}
+
+type TaskResultType {
+  items: [Task!]!
+  count: Int!
+}

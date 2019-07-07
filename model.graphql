@@ -1,0 +1,19 @@
+directive @column(gorm: String!) on MUTATION | QUERY | FIELD
+directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
+
+type User {
+	email: String
+    @column(gorm: "type:varchar(64) comment '父级数组';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+	firstName: String
+	lastName: String
+
+	tasks: [Task!]! @relationship(inverse:"assignee")
+}
+
+type Task {
+	title: String
+	completed: Boolean
+	dueDate: Time
+
+	assignee: User @relationship(inverse:"tasks")
+}

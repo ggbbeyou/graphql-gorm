@@ -5,6 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+	"reflect"
+  "strings"
+  "regexp"
+  "strconv"
 
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql/resolvers"
@@ -14,6 +18,291 @@ import (
 func getPrincipalID(ctx context.Context) *string {
 	v, _ := ctx.Value(KeyPrincipalID).(*string)
 	return v
+}
+
+var Rule = map[string]map[string]interface{}{
+  "empty"    : { "rgx": "^\\S", "msg": "不能为空", "bool": true, },
+  "int"      : { "rgx": "^[0-9]\\d*$", "msg": "必须是0-9的整数", },
+  "justInt"  : { "rgx": "^[1-9]\\d*$", "msg": "必须是大于0的整数", },
+  "code"     : { "rgx": "^([0-9]){6}$", "msg": "验证码必须是6位整数", },
+  "url"      : { "rgx": "^https?:\\/\\/.+$", "msg": "网址格式不正确", },
+  "password" : { "rgx": "^(\\S){6,20}$", "msg": "密码为6-20个字符", },
+  "email"    : { "rgx": "^([a-z0-9\\+\\_\\-]+)(\\.[a-z0-9\\+\\_\\-]+)*@([a-z0-9\\-]+\\.)+[a-z]{2,6}$", "msg": "邮箱格式不正确", },
+  "identity" : { "rgx": "^\\d{6}(18|19|20)?\\d{2}(0[1-9]|1[012])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$", "msg": "身份证号码格式不正确",
+  },
+  "phone"    : { "rgx": "^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(14[0-9]{1}))+\\d{8})$", "msg": "必须是11位手机号码",
+  },
+}
+
+// String转Int
+func StrToInt(v string) int {
+  s, _ := strconv.Atoi(v)
+  return s
+}
+
+// String转Int64
+func StrToInt64(v string) int64 {
+  s, _ := strconv.ParseInt(v, 10, 64)
+  return s
+}
+
+
+// Int转String
+func IntToStr(v int) string {
+  s := strconv.Itoa(v)
+  return s
+}
+
+// Int64转String
+func Int64ToStr(v int64) string {
+  s := strconv.FormatInt(v, 10)
+  return s
+}
+
+// ArrayIntToString
+func ArrayInt64ToString(a interface{}) string {
+  return strings.Trim(strings.Replace(fmt.Sprint(a), " ", ",", -1), "[]")
+}
+
+
+// float64转String
+func Float64ToStr(fv float64) string {
+  return strconv.FormatFloat(fv, 'f', 0, 64)
+}
+
+// 查找数组并返回下标
+func IndexOf(str []interface{}, data interface{}) int {
+  for k, v := range str{
+    if v == data {
+      return k
+    }
+  }
+
+  return - 1
+}
+
+// []StringTo[]interface
+func ArrStrTointerface(data []string) []interface{} {
+  newArr := make([]interface{}, len(data))
+  for i, v := range data {
+    newArr[i] = v
+  }
+  return newArr
+}
+
+func InitValidator(fieldInfo reflect.StructField, value interface{}) []map[string]interface{} {
+  errMsgs := []map[string]interface{}{}
+  tag := fieldInfo.Tag
+  valid := tag.Get("validator")
+  jsonKey := tag.Get("json")
+
+  typ := reflect.TypeOf(value).String()
+
+  if jsonKey == "" {
+    jsonKey = fieldInfo.Name
+  }
+
+  // 为空的判断
+  if value == "" {
+    errMsgs = append(errMsgs, map[string]interface{}{
+      "value": value,
+      "msg":   jsonKey + " 不能为空",
+    })
+  } else if valid != "" {
+    result := strings.Split(valid, ";")
+
+    obj := make(map[string]interface{})
+
+    if len(result) > 0 {
+      for _, v := range result {
+        result := strings.Split(v, ":")
+        if len(result) == 2 {
+          obj[result[0]] = result[1]
+        }
+      }
+    }
+
+    // 以下都是不为空的判断
+    if obj["type"] != "" || obj["type"] != nil {
+      rl := Rule[obj["type"].(string)]
+
+      var bool bool
+      if typ == "string" {
+        bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(value.(string)))
+      } else if typ == "int" {
+        bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(value.(int)))
+      } else if typ == "int64" {
+        bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(value.(int64)))
+      } else if typ == "float64" {
+        bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(value.(float64)))
+      }
+
+      if bool != true {
+        errMsgs = append(errMsgs, map[string]interface{}{
+          "value": value,
+          "msg":   jsonKey + " " + rl["msg"].(string),
+        })
+      }
+    }
+    if obj["min"] != nil {
+      var bool bool
+      if typ == "string" {
+        bool = len(value.(string)) < StrToInt(obj["min"].(string))
+      } else if typ == "int" {
+        bool = len(IntToStr(value.(int))) < StrToInt(obj["min"].(string))
+      } else if typ == "int64" {
+        bool = len(Int64ToStr(value.(int64))) < StrToInt(obj["min"].(string))
+      } else if typ == "float64" {
+        bool = len(Float64ToStr(value.(float64))) < StrToInt(obj["min"].(string))
+      }
+
+      if bool == true {
+        errMsgs = append(errMsgs, map[string]interface{}{
+          "value": value,
+          "msg":   jsonKey + " 不能小于" + obj["min"].(string) + "个字符",
+        })
+      }
+    }
+
+    if obj["max"] != nil {
+      var bool bool
+      if typ == "string" {
+        bool = len(value.(string)) > StrToInt(obj["max"].(string))
+      } else if typ == "int" {
+        bool = len(IntToStr(value.(int))) > StrToInt(obj["max"].(string))
+      } else if typ == "int64" {
+        bool = len(Int64ToStr(value.(int64))) > StrToInt(obj["max"].(string))
+      } else if typ == "float64" {
+        bool = len(Float64ToStr(value.(float64))) > StrToInt(obj["max"].(string))
+      }
+
+      if bool == true {
+        errMsgs = append(errMsgs, map[string]interface{}{
+          "value": value,
+          "msg":   jsonKey + " 最大不能超过" + obj["max"].(string) + "个字符",
+        })
+
+      }
+    }
+
+  }
+
+  return errMsgs
+}
+
+
+func ResNodeEnvData(table interface{}) map[string]interface{} {
+  v := reflect.ValueOf(table)
+  v1 := v.Elem()
+  k := v1.Type()
+
+  errMsgs := []map[string]interface{}{}
+
+  fliter := []interface{}{"int", "int64", "float64", "*int", "*int64", "*float64"}
+  for i := 0; i < v1.NumField(); i++ {
+    val := v1.Field(i)
+
+    value := val.Interface()
+    t1 := reflect.TypeOf(value)
+
+    // 如果是结构体
+    if t1.Kind() == reflect.Struct {
+      v1 := reflect.ValueOf(value)
+
+      for j := 0; j < t1.NumField(); j++ {
+
+        tag := t1.Field(j).Tag
+        valid := tag.Get("validator")
+        json := tag.Get("json")
+        if json == "" {
+          json = k.Field(i).Name
+        }
+
+        // if v1.Field(j).Type().Kind() != reflect.Struct && valid != "" && IndexOf(ArrStrTointerface(required), json) != -1 || v1.Field(j).Type().Kind() != reflect.Struct && valid != "" {
+        if v1.Field(j).Type().Kind() != reflect.Struct && valid != "" {
+          // if v1.Field(j).Type().String() == "int" || v1.Field(j).Type().String() == "int64" || v1.Field(j).Type().String() == "float64" {
+          if IndexOf(fliter, v1.Field(j).Type().String()) != -1 {
+            var val int64 = 0
+            if v1.Field(j).Type().String() == "*int64" {
+              if v1.Field(j).Interface().(*int64) != nil {
+                val = int64(*v1.Field(j).Interface().(*int64))
+              }
+            } else {
+              val = v1.Field(j).Interface().(int64)
+            }
+
+            if val != 0 {
+              res := InitValidator(t1.Field(j), val)
+              for _, v := range res {
+                errMsgs = append(errMsgs, v)
+              }
+            }
+          } else {
+            res := InitValidator(t1.Field(j), v1.Field(j).Interface())
+            for _, v := range res {
+              errMsgs = append(errMsgs, v)
+            }
+          }
+        }
+      }
+    } else {
+      tag := k.Field(i).Tag
+      valid := tag.Get("validator")
+      json := tag.Get("json")
+      if json == "" {
+        json = k.Field(i).Name
+      }
+      if valid != "" {
+        // if t1.String() == "int" || t1.String() == "int64" || t1.String() == "float64" {
+        if IndexOf(fliter, t1.String()) != -1{
+          var val int64 = 0
+          if t1.String() == "*int64" {
+            if value.(*int64) != nil {
+              val = int64(*value.(*int64))
+            }
+          } else {
+            val = value.(int64)
+          }
+
+          if val != 0 {
+            res := InitValidator(k.Field(i), val)
+            for _, v := range res {
+              errMsgs = append(errMsgs, v)
+            }
+          }
+        } else {
+          if t1.String() == "*string" {
+            if value.(*string) != nil {
+              value = string(*value.(*string))
+            }
+          }
+
+          // if t1.String() == "*int64" {
+            // val := *value.(*int64)
+            // fmt.Println(int64(val))
+          // }
+          res := InitValidator(k.Field(i), value)
+          for _, v := range res {
+            errMsgs = append(errMsgs, v)
+          }
+        }
+
+      }
+    }
+  }
+
+  if len(errMsgs) > 0 {
+    return map[string]interface{}{
+      "status": 1,
+      "data":   errMsgs,
+    }
+  }
+
+  return map[string]interface{}{
+    "status": 0,
+    "data":   nil,
+  }
+
 }
 
 type GeneratedResolver struct {
@@ -49,7 +338,8 @@ type GeneratedMutationResolver struct{ *GeneratedResolver }
 func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[string]interface{}) (item *User, err error) {
 	principalID := getPrincipalID(ctx)
 	now := time.Now()
-	item = &User{ID: uuid.Must(uuid.NewV4()).String(), CreatedAt: now.Unix(), CreatedBy: principalID}
+	item = &User{ID: uuid.Must(uuid.NewV4()).String(), CreatedBy: principalID}
+
 	tx := r.DB.db.Begin()
 
 	event := events.NewEvent(events.EventMetadata{
@@ -97,6 +387,10 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 		association := tx.Model(&item).Association("Tasks")
 		association.Replace(items)
 	}
+
+  envData := ResNodeEnvData(item)
+  fmt.Println(envData)
+  return
 
 	err = tx.Create(item).Error
 	if err != nil {
@@ -223,7 +517,7 @@ func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (
 func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[string]interface{}) (item *Task, err error) {
 	principalID := getPrincipalID(ctx)
 	now := time.Now()
-	item = &Task{ID: uuid.Must(uuid.NewV4()).String(), CreatedAt: now.Unix(), CreatedBy: principalID}
+	item = &Task{ID: uuid.Must(uuid.NewV4()).String(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
 
 	event := events.NewEvent(events.EventMetadata{

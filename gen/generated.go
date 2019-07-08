@@ -576,7 +576,7 @@ type User {
   tasks: [Task!]! @relationship(inverse: "assignee")
   deletedAt: Int
   updatedAt: Int
-  createdAt: Int!
+  createdAt: Int
   deletedBy: ID
   updatedBy: ID
   createdBy: ID
@@ -591,7 +591,7 @@ type Task {
   assigneeId: ID
   deletedAt: Int
   updatedAt: Int
-  createdAt: Int!
+  createdAt: Int
   deletedBy: ID
   updatedBy: ID
   createdBy: ID
@@ -2085,15 +2085,12 @@ func (ec *executionContext) _Task_createdAt(ctx context.Context, field graphql.C
 	})
 
 	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(int64)
+	res := resTmp.(*int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int64(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Task_deletedBy(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
@@ -2551,15 +2548,12 @@ func (ec *executionContext) _User_createdAt(ctx context.Context, field graphql.C
 	})
 
 	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(int64)
+	res := resTmp.(*int64)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int64(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_deletedBy(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
@@ -5013,9 +5007,6 @@ func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = ec._Task_updatedAt(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._Task_createdAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
 		case "deletedBy":
 			out.Values[i] = ec._Task_deletedBy(ctx, field, obj)
 		case "updatedBy":
@@ -5127,9 +5118,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = ec._User_updatedAt(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._User_createdAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
 		case "deletedBy":
 			out.Values[i] = ec._User_deletedBy(ctx, field, obj)
 		case "updatedBy":
@@ -5476,20 +5464,6 @@ func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}
 
 func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !ec.HasError(graphql.GetResolverContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
-}
-
-func (ec *executionContext) unmarshalNInt2int64(ctx context.Context, v interface{}) (int64, error) {
-	return graphql.UnmarshalInt64(v)
-}
-
-func (ec *executionContext) marshalNInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
-	res := graphql.MarshalInt64(v)
 	if res == graphql.Null {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

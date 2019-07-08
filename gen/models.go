@@ -22,7 +22,7 @@ type User struct {
 	LastName  *string `json:"lastName" gorm:"column:lastName"`
 	DeletedAt *int64  `json:"deletedAt" gorm:"column:deletedAt"`
 	UpdatedAt *int64  `json:"updatedAt" gorm:"column:updatedAt"`
-	CreatedAt int64   `json:"createdAt" gorm:"column:createdAt"`
+	CreatedAt *int64  `json:"createdAt" gorm:"column:createdAt"`
 	DeletedBy *string `json:"deletedBy" gorm:"column:deletedBy"`
 	UpdatedBy *string `json:"updatedBy" gorm:"column:updatedBy"`
 	CreatedBy *string `json:"createdBy" gorm:"column:createdBy"`
@@ -38,7 +38,7 @@ type UserChanges struct {
 	LastName  *string
 	DeletedAt *int64
 	UpdatedAt *int64
-	CreatedAt int64
+	CreatedAt *int64
 	DeletedBy *string
 	UpdatedBy *string
 	CreatedBy *string
@@ -56,7 +56,7 @@ type Task struct {
 	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId"`
 	DeletedAt  *int64     `json:"deletedAt" gorm:"column:deletedAt"`
 	UpdatedAt  *int64     `json:"updatedAt" gorm:"column:updatedAt"`
-	CreatedAt  int64      `json:"createdAt" gorm:"column:createdAt"`
+	CreatedAt  *int64     `json:"createdAt" gorm:"column:createdAt"`
 	DeletedBy  *string    `json:"deletedBy" gorm:"column:deletedBy"`
 	UpdatedBy  *string    `json:"updatedBy" gorm:"column:updatedBy"`
 	CreatedBy  *string    `json:"createdBy" gorm:"column:createdBy"`
@@ -72,7 +72,7 @@ type TaskChanges struct {
 	AssigneeID *string
 	DeletedAt  *int64
 	UpdatedAt  *int64
-	CreatedAt  int64
+	CreatedAt  *int64
 	DeletedBy  *string
 	UpdatedBy  *string
 	CreatedBy  *string

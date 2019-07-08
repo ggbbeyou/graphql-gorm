@@ -38,7 +38,7 @@ type User {
   tasks: [Task!]! @relationship(inverse: "assignee")
   deletedAt: Int
   updatedAt: Int
-  createdAt: Int!
+  createdAt: Int
   deletedBy: ID
   updatedBy: ID
   createdBy: ID
@@ -53,7 +53,7 @@ type Task {
   assigneeId: ID
   deletedAt: Int
   updatedAt: Int
-  createdAt: Int!
+  createdAt: Int
   deletedBy: ID
   updatedBy: ID
   createdBy: ID

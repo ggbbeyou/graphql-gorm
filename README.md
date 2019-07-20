@@ -7,6 +7,7 @@
 ```
 go get -u github.com/maiguangyang/graphql
 go get -u golang.org/x/tools/cmd/goimports
+go mod edit -replace=github.com/satori/go.uuid@v1.2.0=github.com/satori/go.uuid@master
 go mod tidy
 ```
 安装过程如果出现无法安装的依赖包，请自行翻墙、设置代理或者从github上找到对应包，clone到对应目录。

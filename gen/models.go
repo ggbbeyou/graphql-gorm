@@ -15,17 +15,17 @@ type UserResultType struct {
 }
 
 type User struct {
-	ID        string  `json:"id" gorm:"column:id;primary_key"`
-	Email     *string `json:"email" gorm:"type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;" validator:"required:true;type:email;"`
-	Age       *int64  `json:"age" gorm:"column:age"`
-	FirstName *string `json:"firstName" gorm:"column:firstName"`
-	LastName  *string `json:"lastName" gorm:"column:lastName"`
-	DeletedAt *int64  `json:"deletedAt" gorm:"column:deletedAt"`
-	UpdatedAt *int64  `json:"updatedAt" gorm:"column:updatedAt"`
-	CreatedAt *int64  `json:"createdAt" gorm:"column:createdAt"`
-	DeletedBy *string `json:"deletedBy" gorm:"column:deletedBy"`
-	UpdatedBy *string `json:"updatedBy" gorm:"column:updatedBy"`
-	CreatedBy *string `json:"createdBy" gorm:"column:createdBy"`
+	ID        string  `json:"id" gorm:"type:varchar(36) comment 'uuid';primary_key;NOT NULL;"`
+	Email     *string `json:"email" gorm:"type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;"`
+	Age       *int64  `json:"age" gorm:"column:age;null;default:null"`
+	FirstName *string `json:"firstName" gorm:"column:firstName;null;default:null"`
+	LastName  *string `json:"lastName" gorm:"column:lastName;null;default:null"`
+	DeletedAt *int64  `json:"deletedAt" gorm:"type:int(11) comment '删除时间';null;default:null"`
+	UpdatedAt *int64  `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
+	CreatedAt *int64  `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
+	DeletedBy *string `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`
+	UpdatedBy *string `json:"updatedBy" gorm:"column:updatedBy;null;default:null"`
+	CreatedBy *string `json:"createdBy" gorm:"column:createdBy;null;default:null"`
 
 	Tasks []*Task `json:"tasks" gorm:"foreignkey:AssigneeID"`
 }
@@ -49,17 +49,17 @@ type TaskResultType struct {
 }
 
 type Task struct {
-	ID         string     `json:"id" gorm:"column:id;primary_key"`
-	Title      *string    `json:"title" gorm:"column:title"`
-	Completed  *bool      `json:"completed" gorm:"column:completed"`
-	DueDate    *time.Time `json:"dueDate" gorm:"column:dueDate"`
-	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId"`
-	DeletedAt  *int64     `json:"deletedAt" gorm:"column:deletedAt"`
-	UpdatedAt  *int64     `json:"updatedAt" gorm:"column:updatedAt"`
-	CreatedAt  *int64     `json:"createdAt" gorm:"column:createdAt"`
-	DeletedBy  *string    `json:"deletedBy" gorm:"column:deletedBy"`
-	UpdatedBy  *string    `json:"updatedBy" gorm:"column:updatedBy"`
-	CreatedBy  *string    `json:"createdBy" gorm:"column:createdBy"`
+	ID         string     `json:"id" gorm:"type:varchar(36) comment 'uuid';primary_key;NOT NULL;"`
+	Title      *string    `json:"title" gorm:"column:title;null;default:null"`
+	Completed  *bool      `json:"completed" gorm:"column:completed;null;default:null"`
+	DueDate    *time.Time `json:"dueDate" gorm:"column:dueDate;null;default:null"`
+	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId;null;default:null"`
+	DeletedAt  *int64     `json:"deletedAt" gorm:"type:int(11) comment '删除时间';null;default:null"`
+	UpdatedAt  *int64     `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
+	CreatedAt  *int64     `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
+	DeletedBy  *string    `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`
+	UpdatedBy  *string    `json:"updatedBy" gorm:"column:updatedBy;null;default:null"`
+	CreatedBy  *string    `json:"createdBy" gorm:"column:createdBy;null;default:null"`
 
 	Assignee *User `json:"assignee"`
 }

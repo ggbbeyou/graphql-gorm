@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/jinzhu/gorm"
 	"github.com/vektah/gqlparser/ast"
 )
 
@@ -13,7 +14,7 @@ type UserQueryFilter struct {
 	Query *string
 }
 
-func (qf *UserQueryFilter) Apply(ctx context.Context, wheres *[]string, values *[]interface{}, joins *[]string) error {
+func (qf *UserQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, wheres *[]string, values *[]interface{}, joins *[]string) error {
 	if qf.Query == nil {
 		return nil
 	}
@@ -26,7 +27,7 @@ func (qf *UserQueryFilter) Apply(ctx context.Context, wheres *[]string, values *
 
 	queryParts := strings.Split(*qf.Query, " ")
 	for _, part := range queryParts {
-		if err := qf.applyQueryWithFields(fields, part, "users", &ors, values, joins); err != nil {
+		if err := qf.applyQueryWithFields(dialect, fields, part, "users", &ors, values, joins); err != nil {
 			return err
 		}
 		*wheres = append(*wheres, "("+strings.Join(ors, " OR ")+")")
@@ -34,7 +35,7 @@ func (qf *UserQueryFilter) Apply(ctx context.Context, wheres *[]string, values *
 	return nil
 }
 
-func (qf *UserQueryFilter) applyQueryWithFields(fields []*ast.Field, query, alias string, ors *[]string, values *[]interface{}, joins *[]string) error {
+func (qf *UserQueryFilter) applyQueryWithFields(dialect gorm.Dialect, fields []*ast.Field, query, alias string, ors *[]string, values *[]interface{}, joins *[]string) error {
 	if len(fields) == 0 {
 		return nil
 	}
@@ -45,24 +46,24 @@ func (qf *UserQueryFilter) applyQueryWithFields(fields []*ast.Field, query, alia
 	}
 
 	if _, ok := fieldsMap["email"]; ok {
-		*ors = append(*ors, fmt.Sprintf("%[1]semail LIKE ? OR %[1]semail LIKE ?", alias+"."))
+		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("email")+" LIKE ? OR %[1]s"+dialect.Quote("email")+" LIKE ?", dialect.Quote(alias)+"."))
 		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
 	}
 
 	if _, ok := fieldsMap["firstName"]; ok {
-		*ors = append(*ors, fmt.Sprintf("%[1]sfirstName LIKE ? OR %[1]sfirstName LIKE ?", alias+"."))
+		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("firstName")+" LIKE ? OR %[1]s"+dialect.Quote("firstName")+" LIKE ?", dialect.Quote(alias)+"."))
 		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
 	}
 
 	if _, ok := fieldsMap["lastName"]; ok {
-		*ors = append(*ors, fmt.Sprintf("%[1]slastName LIKE ? OR %[1]slastName LIKE ?", alias+"."))
+		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("lastName")+" LIKE ? OR %[1]s"+dialect.Quote("lastName")+" LIKE ?", dialect.Quote(alias)+"."))
 		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
 	}
 
-	if f, ok := fieldsMap["employees"]; ok {
+	if f, ok := fieldsMap["tasks"]; ok {
 		_fields := []*ast.Field{}
 		_alias := alias + "_tasks"
-		*joins = append(*joins, "LEFT JOIN tasks "+_alias+" ON "+_alias+".assigneeId = "+alias+".id")
+		*joins = append(*joins, "LEFT JOIN "+dialect.Quote("tasks")+" "+dialect.Quote(_alias)+" ON "+dialect.Quote(_alias)+"."+dialect.Quote("assigneeId")+" = "+dialect.Quote(alias)+".id")
 
 		for _, s := range f.SelectionSet {
 			if f, ok := s.(*ast.Field); ok {
@@ -70,7 +71,7 @@ func (qf *UserQueryFilter) applyQueryWithFields(fields []*ast.Field, query, alia
 			}
 		}
 		q := TaskQueryFilter{qf.Query}
-		err := q.applyQueryWithFields(_fields, query, _alias, ors, values, joins)
+		err := q.applyQueryWithFields(dialect, _fields, query, _alias, ors, values, joins)
 		if err != nil {
 			return err
 		}
@@ -83,7 +84,7 @@ type TaskQueryFilter struct {
 	Query *string
 }
 
-func (qf *TaskQueryFilter) Apply(ctx context.Context, wheres *[]string, values *[]interface{}, joins *[]string) error {
+func (qf *TaskQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, wheres *[]string, values *[]interface{}, joins *[]string) error {
 	if qf.Query == nil {
 		return nil
 	}
@@ -96,7 +97,7 @@ func (qf *TaskQueryFilter) Apply(ctx context.Context, wheres *[]string, values *
 
 	queryParts := strings.Split(*qf.Query, " ")
 	for _, part := range queryParts {
-		if err := qf.applyQueryWithFields(fields, part, "tasks", &ors, values, joins); err != nil {
+		if err := qf.applyQueryWithFields(dialect, fields, part, "tasks", &ors, values, joins); err != nil {
 			return err
 		}
 		*wheres = append(*wheres, "("+strings.Join(ors, " OR ")+")")
@@ -104,7 +105,7 @@ func (qf *TaskQueryFilter) Apply(ctx context.Context, wheres *[]string, values *
 	return nil
 }
 
-func (qf *TaskQueryFilter) applyQueryWithFields(fields []*ast.Field, query, alias string, ors *[]string, values *[]interface{}, joins *[]string) error {
+func (qf *TaskQueryFilter) applyQueryWithFields(dialect gorm.Dialect, fields []*ast.Field, query, alias string, ors *[]string, values *[]interface{}, joins *[]string) error {
 	if len(fields) == 0 {
 		return nil
 	}
@@ -115,14 +116,14 @@ func (qf *TaskQueryFilter) applyQueryWithFields(fields []*ast.Field, query, alia
 	}
 
 	if _, ok := fieldsMap["title"]; ok {
-		*ors = append(*ors, fmt.Sprintf("%[1]stitle LIKE ? OR %[1]stitle LIKE ?", alias+"."))
+		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("title")+" LIKE ? OR %[1]s"+dialect.Quote("title")+" LIKE ?", dialect.Quote(alias)+"."))
 		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
 	}
 
-	if f, ok := fieldsMap["employees"]; ok {
+	if f, ok := fieldsMap["assignee"]; ok {
 		_fields := []*ast.Field{}
 		_alias := alias + "_assignee"
-		*joins = append(*joins, "LEFT JOIN users "+_alias+" ON "+_alias+".id = "+alias+".assigneeId")
+		*joins = append(*joins, "LEFT JOIN "+dialect.Quote("users")+" "+dialect.Quote(_alias)+" ON "+dialect.Quote(_alias)+".id = "+alias+"."+dialect.Quote("assigneeId"))
 
 		for _, s := range f.SelectionSet {
 			if f, ok := s.(*ast.Field); ok {
@@ -130,7 +131,7 @@ func (qf *TaskQueryFilter) applyQueryWithFields(fields []*ast.Field, query, alia
 			}
 		}
 		q := UserQueryFilter{qf.Query}
-		err := q.applyQueryWithFields(_fields, query, _alias, ors, values, joins)
+		err := q.applyQueryWithFields(dialect, _fields, query, _alias, ors, values, joins)
 		if err != nil {
 			return err
 		}

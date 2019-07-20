@@ -1,4 +1,3 @@
-directive @column(gorm: String!) on MUTATION | QUERY | FIELD
 directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
 
 type User {

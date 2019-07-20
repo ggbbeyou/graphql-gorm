@@ -125,6 +125,10 @@ github.com/nats-io/nats-server/v2 v2.0.0/go.mod h1:RyVdsHHvY4B6c9pWG+uRLpZ0h0Xsq
 github.com/nats-io/nats.go v1.8.1/go.mod h1:BrFz9vVn0fU3AcH9Vn4Kd7W0NpJ651tD5omQ3M8LwxM=
 github.com/nats-io/nkeys v0.0.2/go.mod h1:dab7URMsZm6Z/jp9Z5UGa87Uutgc2mVpXLC4B7TDb/4=
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
+github.com/novacloudcz/graphql-orm v0.0.0-20190709011912-01e27b52697e h1:x47Rd1xf7FG8luStTjvNZ06zJlwytozPka0SCpv9upo=
+github.com/novacloudcz/graphql-orm v0.0.0-20190709011912-01e27b52697e/go.mod h1:XZVEB7Oamz31MApru98uDs0g5hKlH5LZ1EmX8EncgYw=
+github.com/novacloudcz/graphql-orm v0.0.0-20190719110526-d1625107a797 h1:LKojgzRJW9PMuRTjZAaggYO5ZIG3KFtQgFqS7vbiWFY=
+github.com/novacloudcz/graphql-orm v0.0.0-20190719110526-d1625107a797/go.mod h1:XZVEB7Oamz31MApru98uDs0g5hKlH5LZ1EmX8EncgYw=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/gomega v1.4.3/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=

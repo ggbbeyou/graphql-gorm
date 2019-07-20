@@ -14,6 +14,7 @@ require (
 	github.com/jinzhu/gorm v1.9.10
 	github.com/maiguangyang/graphql v0.0.1
 	github.com/mitchellh/mapstructure v0.0.0-20180203102830-a4e142e9c047
+	github.com/novacloudcz/graphql-orm v0.0.0-20190719110526-d1625107a797
 	github.com/satori/go.uuid v1.2.0
 	github.com/skratchdot/open-golang v0.0.0-20190402232053-79abb63cd66e // indirect
 	github.com/vektah/gqlparser v1.1.2

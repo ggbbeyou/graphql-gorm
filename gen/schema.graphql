@@ -2,17 +2,15 @@
 
 scalar Time
 
-directive @relationship(inverse: String!) on FIELD_DEFINITION
-
 schema {
   query: Query
   mutation: Mutation
 }
 
 type Query {
-  user(id: ID, q: String): User
+  user(id: ID, q: String, filter: UserFilterType): User
   users(offset: Int, limit: Int = 30, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
-  task(id: ID, q: String): Task
+  task(id: ID, q: String, filter: TaskFilterType): Task
   tasks(offset: Int, limit: Int = 30, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
 }
 
@@ -25,17 +23,15 @@ type Mutation {
   deleteTask(id: ID!): Task!
 }
 
-directive @column(gorm: String!) on MUTATION | QUERY | FIELD
-
 directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
 
 type User {
   id: ID!
-  email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  email: String @validator(required: "true", tye: "email")
   age: Int
   firstName: String
   lastName: String
-  tasks: [Task!]! @relationship(inverse: "assignee")
+  tasks: [Task!]!
   deletedAt: Int
   updatedAt: Int
   createdAt: Int
@@ -49,7 +45,7 @@ type Task {
   title: String
   completed: Boolean
   dueDate: Time
-  assignee: User @relationship(inverse: "tasks")
+  assignee: User
   assigneeId: ID
   deletedAt: Int
   updatedAt: Int

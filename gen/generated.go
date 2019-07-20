@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -45,10 +44,6 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
-	Column func(ctx context.Context, obj interface{}, next graphql.Resolver, gorm string) (res interface{}, err error)
-
-	Relationship func(ctx context.Context, obj interface{}, next graphql.Resolver, inverse string) (res interface{}, err error)
-
 	Validator func(ctx context.Context, obj interface{}, next graphql.Resolver, required *string, tye *string) (res interface{}, err error)
 }
 
@@ -63,9 +58,9 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Task  func(childComplexity int, id *string, q *string) int
+		Task  func(childComplexity int, id *string, q *string, filter *TaskFilterType) int
 		Tasks func(childComplexity int, offset *int, limit *int, q *string, sort []TaskSortType, filter *TaskFilterType) int
-		User  func(childComplexity int, id *string, q *string) int
+		User  func(childComplexity int, id *string, q *string, filter *UserFilterType) int
 		Users func(childComplexity int, offset *int, limit *int, q *string, sort []UserSortType, filter *UserFilterType) int
 	}
 
@@ -119,9 +114,9 @@ type MutationResolver interface {
 	DeleteTask(ctx context.Context, id string) (*Task, error)
 }
 type QueryResolver interface {
-	User(ctx context.Context, id *string, q *string) (*User, error)
+	User(ctx context.Context, id *string, q *string, filter *UserFilterType) (*User, error)
 	Users(ctx context.Context, offset *int, limit *int, q *string, sort []UserSortType, filter *UserFilterType) (*UserResultType, error)
-	Task(ctx context.Context, id *string, q *string) (*Task, error)
+	Task(ctx context.Context, id *string, q *string, filter *TaskFilterType) (*Task, error)
 	Tasks(ctx context.Context, offset *int, limit *int, q *string, sort []TaskSortType, filter *TaskFilterType) (*TaskResultType, error)
 }
 type TaskResolver interface {
@@ -236,7 +231,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Task(childComplexity, args["id"].(*string), args["q"].(*string)), true
+		return e.complexity.Query.Task(childComplexity, args["id"].(*string), args["q"].(*string), args["filter"].(*TaskFilterType)), true
 
 	case "Query.tasks":
 		if e.complexity.Query.Tasks == nil {
@@ -260,7 +255,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.User(childComplexity, args["id"].(*string), args["q"].(*string)), true
+		return e.complexity.Query.User(childComplexity, args["id"].(*string), args["q"].(*string), args["filter"].(*UserFilterType)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -540,17 +535,15 @@ var parsedSchema = gqlparser.MustLoadSchema(
 
 scalar Time
 
-directive @relationship(inverse: String!) on FIELD_DEFINITION
-
 schema {
   query: Query
   mutation: Mutation
 }
 
 type Query {
-  user(id: ID, q: String): User
+  user(id: ID, q: String, filter: UserFilterType): User
   users(offset: Int, limit: Int = 30, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
-  task(id: ID, q: String): Task
+  task(id: ID, q: String, filter: TaskFilterType): Task
   tasks(offset: Int, limit: Int = 30, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
 }
 
@@ -563,17 +556,15 @@ type Mutation {
   deleteTask(id: ID!): Task!
 }
 
-directive @column(gorm: String!) on MUTATION | QUERY | FIELD
-
 directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
 
 type User {
   id: ID!
-  email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  email: String @validator(required: "true", tye: "email")
   age: Int
   firstName: String
   lastName: String
-  tasks: [Task!]! @relationship(inverse: "assignee")
+  tasks: [Task!]!
   deletedAt: Int
   updatedAt: Int
   createdAt: Int
@@ -587,7 +578,7 @@ type Task {
   title: String
   completed: Boolean
   dueDate: Time
-  assignee: User @relationship(inverse: "tasks")
+  assignee: User
   assigneeId: ID
   deletedAt: Int
   updatedAt: Int
@@ -873,34 +864,6 @@ type TaskResultType {
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) dir_column_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["gorm"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["gorm"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) dir_relationship_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["inverse"]; ok {
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["inverse"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) dir_validator_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1056,6 +1019,14 @@ func (ec *executionContext) field_Query_task_args(ctx context.Context, rawArgs m
 		}
 	}
 	args["q"] = arg1
+	var arg2 *TaskFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg2, err = ec.unmarshalOTaskFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg2
 	return args, nil
 }
 
@@ -1124,6 +1095,14 @@ func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs m
 		}
 	}
 	args["q"] = arg1
+	var arg2 *UserFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg2, err = ec.unmarshalOUserFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐUserFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg2
 	return args, nil
 }
 
@@ -1209,17 +1188,6 @@ func (ec *executionContext) _queryMiddleware(ctx context.Context, obj *ast.Opera
 
 	for _, d := range obj.Directives {
 		switch d.Name {
-		case "column":
-			rawArgs := d.ArgumentMap(ec.Variables)
-			args, err := ec.dir_column_args(ctx, rawArgs)
-			if err != nil {
-				ec.Error(ctx, err)
-				return graphql.Null
-			}
-			n := next
-			next = func(ctx context.Context) (interface{}, error) {
-				return ec.directives.Column(ctx, obj, n, args["gorm"].(string))
-			}
 		case "validator":
 			rawArgs := d.ArgumentMap(ec.Variables)
 			args, err := ec.dir_validator_args(ctx, rawArgs)
@@ -1250,17 +1218,6 @@ func (ec *executionContext) _mutationMiddleware(ctx context.Context, obj *ast.Op
 
 	for _, d := range obj.Directives {
 		switch d.Name {
-		case "column":
-			rawArgs := d.ArgumentMap(ec.Variables)
-			args, err := ec.dir_column_args(ctx, rawArgs)
-			if err != nil {
-				ec.Error(ctx, err)
-				return graphql.Null
-			}
-			n := next
-			next = func(ctx context.Context) (interface{}, error) {
-				return ec.directives.Column(ctx, obj, n, args["gorm"].(string))
-			}
 		case "validator":
 			rawArgs := d.ArgumentMap(ec.Variables)
 			args, err := ec.dir_validator_args(ctx, rawArgs)
@@ -1291,17 +1248,6 @@ func (ec *executionContext) _fieldMiddleware(ctx context.Context, obj interface{
 	rctx := graphql.GetResolverContext(ctx)
 	for _, d := range rctx.Field.Directives {
 		switch d.Name {
-		case "column":
-			rawArgs := d.ArgumentMap(ec.Variables)
-			args, err := ec.dir_column_args(ctx, rawArgs)
-			if err != nil {
-				ec.Error(ctx, err)
-				return nil
-			}
-			n := next
-			next = func(ctx context.Context) (interface{}, error) {
-				return ec.directives.Column(ctx, obj, n, args["gorm"].(string))
-			}
 		case "validator":
 			rawArgs := d.ArgumentMap(ec.Variables)
 			args, err := ec.dir_validator_args(ctx, rawArgs)
@@ -1599,7 +1545,7 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().User(rctx, args["id"].(*string), args["q"].(*string))
+		return ec.resolvers.Query().User(rctx, args["id"].(*string), args["q"].(*string), args["filter"].(*UserFilterType))
 	})
 
 	if resTmp == nil {
@@ -1675,7 +1621,7 @@ func (ec *executionContext) _Query_task(ctx context.Context, field graphql.Colle
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Task(rctx, args["id"].(*string), args["q"].(*string))
+		return ec.resolvers.Query().Task(rctx, args["id"].(*string), args["q"].(*string), args["filter"].(*TaskFilterType))
 	})
 
 	if resTmp == nil {
@@ -1939,25 +1885,8 @@ func (ec *executionContext) _Task_assignee(ctx context.Context, field graphql.Co
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		directive0 := func(rctx context.Context) (interface{}, error) {
-			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Task().Assignee(rctx, obj)
-		}
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			inverse, err := ec.unmarshalNString2string(ctx, "tasks")
-			if err != nil {
-				return nil, err
-			}
-			return ec.directives.Relationship(ctx, obj, directive0, inverse)
-		}
-		tmp, err := directive1(rctx)
-		if err != nil {
-			return nil, err
-		}
-		if data, ok := tmp.(*User); ok {
-			return data, nil
-		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/maiguangyang/graphql-gorm/gen.User`, tmp)
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Task().Assignee(rctx, obj)
 	})
 
 	if resTmp == nil {
@@ -2430,25 +2359,8 @@ func (ec *executionContext) _User_tasks(ctx context.Context, field graphql.Colle
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp := ec._fieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		directive0 := func(rctx context.Context) (interface{}, error) {
-			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.User().Tasks(rctx, obj)
-		}
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			inverse, err := ec.unmarshalNString2string(ctx, "assignee")
-			if err != nil {
-				return nil, err
-			}
-			return ec.directives.Relationship(ctx, obj, directive0, inverse)
-		}
-		tmp, err := directive1(rctx)
-		if err != nil {
-			return nil, err
-		}
-		if data, ok := tmp.([]*Task); ok {
-			return data, nil
-		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/maiguangyang/graphql-gorm/gen.Task`, tmp)
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().Tasks(rctx, obj)
 	})
 
 	if resTmp == nil {

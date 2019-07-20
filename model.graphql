@@ -1,8 +1,5 @@
-directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
-
 type User {
-	email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;") @validator(required: "true", tye: "email")
-  age: Int
+	email: String
 	firstName: String
 	lastName: String
 

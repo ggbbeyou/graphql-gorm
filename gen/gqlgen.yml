@@ -18,9 +18,15 @@ models:
   UserResultType:
     model: github.com/maiguangyang/graphql-gorm/gen.UserResultType
     fields:
-      count:
+      total:
         resolver: true
-      items:
+      current_page:
+        resolver: true
+      per_page:
+        resolver: true
+      total_page:
+        resolver: true
+      data:
         resolver: true
   User:
     model: github.com/maiguangyang/graphql-gorm/gen.User
@@ -35,9 +41,15 @@ models:
   TaskResultType:
     model: github.com/maiguangyang/graphql-gorm/gen.TaskResultType
     fields:
-      count:
+      total:
         resolver: true
-      items:
+      current_page:
+        resolver: true
+      per_page:
+        resolver: true
+      total_page:
+        resolver: true
+      data:
         resolver: true
   Task:
     model: github.com/maiguangyang/graphql-gorm/gen.Task

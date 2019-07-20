@@ -115,13 +115,6 @@ type UserFilterType struct {
 	EmailLike       *string           `json:"email_like"`
 	EmailPrefix     *string           `json:"email_prefix"`
 	EmailSuffix     *string           `json:"email_suffix"`
-	Age             *int              `json:"age"`
-	AgeNe           *int              `json:"age_ne"`
-	AgeGt           *int              `json:"age_gt"`
-	AgeLt           *int              `json:"age_lt"`
-	AgeGte          *int              `json:"age_gte"`
-	AgeLte          *int              `json:"age_lte"`
-	AgeIn           []int             `json:"age_in"`
 	FirstName       *string           `json:"firstName"`
 	FirstNameNe     *string           `json:"firstName_ne"`
 	FirstNameGt     *string           `json:"firstName_gt"`
@@ -275,8 +268,6 @@ const (
 	UserSortTypeIDDesc        UserSortType = "ID_DESC"
 	UserSortTypeEmailAsc      UserSortType = "EMAIL_ASC"
 	UserSortTypeEmailDesc     UserSortType = "EMAIL_DESC"
-	UserSortTypeAgeAsc        UserSortType = "AGE_ASC"
-	UserSortTypeAgeDesc       UserSortType = "AGE_DESC"
 	UserSortTypeFirstNameAsc  UserSortType = "FIRST_NAME_ASC"
 	UserSortTypeFirstNameDesc UserSortType = "FIRST_NAME_DESC"
 	UserSortTypeLastNameAsc   UserSortType = "LAST_NAME_ASC"
@@ -300,8 +291,6 @@ var AllUserSortType = []UserSortType{
 	UserSortTypeIDDesc,
 	UserSortTypeEmailAsc,
 	UserSortTypeEmailDesc,
-	UserSortTypeAgeAsc,
-	UserSortTypeAgeDesc,
 	UserSortTypeFirstNameAsc,
 	UserSortTypeFirstNameDesc,
 	UserSortTypeLastNameAsc,
@@ -322,7 +311,7 @@ var AllUserSortType = []UserSortType{
 
 func (e UserSortType) IsValid() bool {
 	switch e {
-	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeAgeAsc, UserSortTypeAgeDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeDeletedAtAsc, UserSortTypeDeletedAtDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc:
+	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeDeletedAtAsc, UserSortTypeDeletedAtDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc:
 		return true
 	}
 	return false

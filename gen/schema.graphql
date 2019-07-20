@@ -9,9 +9,9 @@ schema {
 
 type Query {
   user(id: ID, q: String, filter: UserFilterType): User
-  users(offset: Int, limit: Int = 30, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
+  users(offset: Int, limit: Int = 30, current_page: Int = 1, per_page: Int = 30, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
   task(id: ID, q: String, filter: TaskFilterType): Task
-  tasks(offset: Int, limit: Int = 30, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
+  tasks(offset: Int, limit: Int = 30, current_page: Int = 1, per_page: Int = 30, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
 }
 
 type Mutation {
@@ -23,12 +23,9 @@ type Mutation {
   deleteTask(id: ID!): Task!
 }
 
-directive @validator(required: String, tye: String) on MUTATION | QUERY | FIELD
-
 type User {
   id: ID!
-  email: String @validator(required: "true", tye: "email")
-  age: Int
+  email: String
   firstName: String
   lastName: String
   tasks: [Task!]!
@@ -58,7 +55,6 @@ type Task {
 input UserCreateInput {
   id: ID
   email: String
-  age: Int
   firstName: String
   lastName: String
   tasksIds: [ID!]
@@ -66,7 +62,6 @@ input UserCreateInput {
 
 input UserUpdateInput {
   email: String
-  age: Int
   firstName: String
   lastName: String
   tasksIds: [ID!]
@@ -77,8 +72,6 @@ enum UserSortType {
   ID_DESC
   EMAIL_ASC
   EMAIL_DESC
-  AGE_ASC
-  AGE_DESC
   FIRST_NAME_ASC
   FIRST_NAME_DESC
   LAST_NAME_ASC
@@ -117,13 +110,6 @@ input UserFilterType {
   email_like: String
   email_prefix: String
   email_suffix: String
-  age: Int
-  age_ne: Int
-  age_gt: Int
-  age_lt: Int
-  age_gte: Int
-  age_lte: Int
-  age_in: [Int!]
   firstName: String
   firstName_ne: String
   firstName_gt: String
@@ -190,8 +176,11 @@ input UserFilterType {
 }
 
 type UserResultType {
-  items: [User!]!
-  count: Int!
+  data: [User!]!
+  total: Int!
+  current_page: Int!
+  per_page: Int!
+  total_page: Int!
 }
 
 input TaskCreateInput {
@@ -321,6 +310,9 @@ input TaskFilterType {
 }
 
 type TaskResultType {
-  items: [Task!]!
-  count: Int!
+  data: [Task!]!
+  total: Int!
+  current_page: Int!
+  per_page: Int!
+  total_page: Int!
 }

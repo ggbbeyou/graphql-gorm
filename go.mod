@@ -7,6 +7,7 @@ replace github.com/satori/go.uuid v1.2.0 => github.com/satori/go.uuid v0.0.0-201
 require (
 	github.com/99designs/gqlgen v0.9.1
 	github.com/cloudevents/sdk-go v0.0.0-20190617162319-ccd952c41493 // indirect
+	github.com/gbrlsnchs/jwt v1.1.0 // indirect
 	github.com/graphql-go/graphql v0.7.8 // indirect
 	github.com/howeyc/gopass v0.0.0-20170109162249-bf9dde6d0d2c // indirect
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365 // indirect

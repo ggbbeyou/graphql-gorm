@@ -140,35 +140,6 @@ func (f *UserFilterType) WhereContent(dialect gorm.Dialect, aliasPrefix string) 
 		values = append(values, fmt.Sprintf("%%%s", *f.EmailSuffix))
 	}
 
-	if f.Age != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("age")+" = ?")
-		values = append(values, f.Age)
-	}
-	if f.AgeNe != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("age")+" != ?")
-		values = append(values, f.AgeNe)
-	}
-	if f.AgeGt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("age")+" > ?")
-		values = append(values, f.AgeGt)
-	}
-	if f.AgeLt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("age")+" < ?")
-		values = append(values, f.AgeLt)
-	}
-	if f.AgeGte != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("age")+" >= ?")
-		values = append(values, f.AgeGte)
-	}
-	if f.AgeLte != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("age")+" <= ?")
-		values = append(values, f.AgeLte)
-	}
-	if f.AgeIn != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("age")+" IN (?)")
-		values = append(values, f.AgeIn)
-	}
-
 	if f.FirstName != nil {
 		conditions = append(conditions, aliasPrefix+dialect.Quote("firstName")+" = ?")
 		values = append(values, f.FirstName)

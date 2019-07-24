@@ -58,9 +58,9 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Task  func(childComplexity int, id *string, q *string, filter *TaskFilterType) int
-		Tasks func(childComplexity int, offset *int, limit *int, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) int
+		Tasks func(childComplexity int, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) int
 		User  func(childComplexity int, id *string, q *string, filter *UserFilterType) int
-		Users func(childComplexity int, offset *int, limit *int, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) int
+		Users func(childComplexity int, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) int
 	}
 
 	Task struct {
@@ -119,9 +119,9 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	User(ctx context.Context, id *string, q *string, filter *UserFilterType) (*User, error)
-	Users(ctx context.Context, offset *int, limit *int, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) (*UserResultType, error)
+	Users(ctx context.Context, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) (*UserResultType, error)
 	Task(ctx context.Context, id *string, q *string, filter *TaskFilterType) (*Task, error)
-	Tasks(ctx context.Context, offset *int, limit *int, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) (*TaskResultType, error)
+	Tasks(ctx context.Context, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) (*TaskResultType, error)
 }
 type TaskResolver interface {
 	Assignee(ctx context.Context, obj *Task) (*User, error)
@@ -253,7 +253,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Tasks(childComplexity, args["offset"].(*int), args["limit"].(*int), args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]TaskSortType), args["filter"].(*TaskFilterType)), true
+		return e.complexity.Query.Tasks(childComplexity, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]TaskSortType), args["filter"].(*TaskFilterType)), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -277,7 +277,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Users(childComplexity, args["offset"].(*int), args["limit"].(*int), args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]UserSortType), args["filter"].(*UserFilterType)), true
+		return e.complexity.Query.Users(childComplexity, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]UserSortType), args["filter"].(*UserFilterType)), true
 
 	case "Task.assignee":
 		if e.complexity.Task.Assignee == nil {
@@ -583,9 +583,9 @@ schema {
 
 type Query {
   user(id: ID, q: String, filter: UserFilterType): User
-  users(offset: Int, limit: Int = 30, current_page: Int = 1, per_page: Int = 30, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
+  users(current_page: Int = 1, per_page: Int = 20, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
   task(id: ID, q: String, filter: TaskFilterType): Task
-  tasks(offset: Int, limit: Int = 30, current_page: Int = 1, per_page: Int = 30, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
+  tasks(current_page: Int = 1, per_page: Int = 20, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
 }
 
 type Mutation {
@@ -1045,61 +1045,45 @@ func (ec *executionContext) field_Query_tasks_args(ctx context.Context, rawArgs 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 *int
-	if tmp, ok := rawArgs["offset"]; ok {
+	if tmp, ok := rawArgs["current_page"]; ok {
 		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["offset"] = arg0
+	args["current_page"] = arg0
 	var arg1 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["per_page"]; ok {
 		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["limit"] = arg1
-	var arg2 *int
-	if tmp, ok := rawArgs["current_page"]; ok {
-		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["current_page"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["per_page"]; ok {
-		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["per_page"] = arg3
-	var arg4 *string
+	args["per_page"] = arg1
+	var arg2 *string
 	if tmp, ok := rawArgs["q"]; ok {
-		arg4, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["q"] = arg4
-	var arg5 []TaskSortType
+	args["q"] = arg2
+	var arg3 []TaskSortType
 	if tmp, ok := rawArgs["sort"]; ok {
-		arg5, err = ec.unmarshalOTaskSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskSortType(ctx, tmp)
+		arg3, err = ec.unmarshalOTaskSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskSortType(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sort"] = arg5
-	var arg6 *TaskFilterType
+	args["sort"] = arg3
+	var arg4 *TaskFilterType
 	if tmp, ok := rawArgs["filter"]; ok {
-		arg6, err = ec.unmarshalOTaskFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskFilterType(ctx, tmp)
+		arg4, err = ec.unmarshalOTaskFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskFilterType(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["filter"] = arg6
+	args["filter"] = arg4
 	return args, nil
 }
 
@@ -1137,61 +1121,45 @@ func (ec *executionContext) field_Query_users_args(ctx context.Context, rawArgs 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 *int
-	if tmp, ok := rawArgs["offset"]; ok {
+	if tmp, ok := rawArgs["current_page"]; ok {
 		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["offset"] = arg0
+	args["current_page"] = arg0
 	var arg1 *int
-	if tmp, ok := rawArgs["limit"]; ok {
+	if tmp, ok := rawArgs["per_page"]; ok {
 		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["limit"] = arg1
-	var arg2 *int
-	if tmp, ok := rawArgs["current_page"]; ok {
-		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["current_page"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["per_page"]; ok {
-		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["per_page"] = arg3
-	var arg4 *string
+	args["per_page"] = arg1
+	var arg2 *string
 	if tmp, ok := rawArgs["q"]; ok {
-		arg4, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["q"] = arg4
-	var arg5 []UserSortType
+	args["q"] = arg2
+	var arg3 []UserSortType
 	if tmp, ok := rawArgs["sort"]; ok {
-		arg5, err = ec.unmarshalOUserSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐUserSortType(ctx, tmp)
+		arg3, err = ec.unmarshalOUserSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐUserSortType(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sort"] = arg5
-	var arg6 *UserFilterType
+	args["sort"] = arg3
+	var arg4 *UserFilterType
 	if tmp, ok := rawArgs["filter"]; ok {
-		arg6, err = ec.unmarshalOUserFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐUserFilterType(ctx, tmp)
+		arg4, err = ec.unmarshalOUserFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐUserFilterType(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["filter"] = arg6
+	args["filter"] = arg4
 	return args, nil
 }
 
@@ -1562,7 +1530,7 @@ func (ec *executionContext) _Query_users(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Users(rctx, args["offset"].(*int), args["limit"].(*int), args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]UserSortType), args["filter"].(*UserFilterType))
+		return ec.resolvers.Query().Users(rctx, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]UserSortType), args["filter"].(*UserFilterType))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1644,7 +1612,7 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Tasks(rctx, args["offset"].(*int), args["limit"].(*int), args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]TaskSortType), args["filter"].(*TaskFilterType))
+		return ec.resolvers.Query().Tasks(rctx, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]TaskSortType), args["filter"].(*TaskFilterType))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

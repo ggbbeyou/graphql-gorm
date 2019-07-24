@@ -3,6 +3,7 @@ package gen
 import (
 	"context"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -341,14 +342,10 @@ type GeneratedQueryResolver struct{ *GeneratedResolver }
 
 func (r *GeneratedQueryResolver) User(ctx context.Context, id *string, q *string, filter *UserFilterType) (*User, error) {
 	query := UserQueryFilter{q}
-	offset := 0
-	limit := 1
 	current_page := 0
 	per_page := 0
 	rt := &UserResultType{
 		EntityResultType: resolvers.EntityResultType{
-			Offset:      &offset,
-			Limit:       &limit,
 			CurrentPage: &current_page,
 			PerPage:     &per_page,
 			Query:       &query,
@@ -361,7 +358,7 @@ func (r *GeneratedQueryResolver) User(ctx context.Context, id *string, q *string
 	}
 
 	var items []*User
-	err := rt.GetItems(ctx, qb, "users", &items)
+	err := rt.GetData(ctx, qb, "users", &items)
 	if err != nil {
 		return nil, err
 	}
@@ -370,7 +367,7 @@ func (r *GeneratedQueryResolver) User(ctx context.Context, id *string, q *string
 	}
 	return items[0], err
 }
-func (r *GeneratedQueryResolver) Users(ctx context.Context, offset *int, limit *int, current_page *int, per_page *int, q *string, sort []UserSortType, filter *UserFilterType) (*UserResultType, error) {
+func (r *GeneratedQueryResolver) Users(ctx context.Context, current_page *int, per_page *int, q *string, sort []UserSortType, filter *UserFilterType) (*UserResultType, error) {
 	_sort := []resolvers.EntitySort{}
 	for _, s := range sort {
 		_sort = append(_sort, s)
@@ -378,8 +375,6 @@ func (r *GeneratedQueryResolver) Users(ctx context.Context, offset *int, limit *
 	query := UserQueryFilter{q}
 	return &UserResultType{
 		EntityResultType: resolvers.EntityResultType{
-			Offset:      offset,
-			Limit:       limit,
 			CurrentPage: current_page,
 			PerPage:     per_page,
 			Query:       &query,
@@ -392,24 +387,28 @@ func (r *GeneratedQueryResolver) Users(ctx context.Context, offset *int, limit *
 type GeneratedUserResultTypeResolver struct{ *GeneratedResolver }
 
 func (r *GeneratedUserResultTypeResolver) Data(ctx context.Context, obj *UserResultType) (items []*User, err error) {
-	err = obj.GetItems(ctx, r.DB.db, "users", &items)
+	err = obj.GetData(ctx, r.DB.db, "users", &items)
 	return
 }
 
 func (r *GeneratedUserResultTypeResolver) Total(ctx context.Context, obj *UserResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &User{})
+	return obj.GetTotal(ctx, r.DB.db, &User{})
 }
 
 func (r *GeneratedUserResultTypeResolver) CurrentPage(ctx context.Context, obj *UserResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &User{})
+	return int(*obj.EntityResultType.CurrentPage), nil
 }
 
 func (r *GeneratedUserResultTypeResolver) PerPage(ctx context.Context, obj *UserResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &User{})
+	return int(*obj.EntityResultType.PerPage), nil
 }
 
 func (r *GeneratedUserResultTypeResolver) TotalPage(ctx context.Context, obj *UserResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &User{})
+	total, _ := r.Total(ctx, obj)
+	perPage, _ := r.PerPage(ctx, obj)
+	totalPage := int(math.Ceil(float64(total) / float64(perPage)))
+
+	return totalPage, nil
 }
 
 type GeneratedUserResolver struct{ *GeneratedResolver }
@@ -427,14 +426,10 @@ func (r *GeneratedUserResolver) Tasks(ctx context.Context, obj *User) (res []*Ta
 
 func (r *GeneratedQueryResolver) Task(ctx context.Context, id *string, q *string, filter *TaskFilterType) (*Task, error) {
 	query := TaskQueryFilter{q}
-	offset := 0
-	limit := 1
 	current_page := 0
 	per_page := 0
 	rt := &TaskResultType{
 		EntityResultType: resolvers.EntityResultType{
-			Offset:      &offset,
-			Limit:       &limit,
 			CurrentPage: &current_page,
 			PerPage:     &per_page,
 			Query:       &query,
@@ -447,7 +442,7 @@ func (r *GeneratedQueryResolver) Task(ctx context.Context, id *string, q *string
 	}
 
 	var items []*Task
-	err := rt.GetItems(ctx, qb, "tasks", &items)
+	err := rt.GetData(ctx, qb, "tasks", &items)
 	if err != nil {
 		return nil, err
 	}
@@ -456,7 +451,7 @@ func (r *GeneratedQueryResolver) Task(ctx context.Context, id *string, q *string
 	}
 	return items[0], err
 }
-func (r *GeneratedQueryResolver) Tasks(ctx context.Context, offset *int, limit *int, current_page *int, per_page *int, q *string, sort []TaskSortType, filter *TaskFilterType) (*TaskResultType, error) {
+func (r *GeneratedQueryResolver) Tasks(ctx context.Context, current_page *int, per_page *int, q *string, sort []TaskSortType, filter *TaskFilterType) (*TaskResultType, error) {
 	_sort := []resolvers.EntitySort{}
 	for _, s := range sort {
 		_sort = append(_sort, s)
@@ -464,8 +459,6 @@ func (r *GeneratedQueryResolver) Tasks(ctx context.Context, offset *int, limit *
 	query := TaskQueryFilter{q}
 	return &TaskResultType{
 		EntityResultType: resolvers.EntityResultType{
-			Offset:      offset,
-			Limit:       limit,
 			CurrentPage: current_page,
 			PerPage:     per_page,
 			Query:       &query,
@@ -478,24 +471,28 @@ func (r *GeneratedQueryResolver) Tasks(ctx context.Context, offset *int, limit *
 type GeneratedTaskResultTypeResolver struct{ *GeneratedResolver }
 
 func (r *GeneratedTaskResultTypeResolver) Data(ctx context.Context, obj *TaskResultType) (items []*Task, err error) {
-	err = obj.GetItems(ctx, r.DB.db, "tasks", &items)
+	err = obj.GetData(ctx, r.DB.db, "tasks", &items)
 	return
 }
 
 func (r *GeneratedTaskResultTypeResolver) Total(ctx context.Context, obj *TaskResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &Task{})
+	return obj.GetTotal(ctx, r.DB.db, &Task{})
 }
 
 func (r *GeneratedTaskResultTypeResolver) CurrentPage(ctx context.Context, obj *TaskResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &Task{})
+	return int(*obj.EntityResultType.CurrentPage), nil
 }
 
 func (r *GeneratedTaskResultTypeResolver) PerPage(ctx context.Context, obj *TaskResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &Task{})
+	return int(*obj.EntityResultType.PerPage), nil
 }
 
 func (r *GeneratedTaskResultTypeResolver) TotalPage(ctx context.Context, obj *TaskResultType) (count int, err error) {
-	return obj.GetCount(ctx, r.DB.db, &Task{})
+	total, _ := r.Total(ctx, obj)
+	perPage, _ := r.PerPage(ctx, obj)
+	totalPage := int(math.Ceil(float64(total) / float64(perPage)))
+
+	return totalPage, nil
 }
 
 type GeneratedTaskResolver struct{ *GeneratedResolver }

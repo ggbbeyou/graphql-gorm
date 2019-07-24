@@ -11,7 +11,6 @@ import (
 	"github.com/99designs/gqlgen/handler"
 	"github.com/maiguangyang/graphql/events"
 	jwtgo "github.com/dgrijalva/jwt-go"
-	// "github.com/gbrlsnchs/jwt"
 	// "github.com/rs/cors"
 	"github.com/maiguangyang/graphql-gorm/gen"
 )
@@ -108,14 +107,7 @@ func getJWTClaims(req *http.Request) (*JWTClaims, error) {
 		return p, nil
 	}
 
-
-	// token, err := jwt.Parse([]byte(tokenStr))
-	// if err != nil {
-	// 	return p, err
-	// }
-	// p = &JWTClaims{}
-	// _, err = token.Decode(p)
-	// return p, err
-
+	p = &JWTClaims{}
+	jwtgo.ParseWithClaims(tokenStr, p, nil)
 	return p, nil
 }

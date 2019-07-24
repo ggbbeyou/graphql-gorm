@@ -9,9 +9,9 @@ schema {
 
 type Query {
   user(id: ID, q: String, filter: UserFilterType): User
-  users(offset: Int, limit: Int = 30, current_page: Int = 1, per_page: Int = 30, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
+  users(current_page: Int = 1, per_page: Int = 20, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
   task(id: ID, q: String, filter: TaskFilterType): Task
-  tasks(offset: Int, limit: Int = 30, current_page: Int = 1, per_page: Int = 30, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
+  tasks(current_page: Int = 1, per_page: Int = 20, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
 }
 
 type Mutation {

@@ -16,7 +16,7 @@ type UserResultType struct {
 
 type User struct {
 	ID        string  `json:"id" gorm:"type:varchar(36) comment 'uuid';primary_key;NOT NULL;"`
-	Email     *string `json:"email" gorm:"column:email;null;default:null"`
+	Email     *string `json:"email" gorm:"type:varchar(64) comment '用户邮箱地址';default:null;"`
 	FirstName *string `json:"firstName" gorm:"column:firstName;null;default:null"`
 	LastName  *string `json:"lastName" gorm:"column:lastName;null;default:null"`
 	DeletedAt *int64  `json:"deletedAt" gorm:"type:int(11) comment '删除时间';null;default:null"`
@@ -40,6 +40,8 @@ type UserChanges struct {
 	DeletedBy *string
 	UpdatedBy *string
 	CreatedBy *string
+
+	TasksIDs []*string
 }
 
 type TaskResultType struct {

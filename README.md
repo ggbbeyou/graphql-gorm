@@ -23,7 +23,7 @@ export GOPROXY="https://goproxy.io"
 - 设置数据库连接
 在根目录makefile文件里面进行设置
 ```
-DATABASE_URL=mysql://'root:123456@tcp(192.168.33.10:3306)/graphql?charset=utf8mb4&parseTime=True&loc=Local'
+DATABASE_URL=mysql://'root:123456@tcp(localhost:3306)/graphql?charset=utf8mb4&parseTime=True&loc=Local'
 ```
 
 - 生成新的GraphQL接口代码

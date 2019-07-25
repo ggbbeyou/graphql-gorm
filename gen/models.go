@@ -19,7 +19,7 @@ type User struct {
 	Email     *string `json:"email" gorm:"type:varchar(64) comment '用户邮箱地址';default:null;"`
 	FirstName *string `json:"firstName" gorm:"column:firstName;null;default:null"`
 	LastName  *string `json:"lastName" gorm:"column:lastName;null;default:null"`
-	DeletedAt *int64  `json:"deletedAt" gorm:"type:int(11) comment '删除时间';null;default:null"`
+	State     *int64  `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;"`
 	UpdatedAt *int64  `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
 	CreatedAt *int64  `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
 	DeletedBy *string `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`
@@ -34,7 +34,7 @@ type UserChanges struct {
 	Email     *string
 	FirstName *string
 	LastName  *string
-	DeletedAt *int64
+	State     *int64
 	UpdatedAt *int64
 	CreatedAt *int64
 	DeletedBy *string
@@ -54,7 +54,7 @@ type Task struct {
 	Completed  *bool      `json:"completed" gorm:"column:completed;null;default:null"`
 	DueDate    *time.Time `json:"dueDate" gorm:"column:dueDate;null;default:null"`
 	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId;null;default:null"`
-	DeletedAt  *int64     `json:"deletedAt" gorm:"type:int(11) comment '删除时间';null;default:null"`
+	State      *int64     `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;"`
 	UpdatedAt  *int64     `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
 	CreatedAt  *int64     `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
 	DeletedBy  *string    `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`
@@ -70,7 +70,7 @@ type TaskChanges struct {
 	Completed  *bool
 	DueDate    *time.Time
 	AssigneeID *string
-	DeletedAt  *int64
+	State      *int64
 	UpdatedAt  *int64
 	CreatedAt  *int64
 	DeletedBy  *string

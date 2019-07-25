@@ -29,7 +29,7 @@ type User {
   firstName: String
   lastName: String
   tasks: [Task!]!
-  deletedAt: Int
+  state: Int
   updatedAt: Int
   createdAt: Int
   deletedBy: ID
@@ -44,7 +44,7 @@ type Task {
   dueDate: Time
   assignee: User
   assigneeId: ID
-  deletedAt: Int
+  state: Int
   updatedAt: Int
   createdAt: Int
   deletedBy: ID
@@ -57,6 +57,7 @@ input UserCreateInput {
   email: String
   firstName: String
   lastName: String
+  state: Int
   tasksIds: [ID!]
 }
 
@@ -64,6 +65,7 @@ input UserUpdateInput {
   email: String
   firstName: String
   lastName: String
+  state: Int
   tasksIds: [ID!]
 }
 
@@ -76,8 +78,8 @@ enum UserSortType {
   FIRST_NAME_DESC
   LAST_NAME_ASC
   LAST_NAME_DESC
-  DELETED_AT_ASC
-  DELETED_AT_DESC
+  STATE_ASC
+  STATE_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
@@ -130,13 +132,13 @@ input UserFilterType {
   lastName_like: String
   lastName_prefix: String
   lastName_suffix: String
-  deletedAt: Int
-  deletedAt_ne: Int
-  deletedAt_gt: Int
-  deletedAt_lt: Int
-  deletedAt_gte: Int
-  deletedAt_lte: Int
-  deletedAt_in: [Int!]
+  state: Int
+  state_ne: Int
+  state_gt: Int
+  state_lt: Int
+  state_gte: Int
+  state_lte: Int
+  state_in: [Int!]
   updatedAt: Int
   updatedAt_ne: Int
   updatedAt_gt: Int
@@ -189,6 +191,7 @@ input TaskCreateInput {
   completed: Boolean
   dueDate: Time
   assigneeId: ID
+  state: Int
 }
 
 input TaskUpdateInput {
@@ -196,6 +199,7 @@ input TaskUpdateInput {
   completed: Boolean
   dueDate: Time
   assigneeId: ID
+  state: Int
 }
 
 enum TaskSortType {
@@ -209,8 +213,8 @@ enum TaskSortType {
   DUE_DATE_DESC
   ASSIGNEE_ID_ASC
   ASSIGNEE_ID_DESC
-  DELETED_AT_ASC
-  DELETED_AT_DESC
+  STATE_ASC
+  STATE_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
@@ -264,13 +268,13 @@ input TaskFilterType {
   assigneeId_gte: ID
   assigneeId_lte: ID
   assigneeId_in: [ID!]
-  deletedAt: Int
-  deletedAt_ne: Int
-  deletedAt_gt: Int
-  deletedAt_lt: Int
-  deletedAt_gte: Int
-  deletedAt_lte: Int
-  deletedAt_in: [Int!]
+  state: Int
+  state_ne: Int
+  state_gt: Int
+  state_lt: Int
+  state_gte: Int
+  state_lte: Int
+  state_in: [Int!]
   updatedAt: Int
   updatedAt_ne: Int
   updatedAt_gt: Int

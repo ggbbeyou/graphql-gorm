@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/jinzhu/gorm"
 	"github.com/vektah/gqlparser/ast"
 )
@@ -14,13 +13,19 @@ type UserQueryFilter struct {
 	Query *string
 }
 
-func (qf *UserQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, wheres *[]string, values *[]interface{}, joins *[]string) error {
+func (qf *UserQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, selectionSet *ast.SelectionSet, wheres *[]string, values *[]interface{}, joins *[]string) error {
 	if qf.Query == nil {
 		return nil
 	}
 	fields := []*ast.Field{}
-	for _, f := range graphql.CollectFieldsCtx(ctx, nil) {
-		fields = append(fields, f.Field)
+	if selectionSet != nil {
+		for _, s := range *selectionSet {
+			if f, ok := s.(*ast.Field); ok {
+				fields = append(fields, f)
+			}
+		}
+	} else {
+		return fmt.Errorf("Cannot query with 'q' attribute without items field.")
 	}
 
 	ors := []string{}
@@ -84,13 +89,19 @@ type TaskQueryFilter struct {
 	Query *string
 }
 
-func (qf *TaskQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, wheres *[]string, values *[]interface{}, joins *[]string) error {
+func (qf *TaskQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, selectionSet *ast.SelectionSet, wheres *[]string, values *[]interface{}, joins *[]string) error {
 	if qf.Query == nil {
 		return nil
 	}
 	fields := []*ast.Field{}
-	for _, f := range graphql.CollectFieldsCtx(ctx, nil) {
-		fields = append(fields, f.Field)
+	if selectionSet != nil {
+		for _, s := range *selectionSet {
+			if f, ok := s.(*ast.Field); ok {
+				fields = append(fields, f)
+			}
+		}
+	} else {
+		return fmt.Errorf("Cannot query with 'q' attribute without items field.")
 	}
 
 	ors := []string{}

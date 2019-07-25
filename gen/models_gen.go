@@ -50,13 +50,13 @@ type TaskFilterType struct {
 	AssigneeIDGte *string           `json:"assigneeId_gte"`
 	AssigneeIDLte *string           `json:"assigneeId_lte"`
 	AssigneeIDIn  []string          `json:"assigneeId_in"`
-	DeletedAt     *int              `json:"deletedAt"`
-	DeletedAtNe   *int              `json:"deletedAt_ne"`
-	DeletedAtGt   *int              `json:"deletedAt_gt"`
-	DeletedAtLt   *int              `json:"deletedAt_lt"`
-	DeletedAtGte  *int              `json:"deletedAt_gte"`
-	DeletedAtLte  *int              `json:"deletedAt_lte"`
-	DeletedAtIn   []int             `json:"deletedAt_in"`
+	State         *int              `json:"state"`
+	StateNe       *int              `json:"state_ne"`
+	StateGt       *int              `json:"state_gt"`
+	StateLt       *int              `json:"state_lt"`
+	StateGte      *int              `json:"state_gte"`
+	StateLte      *int              `json:"state_lte"`
+	StateIn       []int             `json:"state_in"`
 	UpdatedAt     *int              `json:"updatedAt"`
 	UpdatedAtNe   *int              `json:"updatedAt_ne"`
 	UpdatedAtGt   *int              `json:"updatedAt_gt"`
@@ -135,13 +135,13 @@ type UserFilterType struct {
 	LastNameLike    *string           `json:"lastName_like"`
 	LastNamePrefix  *string           `json:"lastName_prefix"`
 	LastNameSuffix  *string           `json:"lastName_suffix"`
-	DeletedAt       *int              `json:"deletedAt"`
-	DeletedAtNe     *int              `json:"deletedAt_ne"`
-	DeletedAtGt     *int              `json:"deletedAt_gt"`
-	DeletedAtLt     *int              `json:"deletedAt_lt"`
-	DeletedAtGte    *int              `json:"deletedAt_gte"`
-	DeletedAtLte    *int              `json:"deletedAt_lte"`
-	DeletedAtIn     []int             `json:"deletedAt_in"`
+	State           *int              `json:"state"`
+	StateNe         *int              `json:"state_ne"`
+	StateGt         *int              `json:"state_gt"`
+	StateLt         *int              `json:"state_lt"`
+	StateGte        *int              `json:"state_gte"`
+	StateLte        *int              `json:"state_lte"`
+	StateIn         []int             `json:"state_in"`
 	UpdatedAt       *int              `json:"updatedAt"`
 	UpdatedAtNe     *int              `json:"updatedAt_ne"`
 	UpdatedAtGt     *int              `json:"updatedAt_gt"`
@@ -193,8 +193,8 @@ const (
 	TaskSortTypeDueDateDesc    TaskSortType = "DUE_DATE_DESC"
 	TaskSortTypeAssigneeIDAsc  TaskSortType = "ASSIGNEE_ID_ASC"
 	TaskSortTypeAssigneeIDDesc TaskSortType = "ASSIGNEE_ID_DESC"
-	TaskSortTypeDeletedAtAsc   TaskSortType = "DELETED_AT_ASC"
-	TaskSortTypeDeletedAtDesc  TaskSortType = "DELETED_AT_DESC"
+	TaskSortTypeStateAsc       TaskSortType = "STATE_ASC"
+	TaskSortTypeStateDesc      TaskSortType = "STATE_DESC"
 	TaskSortTypeUpdatedAtAsc   TaskSortType = "UPDATED_AT_ASC"
 	TaskSortTypeUpdatedAtDesc  TaskSortType = "UPDATED_AT_DESC"
 	TaskSortTypeCreatedAtAsc   TaskSortType = "CREATED_AT_ASC"
@@ -218,8 +218,8 @@ var AllTaskSortType = []TaskSortType{
 	TaskSortTypeDueDateDesc,
 	TaskSortTypeAssigneeIDAsc,
 	TaskSortTypeAssigneeIDDesc,
-	TaskSortTypeDeletedAtAsc,
-	TaskSortTypeDeletedAtDesc,
+	TaskSortTypeStateAsc,
+	TaskSortTypeStateDesc,
 	TaskSortTypeUpdatedAtAsc,
 	TaskSortTypeUpdatedAtDesc,
 	TaskSortTypeCreatedAtAsc,
@@ -234,7 +234,7 @@ var AllTaskSortType = []TaskSortType{
 
 func (e TaskSortType) IsValid() bool {
 	switch e {
-	case TaskSortTypeIDAsc, TaskSortTypeIDDesc, TaskSortTypeTitleAsc, TaskSortTypeTitleDesc, TaskSortTypeCompletedAsc, TaskSortTypeCompletedDesc, TaskSortTypeDueDateAsc, TaskSortTypeDueDateDesc, TaskSortTypeAssigneeIDAsc, TaskSortTypeAssigneeIDDesc, TaskSortTypeDeletedAtAsc, TaskSortTypeDeletedAtDesc, TaskSortTypeUpdatedAtAsc, TaskSortTypeUpdatedAtDesc, TaskSortTypeCreatedAtAsc, TaskSortTypeCreatedAtDesc, TaskSortTypeDeletedByAsc, TaskSortTypeDeletedByDesc, TaskSortTypeUpdatedByAsc, TaskSortTypeUpdatedByDesc, TaskSortTypeCreatedByAsc, TaskSortTypeCreatedByDesc:
+	case TaskSortTypeIDAsc, TaskSortTypeIDDesc, TaskSortTypeTitleAsc, TaskSortTypeTitleDesc, TaskSortTypeCompletedAsc, TaskSortTypeCompletedDesc, TaskSortTypeDueDateAsc, TaskSortTypeDueDateDesc, TaskSortTypeAssigneeIDAsc, TaskSortTypeAssigneeIDDesc, TaskSortTypeStateAsc, TaskSortTypeStateDesc, TaskSortTypeUpdatedAtAsc, TaskSortTypeUpdatedAtDesc, TaskSortTypeCreatedAtAsc, TaskSortTypeCreatedAtDesc, TaskSortTypeDeletedByAsc, TaskSortTypeDeletedByDesc, TaskSortTypeUpdatedByAsc, TaskSortTypeUpdatedByDesc, TaskSortTypeCreatedByAsc, TaskSortTypeCreatedByDesc:
 		return true
 	}
 	return false
@@ -272,8 +272,8 @@ const (
 	UserSortTypeFirstNameDesc UserSortType = "FIRST_NAME_DESC"
 	UserSortTypeLastNameAsc   UserSortType = "LAST_NAME_ASC"
 	UserSortTypeLastNameDesc  UserSortType = "LAST_NAME_DESC"
-	UserSortTypeDeletedAtAsc  UserSortType = "DELETED_AT_ASC"
-	UserSortTypeDeletedAtDesc UserSortType = "DELETED_AT_DESC"
+	UserSortTypeStateAsc      UserSortType = "STATE_ASC"
+	UserSortTypeStateDesc     UserSortType = "STATE_DESC"
 	UserSortTypeUpdatedAtAsc  UserSortType = "UPDATED_AT_ASC"
 	UserSortTypeUpdatedAtDesc UserSortType = "UPDATED_AT_DESC"
 	UserSortTypeCreatedAtAsc  UserSortType = "CREATED_AT_ASC"
@@ -295,8 +295,8 @@ var AllUserSortType = []UserSortType{
 	UserSortTypeFirstNameDesc,
 	UserSortTypeLastNameAsc,
 	UserSortTypeLastNameDesc,
-	UserSortTypeDeletedAtAsc,
-	UserSortTypeDeletedAtDesc,
+	UserSortTypeStateAsc,
+	UserSortTypeStateDesc,
 	UserSortTypeUpdatedAtAsc,
 	UserSortTypeUpdatedAtDesc,
 	UserSortTypeCreatedAtAsc,
@@ -311,7 +311,7 @@ var AllUserSortType = []UserSortType{
 
 func (e UserSortType) IsValid() bool {
 	switch e {
-	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeDeletedAtAsc, UserSortTypeDeletedAtDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc:
+	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeStateAsc, UserSortTypeStateDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc:
 		return true
 	}
 	return false

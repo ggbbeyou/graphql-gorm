@@ -7,9 +7,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql/resolvers"
 	uuid "github.com/satori/go.uuid"
+	"github.com/vektah/gqlparser/ast"
 )
 
 func getPrincipalID(ctx context.Context) *string {
@@ -87,18 +89,34 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 		event.AddNewValue("lastName", changes.LastName)
 	}
 
-	if ids, ok := input["tasksIds"].([]interface{}); ok {
-		items := []Task{}
-		tx.Find(&items, "id IN (?)", ids)
-		association := tx.Model(&item).Association("Tasks")
-		association.Replace(items)
+	if _, ok := input["state"]; ok && (item.State != changes.State) && (item.State == nil || changes.State == nil || *item.State != *changes.State) {
+		item.State = changes.State
+		event.AddNewValue("state", changes.State)
 	}
 
-	err = tx.Create(item).Error
-	if err != nil {
+	if err = tx.Create(item).Error; err != nil {
+		return
+	}
+
+	items := []Task{}
+
+	if ids, ok := input["tasksIds"].([]interface{}); ok {
+		tx.Find(&items, "id IN (?)", ids)
+		if err = tx.Model(&item).Association("Tasks").Replace(items).Error; err != nil {
+			tx.Rollback()
+			return
+		}
+	}
+
+	if err = tx.Model(&items).Where("assigneeId = ?", item.ID).Update("state", item.State).Error; err != nil {
 		tx.Rollback()
 		return
 	}
+
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return
+	// }
 	err = tx.Commit().Error
 	if err != nil {
 		tx.Rollback()
@@ -118,9 +136,9 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 	tx := r.DB.db.Begin()
 
 	event := events.NewEvent(events.EventMetadata{
-		Type:        events.EventTypeCreated,
+		Type:        events.EventTypeUpdated,
 		Entity:      "User",
-		EntityID:    item.ID,
+		EntityID:    id,
 		Date:        now.Unix(),
 		PrincipalID: principalID,
 	})
@@ -135,6 +153,8 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 	if err != nil {
 		return
 	}
+
+	oldState := item.State
 
 	item.UpdatedBy = principalID
 
@@ -156,18 +176,38 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 		item.LastName = changes.LastName
 	}
 
-	if ids, ok := input["tasksIds"].([]interface{}); ok {
-		items := []Task{}
-		tx.Find(&items, "id IN (?)", ids)
-		association := tx.Model(&item).Association("Tasks")
-		association.Replace(items)
+	if _, ok := input["state"]; ok && (item.State != changes.State) && (item.State == nil || changes.State == nil || *item.State != *changes.State) {
+		event.AddOldValue("state", item.State)
+		event.AddNewValue("state", changes.State)
+		item.State = changes.State
 	}
 
-	err = tx.Save(item).Error
-	if err != nil {
-		tx.Rollback()
+	if err = tx.Save(item).Error; err != nil {
 		return
 	}
+
+	items := []Task{}
+
+	if ids, ok := input["tasksIds"].([]interface{}); ok {
+		tx.Find(&items, "id IN (?)", ids)
+		if err = tx.Model(&item).Association("Tasks").Replace(items).Error; err != nil {
+			tx.Rollback()
+			return
+		}
+	}
+
+	// 判断是不是改变状态
+	if oldState != item.State {
+		if err = tx.Model(&items).Where("assigneeId = ?", item.ID).Update("state", item.State).Error; err != nil {
+			tx.Rollback()
+			return
+		}
+	}
+
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return
+	// }
 	err = tx.Commit().Error
 	if err != nil {
 		tx.Rollback()
@@ -183,13 +223,54 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 	return
 }
 func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (item *User, err error) {
+	principalID := getPrincipalID(ctx)
 	item = &User{}
-	err = resolvers.GetItem(ctx, r.DB.Query(), item, &id)
+	now := time.Now()
+	tx := r.DB.db.Begin()
+
+	err = resolvers.GetItem(ctx, tx, item, &id)
 	if err != nil {
 		return
 	}
 
-	err = r.DB.Query().Delete(item, "users.id = ?", id).Error
+	// 3为删除
+	var state int64 = 3
+
+	item.UpdatedBy = principalID
+	item.State = &state
+
+	// err = r.DB.Query().Delete(item, "users.id = ?", id).Error
+
+	event := events.NewEvent(events.EventMetadata{
+		Type:        events.EventTypeDeleted,
+		Entity:      "User",
+		EntityID:    id,
+		Date:        now.Unix(),
+		PrincipalID: principalID,
+	})
+
+	if err = tx.Save(item).Error; err != nil {
+		return
+	}
+
+	items := []Task{}
+	// tx.Find(&items, "id = ?", id)
+	// err = tx.Model(&items).Delete(items).Error
+	if err = tx.Model(&items).Where("assigneeId = ?", id).Update("state", state).Error; err != nil {
+		tx.Rollback()
+		return
+	}
+
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return
+	// }
+	err = tx.Commit().Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	err = r.EventController.SendEvent(ctx, &event)
 
 	return
 }
@@ -239,11 +320,19 @@ func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[st
 		event.AddNewValue("assigneeId", changes.AssigneeID)
 	}
 
-	err = tx.Create(item).Error
-	if err != nil {
-		tx.Rollback()
+	if _, ok := input["state"]; ok && (item.State != changes.State) && (item.State == nil || changes.State == nil || *item.State != *changes.State) {
+		item.State = changes.State
+		event.AddNewValue("state", changes.State)
+	}
+
+	if err = tx.Create(item).Error; err != nil {
 		return
 	}
+
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return
+	// }
 	err = tx.Commit().Error
 	if err != nil {
 		tx.Rollback()
@@ -263,9 +352,9 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 	tx := r.DB.db.Begin()
 
 	event := events.NewEvent(events.EventMetadata{
-		Type:        events.EventTypeCreated,
+		Type:        events.EventTypeUpdated,
 		Entity:      "Task",
-		EntityID:    item.ID,
+		EntityID:    id,
 		Date:        now.Unix(),
 		PrincipalID: principalID,
 	})
@@ -307,11 +396,20 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 		item.AssigneeID = changes.AssigneeID
 	}
 
-	err = tx.Save(item).Error
-	if err != nil {
-		tx.Rollback()
+	if _, ok := input["state"]; ok && (item.State != changes.State) && (item.State == nil || changes.State == nil || *item.State != *changes.State) {
+		event.AddOldValue("state", item.State)
+		event.AddNewValue("state", changes.State)
+		item.State = changes.State
+	}
+
+	if err = tx.Save(item).Error; err != nil {
 		return
 	}
+
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return
+	// }
 	err = tx.Commit().Error
 	if err != nil {
 		tx.Rollback()
@@ -327,13 +425,46 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 	return
 }
 func (r *GeneratedMutationResolver) DeleteTask(ctx context.Context, id string) (item *Task, err error) {
+	principalID := getPrincipalID(ctx)
 	item = &Task{}
-	err = resolvers.GetItem(ctx, r.DB.Query(), item, &id)
+	now := time.Now()
+	tx := r.DB.db.Begin()
+
+	err = resolvers.GetItem(ctx, tx, item, &id)
 	if err != nil {
 		return
 	}
 
-	err = r.DB.Query().Delete(item, "tasks.id = ?", id).Error
+	// 3为删除
+	var state int64 = 3
+
+	item.UpdatedBy = principalID
+	item.State = &state
+
+	// err = r.DB.Query().Delete(item, "tasks.id = ?", id).Error
+
+	event := events.NewEvent(events.EventMetadata{
+		Type:        events.EventTypeDeleted,
+		Entity:      "Task",
+		EntityID:    id,
+		Date:        now.Unix(),
+		PrincipalID: principalID,
+	})
+
+	if err = tx.Save(item).Error; err != nil {
+		return
+	}
+
+	// if err != nil {
+	// 	tx.Rollback()
+	// 	return
+	// }
+	err = tx.Commit().Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	err = r.EventController.SendEvent(ctx, &event)
 
 	return
 }
@@ -373,13 +504,22 @@ func (r *GeneratedQueryResolver) Users(ctx context.Context, current_page *int, p
 		_sort = append(_sort, s)
 	}
 	query := UserQueryFilter{q}
+
+	var selectionSet *ast.SelectionSet
+	for _, f := range graphql.CollectFieldsCtx(ctx, nil) {
+		if f.Field.Name == "items" {
+			selectionSet = &f.Field.SelectionSet
+		}
+	}
+
 	return &UserResultType{
 		EntityResultType: resolvers.EntityResultType{
-			CurrentPage: current_page,
-			PerPage:     per_page,
-			Query:       &query,
-			Sort:        _sort,
-			Filter:      filter,
+			CurrentPage:  current_page,
+			PerPage:      per_page,
+			Query:        &query,
+			Sort:         _sort,
+			Filter:       filter,
+			SelectionSet: selectionSet,
 		},
 	}, nil
 }
@@ -418,7 +558,7 @@ func (r *GeneratedUserResolver) Tasks(ctx context.Context, obj *User) (res []*Ta
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Tasks"))
 
 	items := []*Task{}
-	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Tasks").Error
+	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Tasks").Error
 	res = items
 
 	return
@@ -457,13 +597,22 @@ func (r *GeneratedQueryResolver) Tasks(ctx context.Context, current_page *int, p
 		_sort = append(_sort, s)
 	}
 	query := TaskQueryFilter{q}
+
+	var selectionSet *ast.SelectionSet
+	for _, f := range graphql.CollectFieldsCtx(ctx, nil) {
+		if f.Field.Name == "items" {
+			selectionSet = &f.Field.SelectionSet
+		}
+	}
+
 	return &TaskResultType{
 		EntityResultType: resolvers.EntityResultType{
-			CurrentPage: current_page,
-			PerPage:     per_page,
-			Query:       &query,
-			Sort:        _sort,
-			Filter:      filter,
+			CurrentPage:  current_page,
+			PerPage:      per_page,
+			Query:        &query,
+			Sort:         _sort,
+			Filter:       filter,
+			SelectionSet: selectionSet,
 		},
 	}, nil
 }

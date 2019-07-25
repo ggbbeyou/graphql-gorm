@@ -69,10 +69,10 @@ type ComplexityRoot struct {
 		Completed  func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
 		CreatedBy  func(childComplexity int) int
-		DeletedAt  func(childComplexity int) int
 		DeletedBy  func(childComplexity int) int
 		DueDate    func(childComplexity int) int
 		ID         func(childComplexity int) int
+		State      func(childComplexity int) int
 		Title      func(childComplexity int) int
 		UpdatedAt  func(childComplexity int) int
 		UpdatedBy  func(childComplexity int) int
@@ -89,12 +89,12 @@ type ComplexityRoot struct {
 	User struct {
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
-		DeletedAt func(childComplexity int) int
 		DeletedBy func(childComplexity int) int
 		Email     func(childComplexity int) int
 		FirstName func(childComplexity int) int
 		ID        func(childComplexity int) int
 		LastName  func(childComplexity int) int
+		State     func(childComplexity int) int
 		Tasks     func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
@@ -314,13 +314,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Task.CreatedBy(childComplexity), true
 
-	case "Task.deletedAt":
-		if e.complexity.Task.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.Task.DeletedAt(childComplexity), true
-
 	case "Task.deletedBy":
 		if e.complexity.Task.DeletedBy == nil {
 			break
@@ -341,6 +334,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Task.ID(childComplexity), true
+
+	case "Task.state":
+		if e.complexity.Task.State == nil {
+			break
+		}
+
+		return e.complexity.Task.State(childComplexity), true
 
 	case "Task.title":
 		if e.complexity.Task.Title == nil {
@@ -412,13 +412,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.CreatedBy(childComplexity), true
 
-	case "User.deletedAt":
-		if e.complexity.User.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.User.DeletedAt(childComplexity), true
-
 	case "User.deletedBy":
 		if e.complexity.User.DeletedBy == nil {
 			break
@@ -453,6 +446,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.LastName(childComplexity), true
+
+	case "User.state":
+		if e.complexity.User.State == nil {
+			break
+		}
+
+		return e.complexity.User.State(childComplexity), true
 
 	case "User.tasks":
 		if e.complexity.User.Tasks == nil {
@@ -603,7 +603,7 @@ type User {
   firstName: String
   lastName: String
   tasks: [Task!]!
-  deletedAt: Int
+  state: Int
   updatedAt: Int
   createdAt: Int
   deletedBy: ID
@@ -618,7 +618,7 @@ type Task {
   dueDate: Time
   assignee: User
   assigneeId: ID
-  deletedAt: Int
+  state: Int
   updatedAt: Int
   createdAt: Int
   deletedBy: ID
@@ -631,6 +631,7 @@ input UserCreateInput {
   email: String
   firstName: String
   lastName: String
+  state: Int
   tasksIds: [ID!]
 }
 
@@ -638,6 +639,7 @@ input UserUpdateInput {
   email: String
   firstName: String
   lastName: String
+  state: Int
   tasksIds: [ID!]
 }
 
@@ -650,8 +652,8 @@ enum UserSortType {
   FIRST_NAME_DESC
   LAST_NAME_ASC
   LAST_NAME_DESC
-  DELETED_AT_ASC
-  DELETED_AT_DESC
+  STATE_ASC
+  STATE_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
@@ -704,13 +706,13 @@ input UserFilterType {
   lastName_like: String
   lastName_prefix: String
   lastName_suffix: String
-  deletedAt: Int
-  deletedAt_ne: Int
-  deletedAt_gt: Int
-  deletedAt_lt: Int
-  deletedAt_gte: Int
-  deletedAt_lte: Int
-  deletedAt_in: [Int!]
+  state: Int
+  state_ne: Int
+  state_gt: Int
+  state_lt: Int
+  state_gte: Int
+  state_lte: Int
+  state_in: [Int!]
   updatedAt: Int
   updatedAt_ne: Int
   updatedAt_gt: Int
@@ -763,6 +765,7 @@ input TaskCreateInput {
   completed: Boolean
   dueDate: Time
   assigneeId: ID
+  state: Int
 }
 
 input TaskUpdateInput {
@@ -770,6 +773,7 @@ input TaskUpdateInput {
   completed: Boolean
   dueDate: Time
   assigneeId: ID
+  state: Int
 }
 
 enum TaskSortType {
@@ -783,8 +787,8 @@ enum TaskSortType {
   DUE_DATE_DESC
   ASSIGNEE_ID_ASC
   ASSIGNEE_ID_DESC
-  DELETED_AT_ASC
-  DELETED_AT_DESC
+  STATE_ASC
+  STATE_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
@@ -838,13 +842,13 @@ input TaskFilterType {
   assigneeId_gte: ID
   assigneeId_lte: ID
   assigneeId_in: [ID!]
-  deletedAt: Int
-  deletedAt_ne: Int
-  deletedAt_gt: Int
-  deletedAt_lt: Int
-  deletedAt_gte: Int
-  deletedAt_lte: Int
-  deletedAt_in: [Int!]
+  state: Int
+  state_ne: Int
+  state_gt: Int
+  state_lt: Int
+  state_gte: Int
+  state_lte: Int
+  state_in: [Int!]
   updatedAt: Int
   updatedAt_ne: Int
   updatedAt_gt: Int
@@ -1909,7 +1913,7 @@ func (ec *executionContext) _Task_assigneeId(ctx context.Context, field graphql.
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Task_deletedAt(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
+func (ec *executionContext) _Task_state(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1928,7 +1932,7 @@ func (ec *executionContext) _Task_deletedAt(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
+		return obj.State, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2474,7 +2478,7 @@ func (ec *executionContext) _User_tasks(ctx context.Context, field graphql.Colle
 	return ec.marshalNTask2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTask(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_deletedAt(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_state(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2493,7 +2497,7 @@ func (ec *executionContext) _User_deletedAt(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
+		return obj.State, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4260,45 +4264,45 @@ func (ec *executionContext) unmarshalInputTaskFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt":
+		case "state":
 			var err error
-			it.DeletedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.State, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_ne":
+		case "state_ne":
 			var err error
-			it.DeletedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_gt":
+		case "state_gt":
 			var err error
-			it.DeletedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_lt":
+		case "state_lt":
 			var err error
-			it.DeletedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_gte":
+		case "state_gte":
 			var err error
-			it.DeletedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_lte":
+		case "state_lte":
 			var err error
-			it.DeletedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_in":
+		case "state_in":
 			var err error
-			it.DeletedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			it.StateIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4764,45 +4768,45 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt":
+		case "state":
 			var err error
-			it.DeletedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.State, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_ne":
+		case "state_ne":
 			var err error
-			it.DeletedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_gt":
+		case "state_gt":
 			var err error
-			it.DeletedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_lt":
+		case "state_lt":
 			var err error
-			it.DeletedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_gte":
+		case "state_gte":
 			var err error
-			it.DeletedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_lte":
+		case "state_lte":
 			var err error
-			it.DeletedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.StateLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt_in":
+		case "state_in":
 			var err error
-			it.DeletedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			it.StateIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5201,8 +5205,8 @@ func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj
 			})
 		case "assigneeId":
 			out.Values[i] = ec._Task_assigneeId(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._Task_deletedAt(ctx, field, obj)
+		case "state":
+			out.Values[i] = ec._Task_state(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._Task_updatedAt(ctx, field, obj)
 		case "createdAt":
@@ -5352,8 +5356,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 				}
 				return res
 			})
-		case "deletedAt":
-			out.Values[i] = ec._User_deletedAt(ctx, field, obj)
+		case "state":
+			out.Values[i] = ec._User_state(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._User_updatedAt(ctx, field, obj)
 		case "createdAt":

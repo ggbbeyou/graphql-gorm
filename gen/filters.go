@@ -222,33 +222,33 @@ func (f *UserFilterType) WhereContent(dialect gorm.Dialect, aliasPrefix string) 
 		values = append(values, fmt.Sprintf("%%%s", *f.LastNameSuffix))
 	}
 
-	if f.DeletedAt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" = ?")
-		values = append(values, f.DeletedAt)
+	if f.State != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" = ?")
+		values = append(values, f.State)
 	}
-	if f.DeletedAtNe != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" != ?")
-		values = append(values, f.DeletedAtNe)
+	if f.StateNe != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" != ?")
+		values = append(values, f.StateNe)
 	}
-	if f.DeletedAtGt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" > ?")
-		values = append(values, f.DeletedAtGt)
+	if f.StateGt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" > ?")
+		values = append(values, f.StateGt)
 	}
-	if f.DeletedAtLt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" < ?")
-		values = append(values, f.DeletedAtLt)
+	if f.StateLt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" < ?")
+		values = append(values, f.StateLt)
 	}
-	if f.DeletedAtGte != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" >= ?")
-		values = append(values, f.DeletedAtGte)
+	if f.StateGte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" >= ?")
+		values = append(values, f.StateGte)
 	}
-	if f.DeletedAtLte != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" <= ?")
-		values = append(values, f.DeletedAtLte)
+	if f.StateLte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" <= ?")
+		values = append(values, f.StateLte)
 	}
-	if f.DeletedAtIn != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" IN (?)")
-		values = append(values, f.DeletedAtIn)
+	if f.StateIn != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" IN (?)")
+		values = append(values, f.StateIn)
 	}
 
 	if f.UpdatedAt != nil {
@@ -650,33 +650,33 @@ func (f *TaskFilterType) WhereContent(dialect gorm.Dialect, aliasPrefix string) 
 		values = append(values, f.AssigneeIDIn)
 	}
 
-	if f.DeletedAt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" = ?")
-		values = append(values, f.DeletedAt)
+	if f.State != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" = ?")
+		values = append(values, f.State)
 	}
-	if f.DeletedAtNe != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" != ?")
-		values = append(values, f.DeletedAtNe)
+	if f.StateNe != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" != ?")
+		values = append(values, f.StateNe)
 	}
-	if f.DeletedAtGt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" > ?")
-		values = append(values, f.DeletedAtGt)
+	if f.StateGt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" > ?")
+		values = append(values, f.StateGt)
 	}
-	if f.DeletedAtLt != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" < ?")
-		values = append(values, f.DeletedAtLt)
+	if f.StateLt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" < ?")
+		values = append(values, f.StateLt)
 	}
-	if f.DeletedAtGte != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" >= ?")
-		values = append(values, f.DeletedAtGte)
+	if f.StateGte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" >= ?")
+		values = append(values, f.StateGte)
 	}
-	if f.DeletedAtLte != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" <= ?")
-		values = append(values, f.DeletedAtLte)
+	if f.StateLte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" <= ?")
+		values = append(values, f.StateLte)
 	}
-	if f.DeletedAtIn != nil {
-		conditions = append(conditions, aliasPrefix+dialect.Quote("deletedAt")+" IN (?)")
-		values = append(values, f.DeletedAtIn)
+	if f.StateIn != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("state")+" IN (?)")
+		values = append(values, f.StateIn)
 	}
 
 	if f.UpdatedAt != nil {

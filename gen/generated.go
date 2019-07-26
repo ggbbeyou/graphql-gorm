@@ -96,6 +96,7 @@ type ComplexityRoot struct {
 		LastName  func(childComplexity int) int
 		State     func(childComplexity int) int
 		Tasks     func(childComplexity int) int
+		TasksIds  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
 	}
@@ -135,6 +136,8 @@ type TaskResultTypeResolver interface {
 }
 type UserResolver interface {
 	Tasks(ctx context.Context, obj *User) ([]*Task, error)
+
+	TasksIds(ctx context.Context, obj *User) ([]string, error)
 }
 type UserResultTypeResolver interface {
 	Data(ctx context.Context, obj *UserResultType) ([]*User, error)
@@ -461,6 +464,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Tasks(childComplexity), true
 
+	case "User.tasksIds":
+		if e.complexity.User.TasksIds == nil {
+			break
+		}
+
+		return e.complexity.User.TasksIds(childComplexity), true
+
 	case "User.updatedAt":
 		if e.complexity.User.UpdatedAt == nil {
 			break
@@ -609,6 +619,7 @@ type User {
   deletedBy: ID
   updatedBy: ID
   createdBy: ID
+  tasksIds: [ID!]!
 }
 
 type Task {
@@ -664,6 +675,8 @@ enum UserSortType {
   UPDATED_BY_DESC
   CREATED_BY_ASC
   CREATED_BY_DESC
+  TASKS_IDS_ASC
+  TASKS_IDS_DESC
 }
 
 input UserFilterType {
@@ -748,6 +761,13 @@ input UserFilterType {
   createdBy_gte: ID
   createdBy_lte: ID
   createdBy_in: [ID!]
+  tasksIds: ID
+  tasksIds_ne: ID
+  tasksIds_gt: ID
+  tasksIds_lt: ID
+  tasksIds_gte: ID
+  tasksIds_lte: ID
+  tasksIds_in: [ID!]
   tasks: TaskFilterType
 }
 
@@ -2680,6 +2700,43 @@ func (ec *executionContext) _User_createdBy(ctx context.Context, field graphql.C
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_tasksIds(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().TasksIds(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2ᚕstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserResultType_data(ctx context.Context, field graphql.CollectedField, obj *UserResultType) (ret graphql.Marshaler) {
@@ -5020,6 +5077,48 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
+		case "tasksIds":
+			var err error
+			it.TasksIds, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "tasksIds_ne":
+			var err error
+			it.TasksIdsNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "tasksIds_gt":
+			var err error
+			it.TasksIdsGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "tasksIds_lt":
+			var err error
+			it.TasksIdsLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "tasksIds_gte":
+			var err error
+			it.TasksIdsGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "tasksIds_lte":
+			var err error
+			it.TasksIdsLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "tasksIds_in":
+			var err error
+			it.TasksIdsIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "tasks":
 			var err error
 			it.Tasks, err = ec.unmarshalOTaskFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskFilterType(ctx, v)
@@ -5368,6 +5467,20 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = ec._User_updatedBy(ctx, field, obj)
 		case "createdBy":
 			out.Values[i] = ec._User_createdBy(ctx, field, obj)
+		case "tasksIds":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_tasksIds(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5742,6 +5855,35 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNID2ᚕstring(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNID2ᚕstring(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {

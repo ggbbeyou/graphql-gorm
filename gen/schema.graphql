@@ -35,6 +35,7 @@ type User {
   deletedBy: ID
   updatedBy: ID
   createdBy: ID
+  tasksIds: [ID!]!
 }
 
 type Task {
@@ -90,6 +91,8 @@ enum UserSortType {
   UPDATED_BY_DESC
   CREATED_BY_ASC
   CREATED_BY_DESC
+  TASKS_IDS_ASC
+  TASKS_IDS_DESC
 }
 
 input UserFilterType {
@@ -174,6 +177,13 @@ input UserFilterType {
   createdBy_gte: ID
   createdBy_lte: ID
   createdBy_in: [ID!]
+  tasksIds: ID
+  tasksIds_ne: ID
+  tasksIds_gt: ID
+  tasksIds_lt: ID
+  tasksIds_gte: ID
+  tasksIds_lte: ID
+  tasksIds_in: [ID!]
   tasks: TaskFilterType
 }
 

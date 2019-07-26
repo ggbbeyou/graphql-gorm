@@ -177,6 +177,13 @@ type UserFilterType struct {
 	CreatedByGte    *string           `json:"createdBy_gte"`
 	CreatedByLte    *string           `json:"createdBy_lte"`
 	CreatedByIn     []string          `json:"createdBy_in"`
+	TasksIds        *string           `json:"tasksIds"`
+	TasksIdsNe      *string           `json:"tasksIds_ne"`
+	TasksIdsGt      *string           `json:"tasksIds_gt"`
+	TasksIdsLt      *string           `json:"tasksIds_lt"`
+	TasksIdsGte     *string           `json:"tasksIds_gte"`
+	TasksIdsLte     *string           `json:"tasksIds_lte"`
+	TasksIdsIn      []string          `json:"tasksIds_in"`
 	Tasks           *TaskFilterType   `json:"tasks"`
 }
 
@@ -284,6 +291,8 @@ const (
 	UserSortTypeUpdatedByDesc UserSortType = "UPDATED_BY_DESC"
 	UserSortTypeCreatedByAsc  UserSortType = "CREATED_BY_ASC"
 	UserSortTypeCreatedByDesc UserSortType = "CREATED_BY_DESC"
+	UserSortTypeTasksIDSAsc   UserSortType = "TASKS_IDS_ASC"
+	UserSortTypeTasksIDSDesc  UserSortType = "TASKS_IDS_DESC"
 )
 
 var AllUserSortType = []UserSortType{
@@ -307,11 +316,13 @@ var AllUserSortType = []UserSortType{
 	UserSortTypeUpdatedByDesc,
 	UserSortTypeCreatedByAsc,
 	UserSortTypeCreatedByDesc,
+	UserSortTypeTasksIDSAsc,
+	UserSortTypeTasksIDSDesc,
 }
 
 func (e UserSortType) IsValid() bool {
 	switch e {
-	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeStateAsc, UserSortTypeStateDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc:
+	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeStateAsc, UserSortTypeStateDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc, UserSortTypeTasksIDSAsc, UserSortTypeTasksIDSDesc:
 		return true
 	}
 	return false

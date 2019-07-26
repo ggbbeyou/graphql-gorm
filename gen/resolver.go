@@ -494,7 +494,7 @@ func (r *GeneratedQueryResolver) User(ctx context.Context, id *string, q *string
 		return nil, err
 	}
 	if len(items) == 0 {
-		return nil, fmt.Errorf("record not found")
+		return nil, fmt.Errorf("User not found")
 	}
 	return items[0], err
 }
@@ -564,6 +564,16 @@ func (r *GeneratedUserResolver) Tasks(ctx context.Context, obj *User) (res []*Ta
 	return
 }
 
+func (r *GeneratedUserResolver) TasksIds(ctx context.Context, obj *User) (ids []string, err error) {
+	ids = []string{}
+	items := []*Task{}
+	err = r.DB.Query().Model(obj).Select("tasks.id").Related(&items, "Tasks").Error
+	for _, item := range items {
+		ids = append(ids, item.ID)
+	}
+	return
+}
+
 func (r *GeneratedQueryResolver) Task(ctx context.Context, id *string, q *string, filter *TaskFilterType) (*Task, error) {
 	query := TaskQueryFilter{q}
 	current_page := 0
@@ -587,7 +597,7 @@ func (r *GeneratedQueryResolver) Task(ctx context.Context, id *string, q *string
 		return nil, err
 	}
 	if len(items) == 0 {
-		return nil, fmt.Errorf("record not found")
+		return nil, fmt.Errorf("Task not found")
 	}
 	return items[0], err
 }

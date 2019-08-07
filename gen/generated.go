@@ -48,12 +48,14 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CreateTask func(childComplexity int, input map[string]interface{}) int
-		CreateUser func(childComplexity int, input map[string]interface{}) int
-		DeleteTask func(childComplexity int, id string) int
-		DeleteUser func(childComplexity int, id string) int
-		UpdateTask func(childComplexity int, id string, input map[string]interface{}) int
-		UpdateUser func(childComplexity int, id string, input map[string]interface{}) int
+		CreateTask     func(childComplexity int, input map[string]interface{}) int
+		CreateUser     func(childComplexity int, input map[string]interface{}) int
+		DeleteAllTasks func(childComplexity int) int
+		DeleteAllUsers func(childComplexity int) int
+		DeleteTask     func(childComplexity int, id string) int
+		DeleteUser     func(childComplexity int, id string) int
+		UpdateTask     func(childComplexity int, id string, input map[string]interface{}) int
+		UpdateUser     func(childComplexity int, id string, input map[string]interface{}) int
 	}
 
 	Query struct {
@@ -114,9 +116,11 @@ type MutationResolver interface {
 	CreateUser(ctx context.Context, input map[string]interface{}) (*User, error)
 	UpdateUser(ctx context.Context, id string, input map[string]interface{}) (*User, error)
 	DeleteUser(ctx context.Context, id string) (*User, error)
+	DeleteAllUsers(ctx context.Context) (bool, error)
 	CreateTask(ctx context.Context, input map[string]interface{}) (*Task, error)
 	UpdateTask(ctx context.Context, id string, input map[string]interface{}) (*Task, error)
 	DeleteTask(ctx context.Context, id string) (*Task, error)
+	DeleteAllTasks(ctx context.Context) (bool, error)
 }
 type QueryResolver interface {
 	User(ctx context.Context, id *string, q *string, filter *UserFilterType) (*User, error)
@@ -185,6 +189,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(map[string]interface{})), true
+
+	case "Mutation.deleteAllTasks":
+		if e.complexity.Mutation.DeleteAllTasks == nil {
+			break
+		}
+
+		return e.complexity.Mutation.DeleteAllTasks(childComplexity), true
+
+	case "Mutation.deleteAllUsers":
+		if e.complexity.Mutation.DeleteAllUsers == nil {
+			break
+		}
+
+		return e.complexity.Mutation.DeleteAllUsers(childComplexity), true
 
 	case "Mutation.deleteTask":
 		if e.complexity.Mutation.DeleteTask == nil {
@@ -602,9 +620,11 @@ type Mutation {
   createUser(input: UserCreateInput!): User!
   updateUser(id: ID!, input: UserUpdateInput!): User!
   deleteUser(id: ID!): User!
+  deleteAllUsers: Boolean!
   createTask(input: TaskCreateInput!): Task!
   updateTask(id: ID!, input: TaskUpdateInput!): Task!
   deleteTask(id: ID!): Task!
+  deleteAllTasks: Boolean!
 }
 
 type User {
@@ -761,13 +781,6 @@ input UserFilterType {
   createdBy_gte: ID
   createdBy_lte: ID
   createdBy_in: [ID!]
-  tasksIds: ID
-  tasksIds_ne: ID
-  tasksIds_gt: ID
-  tasksIds_lt: ID
-  tasksIds_gte: ID
-  tasksIds_lte: ID
-  tasksIds_in: [ID!]
   tasks: TaskFilterType
 }
 
@@ -1355,6 +1368,43 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 	return ec.marshalNUser2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐUser(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_deleteAllUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAllUsers(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_createTask(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1485,6 +1535,43 @@ func (ec *executionContext) _Mutation_deleteTask(ctx context.Context, field grap
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNTask2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteAllTasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAllTasks(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5077,48 +5164,6 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
-		case "tasksIds":
-			var err error
-			it.TasksIds, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "tasksIds_ne":
-			var err error
-			it.TasksIdsNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "tasksIds_gt":
-			var err error
-			it.TasksIdsGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "tasksIds_lt":
-			var err error
-			it.TasksIdsLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "tasksIds_gte":
-			var err error
-			it.TasksIdsGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "tasksIds_lte":
-			var err error
-			it.TasksIdsLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "tasksIds_in":
-			var err error
-			it.TasksIdsIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "tasks":
 			var err error
 			it.Tasks, err = ec.unmarshalOTaskFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskFilterType(ctx, v)
@@ -5169,6 +5214,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "deleteAllUsers":
+			out.Values[i] = ec._Mutation_deleteAllUsers(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createTask":
 			out.Values[i] = ec._Mutation_createTask(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -5181,6 +5231,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteTask":
 			out.Values[i] = ec._Mutation_deleteTask(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteAllTasks":
+			out.Values[i] = ec._Mutation_deleteAllTasks(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

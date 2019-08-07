@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/gofrs/uuid"
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql/resolvers"
-	uuid "github.com/satori/go.uuid"
 	"github.com/vektah/gqlparser/ast"
 )
 
@@ -114,8 +114,8 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -205,8 +205,8 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -262,8 +262,8 @@ func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -273,6 +273,11 @@ func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (
 	err = r.EventController.SendEvent(ctx, &event)
 
 	return
+}
+
+func (r *GeneratedMutationResolver) DeleteAllUsers(ctx context.Context) (bool, error) {
+	err := r.DB.db.Delete(&User{}).Error
+	return err == nil, err
 }
 
 func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[string]interface{}) (item *Task, err error) {
@@ -330,8 +335,8 @@ func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[st
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -407,8 +412,8 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -456,8 +461,8 @@ func (r *GeneratedMutationResolver) DeleteTask(ctx context.Context, id string) (
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -467,6 +472,11 @@ func (r *GeneratedMutationResolver) DeleteTask(ctx context.Context, id string) (
 	err = r.EventController.SendEvent(ctx, &event)
 
 	return
+}
+
+func (r *GeneratedMutationResolver) DeleteAllTasks(ctx context.Context) (bool, error) {
+	err := r.DB.db.Delete(&Task{}).Error
+	return err == nil, err
 }
 
 type GeneratedQueryResolver struct{ *GeneratedResolver }

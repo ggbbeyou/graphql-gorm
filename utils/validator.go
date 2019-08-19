@@ -66,7 +66,21 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
 	// 如果不是字符串 int int64
 	if tye != "*string" {
 		newValue := int64(*value.(*int64))
-		fmt.Println(newValue)
+
+		if resData["type"] != "" {
+			var bool bool
+			rl := Rule[resData["type"].(string)]
+			bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(newValue))
+
+			msgText := rl["msg"].(string)
+			if msgText == "" {
+				msgText = "格式不正确"
+			}
+
+			if bool != true {
+				errText.Path = append(errText.Path, json + " " + msgText)
+			}
+		}
 	} else {
 		newValue := string(*value.(*string))
 

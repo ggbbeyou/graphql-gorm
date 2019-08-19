@@ -4,6 +4,7 @@ var Rule = map[string]map[string]interface{}{
   "empty"    : { "rgx": "^\\S", "msg": "不能为空", "bool": true, },
   "int"      : { "rgx": "^[0-9]\\d*$", "msg": "必须是0-9的整数", },
   "justInt"  : { "rgx": "^[1-9]\\d*$", "msg": "必须是大于0的整数", },
+  "state"    : { "rgx": "^[1-3]\\d*$", "msg": "状态只能为1-3的正整数", },
   "code"     : { "rgx": "^([0-9]){6}$", "msg": "验证码必须是6位整数", },
   "url"      : { "rgx": "^https?:\\/\\/.+$", "msg": "网址格式不正确", },
   "password" : { "rgx": "^(\\S){6,20}$", "msg": "密码为6-20个字符", },

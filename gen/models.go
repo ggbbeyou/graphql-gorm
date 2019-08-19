@@ -54,7 +54,7 @@ type Task struct {
 	Completed  *bool      `json:"completed" gorm:"column:completed;null;default:null"`
 	DueDate    *time.Time `json:"dueDate" gorm:"column:dueDate;null;default:null"`
 	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId;null;default:null"`
-	State      *int64     `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;"`
+	State      *int64     `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;" validator:"type:state;"`
 	UpdatedAt  *int64     `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
 	CreatedAt  *int64     `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
 	DeletedBy  *string    `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`

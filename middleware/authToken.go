@@ -2,14 +2,16 @@ package middleware
 
 import(
 	"fmt"
-	"log"
+	// "log"
 	"time"
+  "errors"
 	"strings"
 	"context"
 	"net/http"
 	jwt "github.com/dgrijalva/jwt-go"
 
 	"github.com/maiguangyang/graphql-gorm/gen"
+  "github.com/maiguangyang/graphql-gorm/utils"
 )
 
 var contxt context.Context
@@ -17,26 +19,41 @@ var secretkey = []byte("secret_key")
 var user gen.User
 
 func AuthHandler(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		// header := request.Header.Get("Authorization")
-		header := strings.Replace(request.Header.Get("Authorization"), "Bearer ", "", 1)
-		fmt.Println(header)
+	return http.HandlerFunc(func(response http.ResponseWriter, req *http.Request) {
+		// header := req.Header.Get("Authorization")
+		// header := strings.Replace(req.Header.Get("Authorization"), "Bearer ", "", 1)
 
-		if header == "" {
-			next.ServeHTTP(response, request)
-		} else {
-			token := jwt.New(jwt.SigningMethodHS256)
-			token.Claims = jwt.MapClaims{
-				"userid" :   user.ID,
-				"exp"    :   time.Now().Add(time.Hour * 24).Unix(),
-			}
-			tokenstring, err := token.SignedString(secretkey)
-			if err != nil {
-				log.Fatal("Error while generating token ", err)
-			}
-			ctxt := context.WithValue(request.Context(), "Authorization", tokenstring)
-			next.ServeHTTP(response, request.WithContext(ctxt))
-		}
+		// if header == "" {
+		// 	next.ServeHTTP(response, req)
+		// } else {
+
+			// token := jwt.New(jwt.SigningMethodHS256)
+			// token.Claims = jwt.MapClaims{
+			// 	"userid" :   user.ID,
+			// 	"exp"    :   time.Now().Add(time.Hour * 24).Unix(),
+			// }
+			// tokenstring, err := token.SignedString(secretkey)
+			// if err != nil {
+			// 	log.Fatal("Error while generating token ", err)
+			// }
+			// ctxt := context.WithValue(req.Context(), "Authorization", tokenstring)
+			// next.ServeHTTP(response, req.WithContext(ctxt))
+		// }
+
+    // 返回前端的Token
+    // ip := utils.RemoteIp(req)
+
+    // token := SetToken(map[string]interface{}{
+    //   "id": "998fc3fb-59c5-4af9-86b4-987cb14363f1",
+    // }, utils.EncryptMd5(ip + SecretKey["admin"].(string)), "admin")
+
+    // fmt.Println(token)
+
+    res, _ := HandleUserJWTToken(req, "admin")
+    fmt.Println(res)
+
+    ctxt := context.WithValue(req.Context(), "Authorization", res)
+    next.ServeHTTP(response, req.WithContext(ctxt))
 	})
 }
 
@@ -44,31 +61,20 @@ func AuthHandler(next http.Handler) http.Handler {
 // 1、生成token -> 记录token
 // 2、验证长度 -> 检查token记录 -> 校验token -> 检查ip地址
 
-
-import (
-  // "fmt"
-  "time"
-  "errors"
-  jwt "github.com/dgrijalva/jwt-go"
-
-  Public "erp-go/common/public"
-  Utils "erp-go/utils"
-)
-
 // role group
-var SecretKey = context.Map {
+var SecretKey = map[string]interface{}{
   "user": "AdPllFsFCVlNIFyorcY0K3o1OQldYPe5",
   "admin": "btafOY5CSD3prfJM1lUSxHIJipTfe26K",
 }
 
 // 检查user的Token
-func CheckAuthUser(ctx context.Context) {
-  Verify(ctx.GetHeader("Authorization"), "user", ctx)
+func CheckAuthUser(req *http.Request) error {
+  return Verify(req, "user")
 }
 
 // 检查admin的Token
-func CheckAuthAdmin(ctx context.Context) {
-  Verify(ctx.GetHeader("Authorization"), "admin", ctx)
+func CheckAuthAdmin(req *http.Request) error {
+  return Verify(req, "admin")
 }
 
 /**
@@ -127,48 +133,49 @@ func GetTokenContent(authHeader string, role string) (interface{}, error) {
  * 授权验证
  * 验证长度 -> 检查token记录 -> 校验token -> 检查ip地址
  */
-func Verify(authHeader, role string, ctx context.Context) {
-  if authHeader == "" || len(authHeader) <= 7 {
-    ctx.JSON(Utils.NewResData(401, "未登录", ctx))
-    return
-  }
+func Verify(req *http.Request, role string) error {
+  token := strings.Replace(req.Header.Get("Authorization"), "Bearer ", "", 1)
 
-  token := authHeader[7:]
+  if token == "" {
+    return errors.New("未登录")
+  }
 
   // 校验token
   tokenData, err := ParseToken(token, []byte(SecretKey[role].(string)))
   if len(tokenData) > 0 {
-    hash := Public.EncryptMd5(ctx.RemoteAddr() + SecretKey[role].(string))
+    hash := utils.EncryptMd5(utils.RemoteIp(req) + SecretKey[role].(string))
 
     if tokenData["hash"] != hash {
-      ctx.JSON(Utils.NewResData(405, "账号已在其他设备登陆", ctx))
-      return
+      return errors.New("账号已在其他设备登陆")
     }
   }
 
   if err != nil {
-    ctx.JSON(Utils.NewResData(401, "登录授权已失效", ctx))
-    return
+    return errors.New("登录授权已失效")
   }
 
-  ctx.Next()
+  return nil
 }
 
 
 // 获取用户JWT信息
-func HandleUserJWTToken(ctx context.Context, tye string) (map[string]interface{}, error) {
-  // 获取服务端用户信息
-  author      := ctx.GetHeader("Authorization")
-  userinfo, _ := DecryptToken(author, tye)
-  reqData     := userinfo.(map[string]interface{})
+func HandleUserJWTToken(req *http.Request, role string) (map[string]interface{}, error) {
+  err := CheckAuthAdmin(req)
 
-  if len(reqData) <= 0 {
+  if err != nil {
+    return nil, err
+  }
+
+  // 获取服务端用户信息
+  author  := req.Header.Get("Authorization")
+  userinfo, err := DecryptToken(author, role)
+
+  if userinfo == nil || err != nil {
     return nil, errors.New("user data is empty")
   }
 
-  if tye == "admin" && reqData["gid"] == "1" {
-    reqData["gid"] = ""
-  }
+  reqData := userinfo.(map[string]interface{})
+
   return reqData, nil
 }
 

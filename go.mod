@@ -21,12 +21,16 @@ require (
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365 // indirect
 	github.com/inloop/goclitools v0.0.0-20180817142818-51bc2b473cd4 // indirect
 	github.com/jinzhu/gorm v1.9.10
+	github.com/kataras/iris v11.1.1+incompatible
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/maiguangyang/graphql v0.0.1
 	github.com/mattn/go-colorable v0.1.2 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.2 // indirect
 	github.com/mitchellh/mapstructure v0.0.0-20180203102830-a4e142e9c047
 	github.com/novacloudcz/goclitools v0.0.0-20190807112614-386f7ae41d2f // indirect
+	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/satori/go.uuid v1.2.0
+	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/vektah/gqlparser v1.1.2
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect

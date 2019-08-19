@@ -50,6 +50,7 @@ func main() {
 	mux.HandleFunc("/graphql", func(res http.ResponseWriter, req *http.Request) {
 		// principalID := getPrincipalID(req)
 
+
 		// ctx := context.WithValue(req.Context(), gen.KeyPrincipalID, principalID)
 		ctx := context.WithValue(req.Context(), "loaders", loaders)
 		req = req.WithContext(ctx)

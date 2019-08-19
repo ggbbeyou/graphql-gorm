@@ -50,7 +50,7 @@ type TaskResultType struct {
 
 type Task struct {
 	ID         string     `json:"id" gorm:"type:varchar(36) comment 'uuid';primary_key;NOT NULL;"`
-	Title      *string    `json:"title" gorm:"column:title;null;default:null"`
+	Title      *string    `json:"title" gorm:"column:title;null;default:null" validator:"required:true;type:email;"`
 	Completed  *bool      `json:"completed" gorm:"column:completed;null;default:null"`
 	DueDate    *time.Time `json:"dueDate" gorm:"column:dueDate;null;default:null"`
 	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId;null;default:null"`

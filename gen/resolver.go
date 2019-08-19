@@ -8,10 +8,13 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/gofrs/uuid"
+	"github.com/graph-gophers/dataloader"
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql/resolvers"
-	uuid "github.com/satori/go.uuid"
 	"github.com/vektah/gqlparser/ast"
+
+	"github.com/maiguangyang/graphql-gorm/utils"
 )
 
 func getPrincipalID(ctx context.Context) *string {
@@ -114,8 +117,8 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -205,8 +208,8 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -262,8 +265,8 @@ func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -273,6 +276,11 @@ func (r *GeneratedMutationResolver) DeleteUser(ctx context.Context, id string) (
 	err = r.EventController.SendEvent(ctx, &event)
 
 	return
+}
+
+func (r *GeneratedMutationResolver) DeleteAllUsers(ctx context.Context) (bool, error) {
+	err := r.DB.db.Delete(&User{}).Error
+	return err == nil, err
 }
 
 func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[string]interface{}) (item *Task, err error) {
@@ -330,8 +338,8 @@ func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[st
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -402,13 +410,19 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 		item.State = changes.State
 	}
 
+	errText, resErr := utils.Validator(item)
+
+	if resErr != nil {
+		return item, &errText
+	}
+
 	if err = tx.Save(item).Error; err != nil {
 		return
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -456,8 +470,8 @@ func (r *GeneratedMutationResolver) DeleteTask(ctx context.Context, id string) (
 	}
 
 	// if err != nil {
-	// 	tx.Rollback()
-	// 	return
+	//  tx.Rollback()
+	//  return
 	// }
 	err = tx.Commit().Error
 	if err != nil {
@@ -467,6 +481,11 @@ func (r *GeneratedMutationResolver) DeleteTask(ctx context.Context, id string) (
 	err = r.EventController.SendEvent(ctx, &event)
 
 	return
+}
+
+func (r *GeneratedMutationResolver) DeleteAllTasks(ctx context.Context) (bool, error) {
+	err := r.DB.db.Delete(&Task{}).Error
+	return err == nil, err
 }
 
 type GeneratedQueryResolver struct{ *GeneratedResolver }
@@ -658,14 +677,12 @@ type GeneratedTaskResolver struct{ *GeneratedResolver }
 
 func (r *GeneratedTaskResolver) Assignee(ctx context.Context, obj *Task) (res *User, err error) {
 
-	item := User{}
-	_res := r.DB.Query().Model(obj).Related(&item, "Assignee")
-	if _res.RecordNotFound() {
-		return
-	} else {
-		err = _res.Error
+	loaders := ctx.Value("loaders").(map[string]*dataloader.Loader)
+	if obj.AssigneeID != nil {
+		item, _err := loaders["User"].Load(ctx, dataloader.StringKey(*obj.AssigneeID))()
+		res, _ = item.(*User)
+		err = _err
 	}
-	res = &item
 
 	return
 }

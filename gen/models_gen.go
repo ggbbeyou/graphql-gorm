@@ -177,13 +177,6 @@ type UserFilterType struct {
 	CreatedByGte    *string           `json:"createdBy_gte"`
 	CreatedByLte    *string           `json:"createdBy_lte"`
 	CreatedByIn     []string          `json:"createdBy_in"`
-	TasksIds        *string           `json:"tasksIds"`
-	TasksIdsNe      *string           `json:"tasksIds_ne"`
-	TasksIdsGt      *string           `json:"tasksIds_gt"`
-	TasksIdsLt      *string           `json:"tasksIds_lt"`
-	TasksIdsGte     *string           `json:"tasksIds_gte"`
-	TasksIdsLte     *string           `json:"tasksIds_lte"`
-	TasksIdsIn      []string          `json:"tasksIds_in"`
 	Tasks           *TaskFilterType   `json:"tasks"`
 }
 

@@ -9,8 +9,9 @@ import (
 	"strings"
 
 	"github.com/99designs/gqlgen/handler"
-	"github.com/maiguangyang/graphql/events"
 	jwtgo "github.com/dgrijalva/jwt-go"
+	"github.com/maiguangyang/graphql/events"
+
 	// "github.com/rs/cors"
 	"github.com/maiguangyang/graphql-gorm/gen"
 )
@@ -21,32 +22,30 @@ const (
 
 func main() {
 	mux := http.NewServeMux()
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
 	}
-
 	urlString := os.Getenv("DATABASE_URL")
 	if urlString == "" {
 		panic(fmt.Errorf("missing DATABASE_URL environment variable"))
 	}
-
 	db := gen.NewDBWithString(urlString)
 	defer db.Close()
 	db.AutoMigrate()
-
 	eventController, err := events.NewEventController()
 	if err != nil {
 		panic(err)
 	}
 
-	gqlHandler := handler.GraphQL(gen.NewExecutableSchema(gen.Config{Resolvers: NewResolver(db, &eventController)}))
+	loaders := gen.GetLoaders(db)
 
+	gqlHandler := handler.GraphQL(gen.NewExecutableSchema(gen.Config{Resolvers: NewResolver(db, &eventController)}))
 	playgroundHandler := handler.Playground("GraphQL playground", "/graphql")
 	mux.HandleFunc("/graphql", func(res http.ResponseWriter, req *http.Request) {
 		principalID := getPrincipalID(req)
 		ctx := context.WithValue(req.Context(), gen.KeyPrincipalID, principalID)
+		ctx = context.WithValue(ctx, "loaders", loaders)
 		req = req.WithContext(ctx)
 		if req.Method == "GET" {
 			playgroundHandler(res, req)
@@ -54,7 +53,6 @@ func main() {
 			gqlHandler(res, req)
 		}
 	})
-
 	mux.HandleFunc("/healthcheck", func(res http.ResponseWriter, req *http.Request) {
 		if err := db.Ping(); err != nil {
 			res.WriteHeader(400)
@@ -64,7 +62,6 @@ func main() {
 		res.WriteHeader(200)
 		res.Write([]byte("OK"))
 	})
-
 	handler := mux
 	// use this line to allow cors for all origins/methods/headers (for development)
 	// handler := cors.AllowAll().Handler(mux)
@@ -72,7 +69,6 @@ func main() {
 	log.Printf("connect to http://localhost:%s/graphql for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
-
 func getPrincipalIDFromContext(ctx context.Context) *string {
 	v, _ := ctx.Value(gen.KeyPrincipalID).(*string)
 	return v
@@ -81,7 +77,6 @@ func getJWTClaimsFromContext(ctx context.Context) *JWTClaims {
 	v, _ := ctx.Value(gen.KeyJWTClaims).(*JWTClaims)
 	return v
 }
-
 func getPrincipalID(req *http.Request) *string {
 	pID := req.Header.Get("principal-id")
 	if pID != "" {
@@ -101,12 +96,10 @@ type JWTClaims struct {
 
 func getJWTClaims(req *http.Request) (*JWTClaims, error) {
 	var p *JWTClaims
-
 	tokenStr := strings.Replace(req.Header.Get("authorization"), "Bearer ", "", 1)
 	if tokenStr == "" {
 		return p, nil
 	}
-
 	p = &JWTClaims{}
 	jwtgo.ParseWithClaims(tokenStr, p, nil)
 	return p, nil

@@ -18,9 +18,11 @@ type Mutation {
   createUser(input: UserCreateInput!): User!
   updateUser(id: ID!, input: UserUpdateInput!): User!
   deleteUser(id: ID!): User!
+  deleteAllUsers: Boolean!
   createTask(input: TaskCreateInput!): Task!
   updateTask(id: ID!, input: TaskUpdateInput!): Task!
   deleteTask(id: ID!): Task!
+  deleteAllTasks: Boolean!
 }
 
 type User {
@@ -177,13 +179,6 @@ input UserFilterType {
   createdBy_gte: ID
   createdBy_lte: ID
   createdBy_in: [ID!]
-  tasksIds: ID
-  tasksIds_ne: ID
-  tasksIds_gt: ID
-  tasksIds_lt: ID
-  tasksIds_gte: ID
-  tasksIds_lte: ID
-  tasksIds_in: [ID!]
   tasks: TaskFilterType
 }
 

@@ -8,12 +8,14 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/99designs/gqlgen/handler"
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/maiguangyang/graphql/events"
 
 	// "github.com/rs/cors"
 	"github.com/maiguangyang/graphql-gorm/gen"
+	"github.com/maiguangyang/graphql-gorm/middleware"
 )
 
 const (
@@ -21,7 +23,10 @@ const (
 )
 
 func main() {
-	mux := http.NewServeMux()
+	// mux := http.NewServeMux()
+	mux := mux.NewRouter()
+	mux.Use(middleware.AuthHandler)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
@@ -43,9 +48,10 @@ func main() {
 	gqlHandler := handler.GraphQL(gen.NewExecutableSchema(gen.Config{Resolvers: NewResolver(db, &eventController)}))
 	playgroundHandler := handler.Playground("GraphQL playground", "/graphql")
 	mux.HandleFunc("/graphql", func(res http.ResponseWriter, req *http.Request) {
-		principalID := getPrincipalID(req)
-		ctx := context.WithValue(req.Context(), gen.KeyPrincipalID, principalID)
-		ctx = context.WithValue(ctx, "loaders", loaders)
+		// principalID := getPrincipalID(req)
+
+		// ctx := context.WithValue(req.Context(), gen.KeyPrincipalID, principalID)
+		ctx := context.WithValue(req.Context(), "loaders", loaders)
 		req = req.WithContext(ctx)
 		if req.Method == "GET" {
 			playgroundHandler(res, req)

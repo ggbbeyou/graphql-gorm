@@ -10,10 +10,11 @@ import(
 )
 
 func Validator(table interface{}) (gqlerror.Error, error) {
+
   data := reflect.ValueOf(table)
   elem := data.Elem()
-  key := elem.Type()
 
+  key := elem.Type()
   var errText gqlerror.Error
   var err error = nil
 
@@ -42,6 +43,8 @@ func Validator(table interface{}) (gqlerror.Error, error) {
 	    	}
     	}
 
+    	fmt.Println(value)
+
     	// 字段验证
     	errText, err = checkField(resData, value, json)
     }
@@ -61,46 +64,91 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
   var errText gqlerror.Error
 
 	// 反射类型，进行判定处理
+	// tye := reflect.TypeOf(value).String()
 	tye := reflect.TypeOf(value).String()
 
-	// 如果不是字符串 int int64
-	if tye != "*string" {
-		newValue := int64(*value.(*int64))
+	// 类型判定，取值
+	var newValue interface{}
+  switch tye {
+	  case "string":
+	    newValue = string(value.(string))
+	  case "*string":
+	    newValue = string(*value.(*string))
+	  case "int64":
+	    newValue = int64(value.(int64))
+	  case "*int64":
+	    newValue = int64(*value.(*int64))
+	  case "float64":
+	    newValue = float64(value.(float64))
+	  case "*float64":
+	    newValue = float64(*value.(*float64))
+  }
 
-		if resData["type"] != "" {
-			var bool bool
-			rl := Rule[resData["type"].(string)]
-			bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(newValue))
+  // 正则格式校验
+	if resData["required"] == "true" && IsEmpty(newValue) {
+		errText.Path = append(errText.Path, json + "不能为空")
+	} else if resData["type"] != "" {
+		var bool bool
+		rl := Rule[resData["type"].(string)]
+		bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(newValue))
 
-			msgText := rl["msg"].(string)
-			if msgText == "" {
-				msgText = "格式不正确"
-			}
+		// if resData["type"] == "password" {
+		// 	EncryptPassword(newValue.(string))
+		// }
 
-			if bool != true {
-				errText.Path = append(errText.Path, json + " " + msgText)
-			}
+		msgText := rl["msg"].(string)
+		if msgText == "" {
+			msgText = "格式不正确"
 		}
-	} else {
-		newValue := string(*value.(*string))
 
-		if resData["required"] == "true" && newValue == "" {
-			errText.Path = append(errText.Path, json + "不能为空")
-		} else if resData["type"] != "" {
-			var bool bool
-			rl := Rule[resData["type"].(string)]
-			bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(newValue)
-
-			msgText := rl["msg"].(string)
-			if msgText == "" {
-				msgText = "格式不正确"
-			}
-
-			if bool != true {
-				errText.Path = append(errText.Path, json + " " + msgText)
-			}
+		if bool != true {
+			errText.Path = append(errText.Path, json + " " + msgText)
 		}
 	}
+
+	// if tye != "*string" && tye != "string" {
+	// 	newValue := int64(*value.(*int64))
+
+	// 	if resData["type"] != "" {
+	// 		var bool bool
+
+	// 		rl := Rule[resData["type"].(string)]
+	// 		bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(newValue))
+
+	// 		msgText := rl["msg"].(string)
+	// 		if msgText == "" {
+	// 			msgText = "格式不正确"
+	// 		}
+
+	// 		if bool != true {
+	// 			errText.Path = append(errText.Path, json + " " + msgText)
+	// 		}
+	// 	}
+	// } else {
+	// 	newValue := string(*value.(*string))
+
+	// 	if resData["required"] == "true" && IsEmpty(newValue) {
+	// 		errText.Path = append(errText.Path, json + "不能为空")
+	// 	} else if resData["type"] != "" {
+	// 		var bool bool
+	// 		rl := Rule[resData["type"].(string)]
+	// 		bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(newValue)
+
+
+	// 		if resData["type"] == "password" {
+	// 			fmt.Println(EncryptPassword(newValue))
+	// 		}
+
+	// 		msgText := rl["msg"].(string)
+	// 		if msgText == "" {
+	// 			msgText = "格式不正确"
+	// 		}
+
+	// 		if bool != true {
+	// 			errText.Path = append(errText.Path, json + " " + msgText)
+	// 		}
+	// 	}
+	// }
 
 	if len(errText.Path) > 0 {
 		errText.Message = "请检查以下字段是否正确"

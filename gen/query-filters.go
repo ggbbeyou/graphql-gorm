@@ -50,6 +50,16 @@ func (qf *UserQueryFilter) applyQueryWithFields(dialect gorm.Dialect, fields []*
 		fieldsMap[f.Name] = f
 	}
 
+	if _, ok := fieldsMap["phone"]; ok {
+		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("phone")+" LIKE ? OR %[1]s"+dialect.Quote("phone")+" LIKE ?", dialect.Quote(alias)+"."))
+		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
+	}
+
+	if _, ok := fieldsMap["password"]; ok {
+		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("password")+" LIKE ? OR %[1]s"+dialect.Quote("password")+" LIKE ?", dialect.Quote(alias)+"."))
+		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
+	}
+
 	if _, ok := fieldsMap["email"]; ok {
 		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("email")+" LIKE ? OR %[1]s"+dialect.Quote("email")+" LIKE ?", dialect.Quote(alias)+"."))
 		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))

@@ -9,7 +9,7 @@ import(
 
 // 需要登录验证的路由
 var router = []string{
-  "Task",
+  "User",
 }
 
 // 替换方法名称

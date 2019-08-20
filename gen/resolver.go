@@ -10,11 +10,10 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/gofrs/uuid"
 	"github.com/graph-gophers/dataloader"
+	"github.com/maiguangyang/graphql-gorm/utils"
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql/resolvers"
 	"github.com/vektah/gqlparser/ast"
-
-	"github.com/maiguangyang/graphql-gorm/utils"
 )
 
 func getPrincipalID(ctx context.Context) *string {
@@ -77,6 +76,16 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 		event.AddNewValue("id", changes.ID)
 	}
 
+	if _, ok := input["phone"]; ok && (item.Phone != changes.Phone) {
+		item.Phone = changes.Phone
+		event.AddNewValue("phone", changes.Phone)
+	}
+
+	if _, ok := input["password"]; ok && (item.Password != changes.Password) {
+		item.Password = utils.EncryptPassword(changes.Password)
+		event.AddNewValue("password", changes.Password)
+	}
+
 	if _, ok := input["email"]; ok && (item.Email != changes.Email) && (item.Email == nil || changes.Email == nil || *item.Email != *changes.Email) {
 		item.Email = changes.Email
 		event.AddNewValue("email", changes.Email)
@@ -95,6 +104,11 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 	if _, ok := input["state"]; ok && (item.State != changes.State) && (item.State == nil || changes.State == nil || *item.State != *changes.State) {
 		item.State = changes.State
 		event.AddNewValue("state", changes.State)
+	}
+
+	errText, resErr := utils.Validator(item)
+	if resErr != nil {
+		return item, &errText
 	}
 
 	if err = tx.Create(item).Error; err != nil {
@@ -161,6 +175,18 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 
 	item.UpdatedBy = principalID
 
+	if _, ok := input["phone"]; ok && (item.Phone != changes.Phone) {
+		event.AddOldValue("phone", item.Phone)
+		event.AddNewValue("phone", changes.Phone)
+		item.Phone = changes.Phone
+	}
+
+	if _, ok := input["password"]; ok && (item.Password != changes.Password) {
+		event.AddOldValue("password", item.Password)
+		event.AddNewValue("password", changes.Password)
+		item.Password = utils.EncryptPassword(changes.Password)
+	}
+
 	if _, ok := input["email"]; ok && (item.Email != changes.Email) && (item.Email == nil || changes.Email == nil || *item.Email != *changes.Email) {
 		event.AddOldValue("email", item.Email)
 		event.AddNewValue("email", changes.Email)
@@ -183,6 +209,11 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 		event.AddOldValue("state", item.State)
 		event.AddNewValue("state", changes.State)
 		item.State = changes.State
+	}
+
+	errText, resErr := utils.Validator(item)
+	if resErr != nil {
+		return item, &errText
 	}
 
 	if err = tx.Save(item).Error; err != nil {
@@ -333,6 +364,11 @@ func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[st
 		event.AddNewValue("state", changes.State)
 	}
 
+	errText, resErr := utils.Validator(item)
+	if resErr != nil {
+		return item, &errText
+	}
+
 	if err = tx.Create(item).Error; err != nil {
 		return
 	}
@@ -411,7 +447,6 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 	}
 
 	errText, resErr := utils.Validator(item)
-
 	if resErr != nil {
 		return item, &errText
 	}

@@ -27,6 +27,8 @@ type Mutation {
 
 type User {
   id: ID!
+  phone: String!
+  password: String!
   email: String
   firstName: String
   lastName: String
@@ -57,6 +59,8 @@ type Task {
 
 input UserCreateInput {
   id: ID
+  phone: String!
+  password: String!
   email: String
   firstName: String
   lastName: String
@@ -65,6 +69,8 @@ input UserCreateInput {
 }
 
 input UserUpdateInput {
+  phone: String
+  password: String
   email: String
   firstName: String
   lastName: String
@@ -75,6 +81,10 @@ input UserUpdateInput {
 enum UserSortType {
   ID_ASC
   ID_DESC
+  PHONE_ASC
+  PHONE_DESC
+  PASSWORD_ASC
+  PASSWORD_DESC
   EMAIL_ASC
   EMAIL_DESC
   FIRST_NAME_ASC
@@ -107,6 +117,26 @@ input UserFilterType {
   id_gte: ID
   id_lte: ID
   id_in: [ID!]
+  phone: String
+  phone_ne: String
+  phone_gt: String
+  phone_lt: String
+  phone_gte: String
+  phone_lte: String
+  phone_in: [String!]
+  phone_like: String
+  phone_prefix: String
+  phone_suffix: String
+  password: String
+  password_ne: String
+  password_gt: String
+  password_lt: String
+  password_gte: String
+  password_lte: String
+  password_in: [String!]
+  password_like: String
+  password_prefix: String
+  password_suffix: String
   email: String
   email_ne: String
   email_gt: String

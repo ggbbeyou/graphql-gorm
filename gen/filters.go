@@ -99,6 +99,88 @@ func (f *UserFilterType) WhereContent(dialect gorm.Dialect, aliasPrefix string) 
 		values = append(values, f.IDIn)
 	}
 
+	if f.Phone != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" = ?")
+		values = append(values, f.Phone)
+	}
+	if f.PhoneNe != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" != ?")
+		values = append(values, f.PhoneNe)
+	}
+	if f.PhoneGt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" > ?")
+		values = append(values, f.PhoneGt)
+	}
+	if f.PhoneLt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" < ?")
+		values = append(values, f.PhoneLt)
+	}
+	if f.PhoneGte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" >= ?")
+		values = append(values, f.PhoneGte)
+	}
+	if f.PhoneLte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" <= ?")
+		values = append(values, f.PhoneLte)
+	}
+	if f.PhoneIn != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" IN (?)")
+		values = append(values, f.PhoneIn)
+	}
+	if f.PhoneLike != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" LIKE ?")
+		values = append(values, strings.Replace(strings.Replace(*f.PhoneLike, "?", "_", -1), "*", "%", -1))
+	}
+	if f.PhonePrefix != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" LIKE ?")
+		values = append(values, fmt.Sprintf("%s%%", *f.PhonePrefix))
+	}
+	if f.PhoneSuffix != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("phone")+" LIKE ?")
+		values = append(values, fmt.Sprintf("%%%s", *f.PhoneSuffix))
+	}
+
+	if f.Password != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" = ?")
+		values = append(values, f.Password)
+	}
+	if f.PasswordNe != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" != ?")
+		values = append(values, f.PasswordNe)
+	}
+	if f.PasswordGt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" > ?")
+		values = append(values, f.PasswordGt)
+	}
+	if f.PasswordLt != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" < ?")
+		values = append(values, f.PasswordLt)
+	}
+	if f.PasswordGte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" >= ?")
+		values = append(values, f.PasswordGte)
+	}
+	if f.PasswordLte != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" <= ?")
+		values = append(values, f.PasswordLte)
+	}
+	if f.PasswordIn != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" IN (?)")
+		values = append(values, f.PasswordIn)
+	}
+	if f.PasswordLike != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" LIKE ?")
+		values = append(values, strings.Replace(strings.Replace(*f.PasswordLike, "?", "_", -1), "*", "%", -1))
+	}
+	if f.PasswordPrefix != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" LIKE ?")
+		values = append(values, fmt.Sprintf("%s%%", *f.PasswordPrefix))
+	}
+	if f.PasswordSuffix != nil {
+		conditions = append(conditions, aliasPrefix+dialect.Quote("password")+" LIKE ?")
+		values = append(values, fmt.Sprintf("%%%s", *f.PasswordSuffix))
+	}
+
 	if f.Email != nil {
 		conditions = append(conditions, aliasPrefix+dialect.Quote("email")+" = ?")
 		values = append(values, f.Email)

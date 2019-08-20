@@ -15,22 +15,26 @@ type UserResultType struct {
 }
 
 type User struct {
-	ID        string  `json:"id" gorm:"type:varchar(36) comment 'uuid';primary_key;NOT NULL;"`
-	Email     *string `json:"email" gorm:"type:varchar(64) comment '用户邮箱地址';default:null;"`
-	FirstName *string `json:"firstName" gorm:"column:firstName;null;default:null"`
-	LastName  *string `json:"lastName" gorm:"column:lastName;null;default:null"`
-	State     *int64  `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;"`
-	UpdatedAt *int64  `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
-	CreatedAt *int64  `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
-	DeletedBy *string `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`
-	UpdatedBy *string `json:"updatedBy" gorm:"column:updatedBy;null;default:null"`
-	CreatedBy *string `json:"createdBy" gorm:"column:createdBy;null;default:null"`
+  ID        string  `json:"id" gorm:"type:varchar(36) comment 'uuid';primary_key;NOT NULL;"`
+  Phone     string  `json:"phone" gorm:"type:varchar(32) comment '手机号码';NOT NULL;" validator:"required:true;type:phone"`
+  Password  string  `json:"password" gorm:"type:varchar(64) comment '登录密码';NOT NULL;" validator:"required:true;type:password"`
+  Email     *string `json:"email" gorm:"type:varchar(64) comment '用户邮箱地址';default:null;" validator:"required:true;type:email"`
+  FirstName *string `json:"firstName" gorm:"column:firstName;null;default:null"`
+  LastName  *string `json:"lastName" gorm:"column:lastName;null;default:null"`
+  State     *int64  `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;" validator:"required:true;type:state"`
+  UpdatedAt *int64  `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
+  CreatedAt *int64  `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
+  DeletedBy *string `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`
+  UpdatedBy *string `json:"updatedBy" gorm:"column:updatedBy;null;default:null"`
+  CreatedBy *string `json:"createdBy" gorm:"column:createdBy;null;default:null"`
 
 	Tasks []*Task `json:"tasks" gorm:"foreignkey:AssigneeID"`
 }
 
 type UserChanges struct {
 	ID        string
+	Phone     string
+	Password  string
 	Email     *string
 	FirstName *string
 	LastName  *string
@@ -50,11 +54,11 @@ type TaskResultType struct {
 
 type Task struct {
 	ID         string     `json:"id" gorm:"type:varchar(36) comment 'uuid';primary_key;NOT NULL;"`
-	Title      *string    `json:"title" gorm:"column:title;null;default:null" validator:"required:true;type:email;"`
+	Title      *string    `json:"title" gorm:"column:title;null;default:null"`
 	Completed  *bool      `json:"completed" gorm:"column:completed;null;default:null"`
 	DueDate    *time.Time `json:"dueDate" gorm:"column:dueDate;null;default:null"`
 	AssigneeID *string    `json:"assigneeId" gorm:"column:assigneeId;null;default:null"`
-	State      *int64     `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;" validator:"type:state;"`
+	State      *int64     `json:"state" gorm:"type:int(2) comment '状态：1/正常、2/禁用、3/删除';NOT NULL;default:1;"`
 	UpdatedAt  *int64     `json:"updatedAt" gorm:"type:int(11) comment '更新时间';null;default:null"`
 	CreatedAt  *int64     `json:"createdAt" gorm:"type:int(11) comment '创建时间';null;default:null"`
 	DeletedBy  *string    `json:"deletedBy" gorm:"column:deletedBy;null;default:null"`

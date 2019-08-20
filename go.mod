@@ -18,10 +18,9 @@ require (
 	github.com/graphql-go/graphql v0.7.8 // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/hinshun/vt10x v0.0.0-20180809195222-d55458df857c // indirect
-	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365 // indirect
+	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
 	github.com/inloop/goclitools v0.0.0-20180817142818-51bc2b473cd4 // indirect
 	github.com/jinzhu/gorm v1.9.10
-	github.com/kataras/iris v11.1.1+incompatible
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/maiguangyang/graphql v0.0.1
 	github.com/mattn/go-colorable v0.1.2 // indirect

@@ -1,7 +1,7 @@
 package middleware
 
 import(
-	"fmt"
+	// "fmt"
 	// "log"
 	"time"
   "errors"
@@ -10,13 +10,11 @@ import(
 	"net/http"
 	jwt "github.com/dgrijalva/jwt-go"
 
-	"github.com/maiguangyang/graphql-gorm/gen"
+	// "github.com/maiguangyang/graphql-gorm/gen"
   "github.com/maiguangyang/graphql-gorm/utils"
 )
 
-var contxt context.Context
-var secretkey = []byte("secret_key")
-var user gen.User
+// var user gen.User
 
 func AuthHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, req *http.Request) {
@@ -41,8 +39,8 @@ func AuthHandler(next http.Handler) http.Handler {
 		// }
 
     // 返回前端的Token
-    // ip := utils.RemoteIp(req)
 
+    // ip := utils.RemoteIp(req)
     // token := SetToken(map[string]interface{}{
     //   "id": "998fc3fb-59c5-4af9-86b4-987cb14363f1",
     // }, utils.EncryptMd5(ip + SecretKey["admin"].(string)), "admin")
@@ -50,8 +48,6 @@ func AuthHandler(next http.Handler) http.Handler {
     // fmt.Println(token)
 
     res, _ := HandleUserJWTToken(req, "admin")
-    fmt.Println(res)
-
     ctxt := context.WithValue(req.Context(), "Authorization", res)
     next.ServeHTTP(response, req.WithContext(ctxt))
 	})

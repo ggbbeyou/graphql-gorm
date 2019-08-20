@@ -10,7 +10,6 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/handler"
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/maiguangyang/graphql/events"
@@ -49,27 +48,13 @@ func main() {
 	loaders := gen.GetLoaders(db)
 
 	gqlHandler := handler.GraphQL(gen.NewExecutableSchema(gen.Config{Resolvers: NewResolver(db, &eventController)}),
-
 		// 中间件进行登录Token校验
-		handler.ResolverMiddleware(func(ctx context.Context, next graphql.Resolver) (res interface{}, err error) {
-			// 检测是否需要登录
-			path 		:= graphql.GetResolverContext(ctx).Path()
-			isAuth 	:= utils.CheckRouterIsAuth(path)
-			if isAuth == true {
-				auth := ctx.Value("Authorization").(map[string]interface{})
-				if len(auth) <= 0 {
-					return nil, fmt.Errorf("Invalid Authorization")
-				}
-			}
-
-			return next(ctx)
-		}),
+		utils.RouterIsAuthMiddleware,
 	)
 
 	playgroundHandler := handler.Playground("GraphQL playground", "/graphql")
 	mux.HandleFunc("/graphql", func(res http.ResponseWriter, req *http.Request) {
 		// principalID := getPrincipalID(req)
-
 
 		// ctx := context.WithValue(req.Context(), gen.KeyPrincipalID, principalID)
 		ctx := context.WithValue(req.Context(), "loaders", loaders)

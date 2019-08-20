@@ -33,6 +33,10 @@ func CheckRouterIsAuth(path []interface{}) bool {
 		colName = ReplaceAll(colName, v, "")
 	}
 
+	if StrFirstToUpper(colName[len(colName) - 1:]) == "S" {
+		colName = colName[:len(colName) - 1]
+	}
+
 	index := IndexOf(ArrStrTointerface(router), colName)
 
 	return index != -1

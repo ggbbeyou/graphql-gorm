@@ -65,6 +65,10 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 		PrincipalID: principalID,
 	})
 
+	if input["state"] == nil {
+		input["state"] = 1
+	}
+
 	var changes UserChanges
 	err = ApplyChanges(input, &changes)
 	if err != nil {
@@ -160,20 +164,15 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 		PrincipalID: principalID,
 	})
 
+	if input["state"] == nil {
+		input["state"] = 1
+	}
+
 	var changes UserChanges
 	err = ApplyChanges(input, &changes)
 	if err != nil {
 		return
 	}
-
-	err = resolvers.GetItem(ctx, tx, item, &id)
-	if err != nil {
-		return
-	}
-
-	oldState := item.State
-
-	item.UpdatedBy = principalID
 
 	if _, ok := input["phone"]; ok && (item.Phone != changes.Phone) {
 		event.AddOldValue("phone", item.Phone)
@@ -216,7 +215,17 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 		return item, &errText
 	}
 
-	if err = tx.Save(item).Error; err != nil {
+	oldItem := &User{}
+	err = resolvers.GetItem(ctx, tx, oldItem, &id)
+	if err != nil {
+		return oldItem, err
+	}
+
+	oldState := oldItem.State
+
+	item.UpdatedBy = principalID
+	item.ID = id
+	if err = tx.Model(&item).Updates(item).Error; err != nil {
 		return
 	}
 
@@ -328,6 +337,10 @@ func (r *GeneratedMutationResolver) CreateTask(ctx context.Context, input map[st
 		PrincipalID: principalID,
 	})
 
+	if input["state"] == nil {
+		input["state"] = 1
+	}
+
 	var changes TaskChanges
 	err = ApplyChanges(input, &changes)
 	if err != nil {
@@ -403,18 +416,15 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 		PrincipalID: principalID,
 	})
 
+	if input["state"] == nil {
+		input["state"] = 1
+	}
+
 	var changes TaskChanges
 	err = ApplyChanges(input, &changes)
 	if err != nil {
 		return
 	}
-
-	err = resolvers.GetItem(ctx, tx, item, &id)
-	if err != nil {
-		return
-	}
-
-	item.UpdatedBy = principalID
 
 	if _, ok := input["title"]; ok && (item.Title != changes.Title) && (item.Title == nil || changes.Title == nil || *item.Title != *changes.Title) {
 		event.AddOldValue("title", item.Title)
@@ -451,7 +461,15 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 		return item, &errText
 	}
 
-	if err = tx.Save(item).Error; err != nil {
+	oldItem := &Task{}
+	err = resolvers.GetItem(ctx, tx, oldItem, &id)
+	if err != nil {
+		return oldItem, err
+	}
+
+	item.UpdatedBy = principalID
+	item.ID = id
+	if err = tx.Model(&item).Updates(item).Error; err != nil {
 		return
 	}
 

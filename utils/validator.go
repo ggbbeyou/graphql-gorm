@@ -43,13 +43,17 @@ func Validator(table interface{}) (gqlerror.Error, error) {
 	    	}
     	}
 
-    	fmt.Println(value)
-
     	// 字段验证
-    	errText, err = checkField(resData, value, json)
+    	if res, resErr := checkField(resData, value, json); resErr != nil {
+    		errText.Path = append(errText.Path, res)
+    	}
     }
   }
 
+	if len(errText.Path) > 0 {
+		errText.Message = "请检查以下字段是否正确"
+		err = fmt.Errorf("error")
+	}
   return errText, err
 }
 
@@ -60,8 +64,9 @@ func Validator(table interface{}) (gqlerror.Error, error) {
  * @param  {[type]} json    string)                  (gqlerror.Error, error [description]
  * @return {[type]}         [description]
  */
-func checkField(resData map[string]interface{}, value interface{}, json string) (gqlerror.Error, error) {
-  var errText gqlerror.Error
+func checkField(resData map[string]interface{}, value interface{}, json string) (string, error) {
+  // var errText gqlerror.Error
+  var errText string
 
 	// 反射类型，进行判定处理
 	// tye := reflect.TypeOf(value).String()
@@ -77,16 +82,19 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
 	  case "int64":
 	    newValue = int64(value.(int64))
 	  case "*int64":
-	    newValue = int64(*value.(*int64))
+	  	if value.(*int64) != nil {
+	    	newValue = int64(*value.(*int64))
+	  	}
 	  case "float64":
 	    newValue = float64(value.(float64))
 	  case "*float64":
 	    newValue = float64(*value.(*float64))
   }
 
+
   // 正则格式校验
 	if resData["required"] == "true" && IsEmpty(newValue) {
-		errText.Path = append(errText.Path, json + "不能为空")
+		errText = json + "不能为空"
 	} else if resData["type"] != "" {
 		var bool bool
 		rl := Rule[resData["type"].(string)]
@@ -102,56 +110,12 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
 		}
 
 		if bool != true {
-			errText.Path = append(errText.Path, json + " " + msgText)
+			errText = json + " " + msgText
 		}
 	}
 
-	// if tye != "*string" && tye != "string" {
-	// 	newValue := int64(*value.(*int64))
-
-	// 	if resData["type"] != "" {
-	// 		var bool bool
-
-	// 		rl := Rule[resData["type"].(string)]
-	// 		bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(newValue))
-
-	// 		msgText := rl["msg"].(string)
-	// 		if msgText == "" {
-	// 			msgText = "格式不正确"
-	// 		}
-
-	// 		if bool != true {
-	// 			errText.Path = append(errText.Path, json + " " + msgText)
-	// 		}
-	// 	}
-	// } else {
-	// 	newValue := string(*value.(*string))
-
-	// 	if resData["required"] == "true" && IsEmpty(newValue) {
-	// 		errText.Path = append(errText.Path, json + "不能为空")
-	// 	} else if resData["type"] != "" {
-	// 		var bool bool
-	// 		rl := Rule[resData["type"].(string)]
-	// 		bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(newValue)
-
-
-	// 		if resData["type"] == "password" {
-	// 			fmt.Println(EncryptPassword(newValue))
-	// 		}
-
-	// 		msgText := rl["msg"].(string)
-	// 		if msgText == "" {
-	// 			msgText = "格式不正确"
-	// 		}
-
-	// 		if bool != true {
-	// 			errText.Path = append(errText.Path, json + " " + msgText)
-	// 		}
-	// 	}
-	// }
-
-	if len(errText.Path) > 0 {
-		errText.Message = "请检查以下字段是否正确"
+	if errText != "" {
+		// errText.Message = "请检查以下字段是否正确"
 		return errText, fmt.Errorf("error")
 	}
 

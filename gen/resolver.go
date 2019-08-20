@@ -86,7 +86,7 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 	}
 
 	if _, ok := input["password"]; ok && (item.Password != changes.Password) {
-		item.Password = utils.EncryptPassword(changes.Password)
+		item.Password = changes.Password
 		event.AddNewValue("password", changes.Password)
 	}
 
@@ -108,6 +108,10 @@ func (r *GeneratedMutationResolver) CreateUser(ctx context.Context, input map[st
 	if _, ok := input["state"]; ok && (item.State != changes.State) && (item.State == nil || changes.State == nil || *item.State != *changes.State) {
 		item.State = changes.State
 		event.AddNewValue("state", changes.State)
+	}
+
+	if input["password"] != nil {
+		item.Password = utils.EncryptPassword(item.Password)
 	}
 
 	errText, resErr := utils.Validator(item)
@@ -183,7 +187,7 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 	if _, ok := input["password"]; ok && (item.Password != changes.Password) {
 		event.AddOldValue("password", item.Password)
 		event.AddNewValue("password", changes.Password)
-		item.Password = utils.EncryptPassword(changes.Password)
+		item.Password = changes.Password
 	}
 
 	if _, ok := input["email"]; ok && (item.Email != changes.Email) && (item.Email == nil || changes.Email == nil || *item.Email != *changes.Email) {
@@ -225,6 +229,11 @@ func (r *GeneratedMutationResolver) UpdateUser(ctx context.Context, id string, i
 
 	item.UpdatedBy = principalID
 	item.ID = id
+
+	if input["password"] != nil {
+		item.Password = utils.EncryptPassword(item.Password)
+	}
+
 	if err = tx.Model(&item).Updates(item).Error; err != nil {
 		return
 	}
@@ -469,6 +478,7 @@ func (r *GeneratedMutationResolver) UpdateTask(ctx context.Context, id string, i
 
 	item.UpdatedBy = principalID
 	item.ID = id
+
 	if err = tx.Model(&item).Updates(item).Error; err != nil {
 		return
 	}

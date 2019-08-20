@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	// "time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mssql"
@@ -46,7 +45,7 @@ func NewDBWithString(urlString string) *DB {
 		panic(err)
 	}
 	// db.DB().SetMaxIdleConns(5)
-	// db.DB().SetConnMaxLifetime(time.Second * 60)
+	// db.DB().SetConnMaxLifetime(time.Second*60)
 	// db.DB().SetMaxOpenConns(10)
 	db.LogMode(true)
 	return NewDB(db)

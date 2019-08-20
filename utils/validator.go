@@ -99,7 +99,6 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
 		var bool bool
 		rl := Rule[resData["type"].(string)]
 		bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(newValue))
-
 		// if resData["type"] == "password" {
 		// 	EncryptPassword(newValue.(string))
 		// }

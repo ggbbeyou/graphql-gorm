@@ -78,7 +78,9 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
 	  case "string":
 	    newValue = string(value.(string))
 	  case "*string":
-	    newValue = string(*value.(*string))
+	  	if value.(*string) != nil {
+	    	newValue = string(*value.(*string))
+	  	}
 	  case "int64":
 	    newValue = int64(value.(int64))
 	  case "*int64":
@@ -88,7 +90,9 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
 	  case "float64":
 	    newValue = float64(value.(float64))
 	  case "*float64":
-	    newValue = float64(*value.(*float64))
+	  	if value.(*float64) != nil {
+	    	newValue = float64(*value.(*float64))
+	  	}
   }
 
 

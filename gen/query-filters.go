@@ -17,6 +17,7 @@ func (qf *UserQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, sele
 	if qf.Query == nil {
 		return nil
 	}
+
 	fields := []*ast.Field{}
 	if selectionSet != nil {
 		for _, s := range *selectionSet {
@@ -28,10 +29,9 @@ func (qf *UserQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, sele
 		return fmt.Errorf("Cannot query with 'q' attribute without items field.")
 	}
 
-	ors := []string{}
-
 	queryParts := strings.Split(*qf.Query, " ")
 	for _, part := range queryParts {
+		ors := []string{}
 		if err := qf.applyQueryWithFields(dialect, fields, part, "users", &ors, values, joins); err != nil {
 			return err
 		}
@@ -45,19 +45,9 @@ func (qf *UserQueryFilter) applyQueryWithFields(dialect gorm.Dialect, fields []*
 		return nil
 	}
 
-	fieldsMap := map[string]*ast.Field{}
+	fieldsMap := map[string][]*ast.Field{}
 	for _, f := range fields {
-		fieldsMap[f.Name] = f
-	}
-
-	if _, ok := fieldsMap["phone"]; ok {
-		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("phone")+" LIKE ? OR %[1]s"+dialect.Quote("phone")+" LIKE ?", dialect.Quote(alias)+"."))
-		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
-	}
-
-	if _, ok := fieldsMap["password"]; ok {
-		*ors = append(*ors, fmt.Sprintf("%[1]s"+dialect.Quote("password")+" LIKE ? OR %[1]s"+dialect.Quote("password")+" LIKE ?", dialect.Quote(alias)+"."))
-		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
+		fieldsMap[f.Name] = append(fieldsMap[f.Name], f)
 	}
 
 	if _, ok := fieldsMap["email"]; ok {
@@ -75,14 +65,16 @@ func (qf *UserQueryFilter) applyQueryWithFields(dialect gorm.Dialect, fields []*
 		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
 	}
 
-	if f, ok := fieldsMap["tasks"]; ok {
+	if fs, ok := fieldsMap["tasks"]; ok {
 		_fields := []*ast.Field{}
 		_alias := alias + "_tasks"
 		*joins = append(*joins, "LEFT JOIN "+dialect.Quote("tasks")+" "+dialect.Quote(_alias)+" ON "+dialect.Quote(_alias)+"."+dialect.Quote("assigneeId")+" = "+dialect.Quote(alias)+".id")
 
-		for _, s := range f.SelectionSet {
-			if f, ok := s.(*ast.Field); ok {
-				_fields = append(_fields, f)
+		for _, f := range fs {
+			for _, s := range f.SelectionSet {
+				if f, ok := s.(*ast.Field); ok {
+					_fields = append(_fields, f)
+				}
 			}
 		}
 		q := TaskQueryFilter{qf.Query}
@@ -103,6 +95,7 @@ func (qf *TaskQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, sele
 	if qf.Query == nil {
 		return nil
 	}
+
 	fields := []*ast.Field{}
 	if selectionSet != nil {
 		for _, s := range *selectionSet {
@@ -114,10 +107,9 @@ func (qf *TaskQueryFilter) Apply(ctx context.Context, dialect gorm.Dialect, sele
 		return fmt.Errorf("Cannot query with 'q' attribute without items field.")
 	}
 
-	ors := []string{}
-
 	queryParts := strings.Split(*qf.Query, " ")
 	for _, part := range queryParts {
+		ors := []string{}
 		if err := qf.applyQueryWithFields(dialect, fields, part, "tasks", &ors, values, joins); err != nil {
 			return err
 		}
@@ -131,9 +123,9 @@ func (qf *TaskQueryFilter) applyQueryWithFields(dialect gorm.Dialect, fields []*
 		return nil
 	}
 
-	fieldsMap := map[string]*ast.Field{}
+	fieldsMap := map[string][]*ast.Field{}
 	for _, f := range fields {
-		fieldsMap[f.Name] = f
+		fieldsMap[f.Name] = append(fieldsMap[f.Name], f)
 	}
 
 	if _, ok := fieldsMap["title"]; ok {
@@ -141,14 +133,16 @@ func (qf *TaskQueryFilter) applyQueryWithFields(dialect gorm.Dialect, fields []*
 		*values = append(*values, fmt.Sprintf("%s%%", query), fmt.Sprintf("%% %s%%", query))
 	}
 
-	if f, ok := fieldsMap["assignee"]; ok {
+	if fs, ok := fieldsMap["assignee"]; ok {
 		_fields := []*ast.Field{}
 		_alias := alias + "_assignee"
 		*joins = append(*joins, "LEFT JOIN "+dialect.Quote("users")+" "+dialect.Quote(_alias)+" ON "+dialect.Quote(_alias)+".id = "+alias+"."+dialect.Quote("assigneeId"))
 
-		for _, s := range f.SelectionSet {
-			if f, ok := s.(*ast.Field); ok {
-				_fields = append(_fields, f)
+		for _, f := range fs {
+			for _, s := range f.SelectionSet {
+				if f, ok := s.(*ast.Field); ok {
+					_fields = append(_fields, f)
+				}
 			}
 		}
 		q := UserQueryFilter{qf.Query}

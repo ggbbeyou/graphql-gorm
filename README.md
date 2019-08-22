@@ -18,12 +18,12 @@ export GOPROXY="https://athens.azurefd.net"
 export GOPROXY="https://goproxy.io"
 ```
 
-## 使用说明
+## 开发说明
 
 - 设置数据库连接
 在根目录makefile文件里面进行设置
 ```
-DATABASE_URL=mysql://'root:123456@tcp(localhost:3306)/graphql?charset=utf8mb4&parseTime=True&loc=Local'
+DATABASE_URL=mysql://'root:123456@tcp(localhost:3306)/graphql?charset=utf8mb4&parseTime=True&loc=Local' PORT=80 go run *.go
 ```
 
 - 生成新的GraphQL接口代码
@@ -31,7 +31,7 @@ DATABASE_URL=mysql://'root:123456@tcp(localhost:3306)/graphql?charset=utf8mb4&pa
 
 ```
 type User {
-  email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;") @validator(required: "true", tye: "email")
+  email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';NOT NULL;default:0;") @validator(required: "true", type: "email")
   age: Int
   firstName: String
   lastName: String
@@ -48,7 +48,7 @@ type Task {
 }
 ```
 @column：参数为gorm，主要用来定义表结构到一些信息
-@validator：字段校验，required是否必填（新增）、tye正则匹配校验
+@validator：字段校验，required是否必填、type正则匹配校验
 
 
 ------------
@@ -63,3 +63,16 @@ go run github.com/maiguangyang/graphql
 make run
 ```
 
+## 新增一个自定义方法
+- 1.在model.graphql增加
+```
+extend type Mutation {
+  token(input: String): String!
+}
+```
+- 2. 在src/resolver.go 增加
+```
+func (r *MutationResolver) Token(ctx context.Context, input *string) (string, error) {
+  return "token", nil
+}
+```

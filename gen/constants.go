@@ -1,16 +1,15 @@
-# This schema is generated, please don't update it manually
+package gen
 
-scalar Time
+type key int
 
-scalar _Any
-
-schema {
-  query: Query
-  mutation: Mutation
-}
+const (
+	KeyPrincipalID      key    = iota
+	KeyLoaders          key    = iota
+	KeyExecutableSchema key    = iota
+	KeyJWTClaims        key    = iota
+	SchemaSDL           string = `scalar Time
 
 type Query {
-  _service: _Service!
   user(id: ID, q: String, filter: UserFilterType): User
   users(current_page: Int = 1, per_page: Int = 20, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
   task(id: ID, q: String, filter: TaskFilterType): Task
@@ -331,8 +330,5 @@ type TaskResultType {
   current_page: Int!
   per_page: Int!
   total_page: Int!
-}
-
-type _Service {
-  sdl: String
-}
+}`
+)

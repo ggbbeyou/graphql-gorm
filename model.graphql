@@ -1,6 +1,4 @@
 type User {
-  phone: String! @column(gorm: "type:varchar(64) comment '手机号码';NOT NULL;") @validator(required: "true", type: "phone")
-  password: String! @column(gorm: "type:varchar(255) comment '登录密码';NOT NULL;") @validator(required: "true", type: "password")
 	email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';default:null;") @validator(required: "true", type: "email")
 	firstName: String
 	lastName: String
@@ -11,4 +9,8 @@ type Task {
 	completed: Boolean
 	dueDate: Time
 	assignee: User @relationship(inverse:"tasks")
+}
+
+extend type Mutation {
+  token(input: String): String!
 }

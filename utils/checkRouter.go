@@ -7,7 +7,7 @@ import(
 	"github.com/99designs/gqlgen/handler"
 )
 
-// 需要登录验证的路由
+// 不需要登录验证的路由
 var router = []string{
   "User",
 }
@@ -39,7 +39,7 @@ func CheckRouterIsAuth(path []interface{}) bool {
 
 	index := IndexOf(ArrStrTointerface(router), colName)
 
-	return index != -1
+	return index == -1
 }
 
 // 导出路由验证中间件

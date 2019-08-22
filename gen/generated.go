@@ -54,15 +54,17 @@ type ComplexityRoot struct {
 		DeleteAllUsers func(childComplexity int) int
 		DeleteTask     func(childComplexity int, id string) int
 		DeleteUser     func(childComplexity int, id string) int
+		Token          func(childComplexity int, input *string) int
 		UpdateTask     func(childComplexity int, id string, input map[string]interface{}) int
 		UpdateUser     func(childComplexity int, id string, input map[string]interface{}) int
 	}
 
 	Query struct {
-		Task  func(childComplexity int, id *string, q *string, filter *TaskFilterType) int
-		Tasks func(childComplexity int, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) int
-		User  func(childComplexity int, id *string, q *string, filter *UserFilterType) int
-		Users func(childComplexity int, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) int
+		Task     func(childComplexity int, id *string, q *string, filter *TaskFilterType) int
+		Tasks    func(childComplexity int, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) int
+		User     func(childComplexity int, id *string, q *string, filter *UserFilterType) int
+		Users    func(childComplexity int, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) int
+		_service func(childComplexity int) int
 	}
 
 	Task struct {
@@ -96,8 +98,6 @@ type ComplexityRoot struct {
 		FirstName func(childComplexity int) int
 		ID        func(childComplexity int) int
 		LastName  func(childComplexity int) int
-		Password  func(childComplexity int) int
-		Phone     func(childComplexity int) int
 		State     func(childComplexity int) int
 		Tasks     func(childComplexity int) int
 		TasksIds  func(childComplexity int) int
@@ -112,6 +112,10 @@ type ComplexityRoot struct {
 		Total       func(childComplexity int) int
 		TotalPage   func(childComplexity int) int
 	}
+
+	_Service struct {
+		Sdl func(childComplexity int) int
+	}
 }
 
 type MutationResolver interface {
@@ -123,8 +127,10 @@ type MutationResolver interface {
 	UpdateTask(ctx context.Context, id string, input map[string]interface{}) (*Task, error)
 	DeleteTask(ctx context.Context, id string) (*Task, error)
 	DeleteAllTasks(ctx context.Context) (bool, error)
+	Token(ctx context.Context, input *string) (string, error)
 }
 type QueryResolver interface {
+	_service(ctx context.Context) (*_Service, error)
 	User(ctx context.Context, id *string, q *string, filter *UserFilterType) (*User, error)
 	Users(ctx context.Context, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) (*UserResultType, error)
 	Task(ctx context.Context, id *string, q *string, filter *TaskFilterType) (*Task, error)
@@ -136,8 +142,7 @@ type TaskResolver interface {
 type TaskResultTypeResolver interface {
 	Data(ctx context.Context, obj *TaskResultType) ([]*Task, error)
 	Total(ctx context.Context, obj *TaskResultType) (int, error)
-	CurrentPage(ctx context.Context, obj *TaskResultType) (int, error)
-	PerPage(ctx context.Context, obj *TaskResultType) (int, error)
+
 	TotalPage(ctx context.Context, obj *TaskResultType) (int, error)
 }
 type UserResolver interface {
@@ -148,8 +153,7 @@ type UserResolver interface {
 type UserResultTypeResolver interface {
 	Data(ctx context.Context, obj *UserResultType) ([]*User, error)
 	Total(ctx context.Context, obj *UserResultType) (int, error)
-	CurrentPage(ctx context.Context, obj *UserResultType) (int, error)
-	PerPage(ctx context.Context, obj *UserResultType) (int, error)
+
 	TotalPage(ctx context.Context, obj *UserResultType) (int, error)
 }
 
@@ -230,6 +234,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(string)), true
 
+	case "Mutation.token":
+		if e.complexity.Mutation.Token == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_token_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.Token(childComplexity, args["input"].(*string)), true
+
 	case "Mutation.updateTask":
 		if e.complexity.Mutation.UpdateTask == nil {
 			break
@@ -301,6 +317,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Users(childComplexity, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]UserSortType), args["filter"].(*UserFilterType)), true
+
+	case "Query._service":
+		if e.complexity.Query._service == nil {
+			break
+		}
+
+		return e.complexity.Query._service(childComplexity), true
 
 	case "Task.assignee":
 		if e.complexity.Task.Assignee == nil {
@@ -470,20 +493,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.LastName(childComplexity), true
 
-	case "User.password":
-		if e.complexity.User.Password == nil {
-			break
-		}
-
-		return e.complexity.User.Password(childComplexity), true
-
-	case "User.phone":
-		if e.complexity.User.Phone == nil {
-			break
-		}
-
-		return e.complexity.User.Phone(childComplexity), true
-
 	case "User.state":
 		if e.complexity.User.State == nil {
 			break
@@ -554,6 +563,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserResultType.TotalPage(childComplexity), true
 
+	case "_Service.sdl":
+		if e.complexity._Service.Sdl == nil {
+			break
+		}
+
+		return e.complexity._Service.Sdl(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -620,12 +636,15 @@ var parsedSchema = gqlparser.MustLoadSchema(
 
 scalar Time
 
+scalar _Any
+
 schema {
   query: Query
   mutation: Mutation
 }
 
 type Query {
+  _service: _Service!
   user(id: ID, q: String, filter: UserFilterType): User
   users(current_page: Int = 1, per_page: Int = 20, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
   task(id: ID, q: String, filter: TaskFilterType): Task
@@ -645,8 +664,6 @@ type Mutation {
 
 type User {
   id: ID!
-  phone: String!
-  password: String!
   email: String
   firstName: String
   lastName: String
@@ -675,10 +692,12 @@ type Task {
   createdBy: ID
 }
 
+extend type Mutation {
+  token(input: String): String!
+}
+
 input UserCreateInput {
   id: ID
-  phone: String!
-  password: String!
   email: String
   firstName: String
   lastName: String
@@ -687,8 +706,6 @@ input UserCreateInput {
 }
 
 input UserUpdateInput {
-  phone: String
-  password: String
   email: String
   firstName: String
   lastName: String
@@ -699,10 +716,6 @@ input UserUpdateInput {
 enum UserSortType {
   ID_ASC
   ID_DESC
-  PHONE_ASC
-  PHONE_DESC
-  PASSWORD_ASC
-  PASSWORD_DESC
   EMAIL_ASC
   EMAIL_DESC
   FIRST_NAME_ASC
@@ -735,26 +748,6 @@ input UserFilterType {
   id_gte: ID
   id_lte: ID
   id_in: [ID!]
-  phone: String
-  phone_ne: String
-  phone_gt: String
-  phone_lt: String
-  phone_gte: String
-  phone_lte: String
-  phone_in: [String!]
-  phone_like: String
-  phone_prefix: String
-  phone_suffix: String
-  password: String
-  password_ne: String
-  password_gt: String
-  password_lt: String
-  password_gte: String
-  password_lte: String
-  password_in: [String!]
-  password_like: String
-  password_prefix: String
-  password_suffix: String
   email: String
   email_ne: String
   email_gt: String
@@ -973,6 +966,10 @@ type TaskResultType {
   per_page: Int!
   total_page: Int!
 }
+
+type _Service {
+  sdl: String
+}
 `},
 )
 
@@ -1033,6 +1030,20 @@ func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, 
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_token_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -1618,6 +1629,87 @@ func (ec *executionContext) _Mutation_deleteAllTasks(ctx context.Context, field 
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_token(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_token_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Token(rctx, args["input"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query__service(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query()._service(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*_Service)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalN_Service2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐ_Service(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2357,13 +2449,13 @@ func (ec *executionContext) _TaskResultType_current_page(ctx context.Context, fi
 		Object:   "TaskResultType",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TaskResultType().CurrentPage(rctx, obj)
+		return obj.CurrentPage, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2375,10 +2467,10 @@ func (ec *executionContext) _TaskResultType_current_page(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TaskResultType_per_page(ctx context.Context, field graphql.CollectedField, obj *TaskResultType) (ret graphql.Marshaler) {
@@ -2394,13 +2486,13 @@ func (ec *executionContext) _TaskResultType_per_page(ctx context.Context, field 
 		Object:   "TaskResultType",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TaskResultType().PerPage(rctx, obj)
+		return obj.PerPage, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2412,10 +2504,10 @@ func (ec *executionContext) _TaskResultType_per_page(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TaskResultType_total_page(ctx context.Context, field graphql.CollectedField, obj *TaskResultType) (ret graphql.Marshaler) {
@@ -2490,80 +2582,6 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_phone(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "User",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Phone, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_password(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "User",
-		Field:    field,
-		Args:     nil,
-		IsMethod: false,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
@@ -3033,13 +3051,13 @@ func (ec *executionContext) _UserResultType_current_page(ctx context.Context, fi
 		Object:   "UserResultType",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.UserResultType().CurrentPage(rctx, obj)
+		return obj.CurrentPage, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3051,10 +3069,10 @@ func (ec *executionContext) _UserResultType_current_page(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserResultType_per_page(ctx context.Context, field graphql.CollectedField, obj *UserResultType) (ret graphql.Marshaler) {
@@ -3070,13 +3088,13 @@ func (ec *executionContext) _UserResultType_per_page(ctx context.Context, field 
 		Object:   "UserResultType",
 		Field:    field,
 		Args:     nil,
-		IsMethod: true,
+		IsMethod: false,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.UserResultType().PerPage(rctx, obj)
+		return obj.PerPage, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3088,10 +3106,10 @@ func (ec *executionContext) _UserResultType_per_page(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UserResultType_total_page(ctx context.Context, field graphql.CollectedField, obj *UserResultType) (ret graphql.Marshaler) {
@@ -3129,6 +3147,40 @@ func (ec *executionContext) _UserResultType_total_page(ctx context.Context, fiel
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) __Service_sdl(ctx context.Context, field graphql.CollectedField, obj *_Service) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "_Service",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sdl, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -4852,126 +4904,6 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
-		case "phone":
-			var err error
-			it.Phone, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_ne":
-			var err error
-			it.PhoneNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_gt":
-			var err error
-			it.PhoneGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_lt":
-			var err error
-			it.PhoneLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_gte":
-			var err error
-			it.PhoneGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_lte":
-			var err error
-			it.PhoneLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_in":
-			var err error
-			it.PhoneIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_like":
-			var err error
-			it.PhoneLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_prefix":
-			var err error
-			it.PhonePrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone_suffix":
-			var err error
-			it.PhoneSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password":
-			var err error
-			it.Password, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_ne":
-			var err error
-			it.PasswordNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_gt":
-			var err error
-			it.PasswordGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_lt":
-			var err error
-			it.PasswordLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_gte":
-			var err error
-			it.PasswordGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_lte":
-			var err error
-			it.PasswordLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_in":
-			var err error
-			it.PasswordIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_like":
-			var err error
-			it.PasswordLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_prefix":
-			var err error
-			it.PasswordPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "password_suffix":
-			var err error
-			it.PasswordSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "email":
 			var err error
 			it.Email, err = ec.unmarshalOString2ᚖstring(ctx, v)
@@ -5479,6 +5411,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "token":
+			out.Values[i] = ec._Mutation_token(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5505,6 +5442,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "_service":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query__service(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "user":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -5662,33 +5613,15 @@ func (ec *executionContext) _TaskResultType(ctx context.Context, sel ast.Selecti
 				return res
 			})
 		case "current_page":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._TaskResultType_current_page(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._TaskResultType_current_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "per_page":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._TaskResultType_per_page(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._TaskResultType_per_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "total_page":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -5727,16 +5660,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = graphql.MarshalString("User")
 		case "id":
 			out.Values[i] = ec._User_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
-		case "phone":
-			out.Values[i] = ec._User_phone(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
-		case "password":
-			out.Values[i] = ec._User_password(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
@@ -5837,33 +5760,15 @@ func (ec *executionContext) _UserResultType(ctx context.Context, sel ast.Selecti
 				return res
 			})
 		case "current_page":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._UserResultType_current_page(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._UserResultType_current_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "per_page":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._UserResultType_per_page(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+			out.Values[i] = ec._UserResultType_per_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "total_page":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
@@ -5878,6 +5783,30 @@ func (ec *executionContext) _UserResultType(ctx context.Context, sel ast.Selecti
 				}
 				return res
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var _ServiceImplementors = []string{"_Service"}
+
+func (ec *executionContext) __Service(ctx context.Context, sel ast.SelectionSet, obj *_Service) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, _ServiceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("_Service")
+		case "sdl":
+			out.Values[i] = ec.__Service_sdl(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6205,6 +6134,24 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) unmarshalNInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalNInt2int(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalNInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec.marshalNInt2int(ctx, sel, *v)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	return graphql.UnmarshalString(v)
 }
@@ -6421,6 +6368,20 @@ func (ec *executionContext) unmarshalNUserUpdateInput2map(ctx context.Context, v
 		return nil, nil
 	}
 	return v.(map[string]interface{}), nil
+}
+
+func (ec *executionContext) marshalN_Service2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐ_Service(ctx context.Context, sel ast.SelectionSet, v _Service) graphql.Marshaler {
+	return ec.__Service(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalN_Service2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐ_Service(ctx context.Context, sel ast.SelectionSet, v *_Service) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec.__Service(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {

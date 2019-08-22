@@ -105,26 +105,6 @@ type UserFilterType struct {
 	IDGte           *string           `json:"id_gte"`
 	IDLte           *string           `json:"id_lte"`
 	IDIn            []string          `json:"id_in"`
-	Phone           *string           `json:"phone"`
-	PhoneNe         *string           `json:"phone_ne"`
-	PhoneGt         *string           `json:"phone_gt"`
-	PhoneLt         *string           `json:"phone_lt"`
-	PhoneGte        *string           `json:"phone_gte"`
-	PhoneLte        *string           `json:"phone_lte"`
-	PhoneIn         []string          `json:"phone_in"`
-	PhoneLike       *string           `json:"phone_like"`
-	PhonePrefix     *string           `json:"phone_prefix"`
-	PhoneSuffix     *string           `json:"phone_suffix"`
-	Password        *string           `json:"password"`
-	PasswordNe      *string           `json:"password_ne"`
-	PasswordGt      *string           `json:"password_gt"`
-	PasswordLt      *string           `json:"password_lt"`
-	PasswordGte     *string           `json:"password_gte"`
-	PasswordLte     *string           `json:"password_lte"`
-	PasswordIn      []string          `json:"password_in"`
-	PasswordLike    *string           `json:"password_like"`
-	PasswordPrefix  *string           `json:"password_prefix"`
-	PasswordSuffix  *string           `json:"password_suffix"`
 	Email           *string           `json:"email"`
 	EmailNe         *string           `json:"email_ne"`
 	EmailGt         *string           `json:"email_gt"`
@@ -198,6 +178,10 @@ type UserFilterType struct {
 	CreatedByLte    *string           `json:"createdBy_lte"`
 	CreatedByIn     []string          `json:"createdBy_in"`
 	Tasks           *TaskFilterType   `json:"tasks"`
+}
+
+type _Service struct {
+	Sdl *string `json:"sdl"`
 }
 
 type TaskSortType string
@@ -286,10 +270,6 @@ type UserSortType string
 const (
 	UserSortTypeIDAsc         UserSortType = "ID_ASC"
 	UserSortTypeIDDesc        UserSortType = "ID_DESC"
-	UserSortTypePhoneAsc      UserSortType = "PHONE_ASC"
-	UserSortTypePhoneDesc     UserSortType = "PHONE_DESC"
-	UserSortTypePasswordAsc   UserSortType = "PASSWORD_ASC"
-	UserSortTypePasswordDesc  UserSortType = "PASSWORD_DESC"
 	UserSortTypeEmailAsc      UserSortType = "EMAIL_ASC"
 	UserSortTypeEmailDesc     UserSortType = "EMAIL_DESC"
 	UserSortTypeFirstNameAsc  UserSortType = "FIRST_NAME_ASC"
@@ -315,10 +295,6 @@ const (
 var AllUserSortType = []UserSortType{
 	UserSortTypeIDAsc,
 	UserSortTypeIDDesc,
-	UserSortTypePhoneAsc,
-	UserSortTypePhoneDesc,
-	UserSortTypePasswordAsc,
-	UserSortTypePasswordDesc,
 	UserSortTypeEmailAsc,
 	UserSortTypeEmailDesc,
 	UserSortTypeFirstNameAsc,
@@ -343,7 +319,7 @@ var AllUserSortType = []UserSortType{
 
 func (e UserSortType) IsValid() bool {
 	switch e {
-	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypePhoneAsc, UserSortTypePhoneDesc, UserSortTypePasswordAsc, UserSortTypePasswordDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeStateAsc, UserSortTypeStateDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc, UserSortTypeTasksIDSAsc, UserSortTypeTasksIDSDesc:
+	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeStateAsc, UserSortTypeStateDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc, UserSortTypeTasksIDSAsc, UserSortTypeTasksIDSDesc:
 		return true
 	}
 	return false

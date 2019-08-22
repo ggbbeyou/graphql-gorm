@@ -15,49 +15,41 @@ resolver:
 
 models:
   
-  UserResultType:
-    model: github.com/maiguangyang/graphql-gorm/gen.UserResultType
-    fields:
-      total:
-        resolver: true
-      current_page:
-        resolver: true
-      per_page:
-        resolver: true
-      total_page:
-        resolver: true
-      data:
-        resolver: true
   User:
     model: github.com/maiguangyang/graphql-gorm/gen.User
     fields:
       tasks:
+        resolver: true
+  UserResultType:
+    model: github.com/maiguangyang/graphql-gorm/gen.UserResultType
+    fields:
+      count:
+        resolver: true
+      items:
         resolver: true
   UserCreateInput:
     model: "map[string]interface{}"
   UserUpdateInput:
     model: "map[string]interface{}"
   
-  TaskResultType:
-    model: github.com/maiguangyang/graphql-gorm/gen.TaskResultType
-    fields:
-      total:
-        resolver: true
-      current_page:
-        resolver: true
-      per_page:
-        resolver: true
-      total_page:
-        resolver: true
-      data:
-        resolver: true
   Task:
     model: github.com/maiguangyang/graphql-gorm/gen.Task
     fields:
       assignee:
+        resolver: true
+  TaskResultType:
+    model: github.com/maiguangyang/graphql-gorm/gen.TaskResultType
+    fields:
+      count:
+        resolver: true
+      items:
         resolver: true
   TaskCreateInput:
     model: "map[string]interface{}"
   TaskUpdateInput:
     model: "map[string]interface{}"
   
+  
+  
+  _Any:
+    model: github.com/maiguangyang/graphql-gorm/gen._Any

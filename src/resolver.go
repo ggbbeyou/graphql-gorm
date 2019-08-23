@@ -7,6 +7,7 @@ import (
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql-gorm/utils"
 	"github.com/maiguangyang/graphql-gorm/middleware"
+	// "github.com/maiguangyang/graphql-gorm/cache"
 )
 
 func New(db *gen.DB, ec *events.EventController) *Resolver {
@@ -42,6 +43,7 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 
 	// 生成JWT Token
   ip := ctx.Value("RemoteIp")
+
   token := middleware.SetToken(map[string]interface{}{
     "id": user.ID,
   }, utils.EncryptMd5(ip.(string) + middleware.SecretKey["admin"].(string)), "admin")
@@ -55,6 +57,9 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 		},
 		"token": token,
 	}
+
+	// var cache *cache.Cache
+	// cache.Add(ctx, "1", "2")
 
 	return &resData, nil
 }

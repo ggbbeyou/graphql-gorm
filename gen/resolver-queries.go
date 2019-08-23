@@ -141,8 +141,10 @@ func (r *GeneratedUserResolver) Tasks(ctx context.Context, obj *User) (res []*Ta
 }
 func UserTasksHandler(ctx context.Context, r *GeneratedUserResolver, obj *User) (res []*Task, err error) {
 
+	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Tasks"))
+
 	items := []*Task{}
-	err = r.DB.Query().Model(obj).Related(&items, "Tasks").Error
+	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Tasks").Error
 	res = items
 
 	return
@@ -278,10 +280,11 @@ type GeneratedTaskResolver struct{ *GeneratedResolver }
 
 func (r *GeneratedTaskResolver) Assignee(ctx context.Context, obj *Task) (res *User, err error) {
 
-	loaders := ctx.Value("loaders").(map[string]*dataloader.Loader)
+	loaders := ctx.Value(KeyLoaders).(map[string]*dataloader.Loader)
 	if obj.AssigneeID != nil {
 		item, _err := loaders["User"].Load(ctx, dataloader.StringKey(*obj.AssigneeID))()
 		res, _ = item.(*User)
+
 		err = _err
 	}
 
@@ -293,6 +296,7 @@ func TaskAssigneeHandler(ctx context.Context, r *GeneratedTaskResolver, obj *Tas
 	if obj.AssigneeID != nil {
 		item, _err := loaders["User"].Load(ctx, dataloader.StringKey(*obj.AssigneeID))()
 		res, _ = item.(*User)
+
 		err = _err
 	}
 

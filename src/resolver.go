@@ -26,12 +26,19 @@ func New(db *gen.DB, ec *events.EventController) *Resolver {
 
 // 自定义登录方法
 func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{}, error) {
+	var resData interface{}
 	// 根据条件查询用户
 	var opts gen.QueryUserHandlerOptions
 	opts.Filter = &gen.UserFilterType{
 		Email: &email,
 	}
-	user, _ := gen.QueryUserHandler(ctx, r.GeneratedResolver, opts)
+
+	user, err := gen.QueryUserHandler(ctx, r.GeneratedResolver, opts)
+
+	if err != nil {
+		resData = "登录密码错误"
+		return &resData, nil
+	}
 
 	// 生成JWT Token
   ip := ctx.Value("RemoteIp")
@@ -40,7 +47,6 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
   }, utils.EncryptMd5(ip.(string) + middleware.SecretKey["admin"].(string)), "admin")
 
 	// 组装返回数据
-	var resData interface{}
 	resData = map[string]interface{}{
 		"user": map[string]interface{}{
 			"id"    : user.ID,

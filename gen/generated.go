@@ -54,7 +54,7 @@ type ComplexityRoot struct {
 		DeleteAllUsers func(childComplexity int) int
 		DeleteTask     func(childComplexity int, id string) int
 		DeleteUser     func(childComplexity int, id string) int
-		Token          func(childComplexity int, input *string) int
+		Login          func(childComplexity int, email string) int
 		UpdateTask     func(childComplexity int, id string, input map[string]interface{}) int
 		UpdateUser     func(childComplexity int, id string, input map[string]interface{}) int
 	}
@@ -127,7 +127,7 @@ type MutationResolver interface {
 	UpdateTask(ctx context.Context, id string, input map[string]interface{}) (*Task, error)
 	DeleteTask(ctx context.Context, id string) (*Task, error)
 	DeleteAllTasks(ctx context.Context) (bool, error)
-	Token(ctx context.Context, input *string) (string, error)
+	Login(ctx context.Context, email string) (*interface{}, error)
 }
 type QueryResolver interface {
 	_service(ctx context.Context) (*_Service, error)
@@ -234,17 +234,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(string)), true
 
-	case "Mutation.token":
-		if e.complexity.Mutation.Token == nil {
+	case "Mutation.login":
+		if e.complexity.Mutation.Login == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_token_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_login_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Token(childComplexity, args["input"].(*string)), true
+		return e.complexity.Mutation.Login(childComplexity, args["email"].(string)), true
 
 	case "Mutation.updateTask":
 		if e.complexity.Mutation.UpdateTask == nil {
@@ -662,6 +662,8 @@ type Mutation {
   deleteAllTasks: Boolean!
 }
 
+scalar Any
+
 type User {
   id: ID!
   email: String
@@ -693,7 +695,7 @@ type Task {
 }
 
 extend type Mutation {
-  token(input: String): String!
+  login(email: String!): Any
 }
 
 input UserCreateInput {
@@ -1033,17 +1035,17 @@ func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_token_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["email"] = arg0
 	return args, nil
 }
 
@@ -1631,7 +1633,7 @@ func (ec *executionContext) _Mutation_deleteAllTasks(ctx context.Context, field 
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_token(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1648,7 +1650,7 @@ func (ec *executionContext) _Mutation_token(ctx context.Context, field graphql.C
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_token_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_login_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -1657,22 +1659,19 @@ func (ec *executionContext) _Mutation_token(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Token(rctx, args["input"].(*string))
+		return ec.resolvers.Mutation().Login(rctx, args["email"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*interface{})
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOAny2ᚖinterface(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query__service(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5411,11 +5410,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "token":
-			out.Values[i] = ec._Mutation_token(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+		case "login":
+			out.Values[i] = ec._Mutation_login(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6608,6 +6604,35 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v interface{}) (interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return graphql.UnmarshalAny(v)
+}
+
+func (ec *executionContext) marshalOAny2interface(ctx context.Context, sel ast.SelectionSet, v interface{}) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalAny(v)
+}
+
+func (ec *executionContext) unmarshalOAny2ᚖinterface(ctx context.Context, v interface{}) (*interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOAny2interface(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOAny2ᚖinterface(ctx context.Context, sel ast.SelectionSet, v *interface{}) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOAny2interface(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

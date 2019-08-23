@@ -27,6 +27,8 @@ type Mutation {
   deleteAllTasks: Boolean!
 }
 
+scalar Any
+
 type User {
   id: ID!
   email: String
@@ -58,7 +60,7 @@ type Task {
 }
 
 extend type Mutation {
-  token(input: String): String!
+  login(email: String!): Any
 }
 
 input UserCreateInput {

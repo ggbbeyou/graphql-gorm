@@ -1,3 +1,6 @@
+
+scalar Any
+
 type User {
 	email: String @column(gorm: "type:varchar(64) comment '用户邮箱地址';default:null;") @validator(required: "true", type: "email")
 	firstName: String
@@ -12,5 +15,5 @@ type Task {
 }
 
 extend type Mutation {
-  token(input: String): String!
+  login(email: String!): Any
 }

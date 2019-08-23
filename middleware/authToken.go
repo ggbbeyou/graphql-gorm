@@ -40,7 +40,7 @@ func AuthHandler(next http.Handler) http.Handler {
 
     // 返回前端的Token
 
-    // ip := utils.RemoteIp(req)
+    ip := utils.RemoteIp(req)
     // token := SetToken(map[string]interface{}{
     //   "id": "998fc3fb-59c5-4af9-86b4-987cb14363f1",
     // }, utils.EncryptMd5(ip + SecretKey["admin"].(string)), "admin")
@@ -49,6 +49,7 @@ func AuthHandler(next http.Handler) http.Handler {
 
     res, _ := HandleUserJWTToken(req, "admin")
     ctxt := context.WithValue(req.Context(), "Authorization", res)
+    ctxt = context.WithValue(req.Context(), "RemoteIp", ip)
     next.ServeHTTP(response, req.WithContext(ctxt))
 	})
 }

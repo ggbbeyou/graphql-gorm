@@ -10,6 +10,7 @@ import(
 // 不需要登录验证的路由
 var router = []string{
   "__schema",
+  "Login",
 }
 
 // 替换方法名称

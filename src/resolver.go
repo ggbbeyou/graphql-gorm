@@ -28,23 +28,31 @@ func New(db *gen.DB, ec *events.EventController) *Resolver {
 // 自定义登录方法
 func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{}, error) {
 	var resData interface{}
-	// 根据条件查询用户
-	var opts gen.QueryUserHandlerOptions
-	opts.Filter = &gen.UserFilterType{
-		Email: &email,
-	}
+	var token string
+	var user *gen.User
+	var err error
 
-	user, err := gen.QueryUserHandler(ctx, r.GeneratedResolver, opts)
-
-	if err != nil {
-		resData = "登录密码错误"
-		return &resData, nil
-	}
-
-	// 生成JWT Token
   ip := ctx.Value("RemoteIp")
 
-  token := middleware.SetToken(map[string]interface{}{
+  // rUser, has := gen.RidesCache.HGetAll("user")
+
+  // if has == false {
+		// 根据条件查询用户
+		var opts gen.QueryUserHandlerOptions
+		opts.Filter = &gen.UserFilterType{
+			Email: &email,
+		}
+
+		user, err = gen.QueryUserHandler(ctx, r.GeneratedResolver, opts)
+
+		if err != nil {
+			resData = "登录密码错误"
+			return &resData, nil
+		}
+  // }
+
+	// 生成JWT Token
+  token = middleware.SetToken(map[string]interface{}{
     "id": user.ID,
   }, utils.EncryptMd5(ip.(string) + middleware.SecretKey["admin"].(string)), "admin")
 
@@ -58,8 +66,6 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 		"token": token,
 	}
 
-	// var cache *cache.Cache
-	// cache.Add(ctx, "1", "2")
 
 	return &resData, nil
 }

@@ -1,6 +1,7 @@
 package gen
 
 import (
+	// "fmt"
 	"log"
 	"time"
 	"context"
@@ -15,23 +16,26 @@ import (
 	"github.com/maiguangyang/graphql-gorm/cache"
 )
 
+var RidesCache *cache.Cache
+var redisErr error
+
 func GetHTTPServeMux(r ResolverRoot, db *DB) *mux.Router {
 	// mux := http.NewServeMux()
 	mux := mux.NewRouter()
 	mux.Use(middleware.AuthHandler)
 
-	cache, err := cache.NewCache("localhost:6379", "", 24*time.Hour)
-	if err != nil {
-		log.Fatalf("cannot create APQ redis cache: %v", err)
-	}
+  RidesCache, redisErr = cache.NewCache("localhost:6379", "", 24*time.Hour)
+  if redisErr != nil {
+    log.Fatalf("cannot create APQ redis cache: %v", redisErr)
+  }
 
 	executableSchema := NewExecutableSchema(Config{Resolvers: r})
 	gqlHandler := handler.GraphQL(executableSchema,
 		// 中间件进行登录Token校验
 		utils.RouterIsAuthMiddleware,
 
-		// redis缓存
-		handler.EnablePersistedQueryCache(cache),
+    // redis缓存
+    handler.EnablePersistedQueryCache(RidesCache),
 	)
 
 	loaders := GetLoaders(db)
@@ -42,7 +46,6 @@ func GetHTTPServeMux(r ResolverRoot, db *DB) *mux.Router {
 		ctx := context.WithValue(req.Context(), KeyPrincipalID, principalID)
 		ctx = context.WithValue(ctx, KeyLoaders, loaders)
 		ctx = context.WithValue(ctx, KeyExecutableSchema, executableSchema)
-		ctx = context.WithValue(ctx, "redisCache", cache)
 
 		req = req.WithContext(ctx)
 		if req.Method == "GET" {

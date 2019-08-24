@@ -1,8 +1,9 @@
 package cache
 
 import (
-  "context"
+  // "fmt"
   "time"
+  "context"
 
   "github.com/go-redis/redis"
 )
@@ -35,4 +36,12 @@ func (c *Cache) Get(ctx context.Context, hash string) (string, bool) {
     return "", false
   }
   return s, true
+}
+
+func (c *Cache) HGetAll(hash string) (map[string]string, bool) {
+  data, err := c.client.HGetAll(hash).Result()
+  if err != nil || len(data) <= 0 {
+    return map[string]string{}, false
+  }
+  return data, true
 }

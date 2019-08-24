@@ -49,8 +49,9 @@ var	RouterIsAuthMiddleware = handler.ResolverMiddleware(func(ctx context.Context
 	path 		:= graphql.GetResolverContext(ctx).Path()
 	isAuth 	:= CheckRouterIsAuth(path)
 	if isAuth == true {
-		auth := ctx.Value("Authorization").(map[string]interface{})
-		if len(auth) <= 0 {
+		auth := ctx.Value("Authorization")
+
+		if len(auth.(map[string]interface{})) <= 0 {
 			return nil, fmt.Errorf("Invalid Authorization")
 		}
 	}

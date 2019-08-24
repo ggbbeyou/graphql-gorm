@@ -47,9 +47,7 @@ func NewDBWithString(urlString string) *DB {
 	if err != nil {
 		panic(err)
 	}
-
 	urlString = getConnectionString(u)
-
 	db, err := gorm.Open(u.Scheme, urlString)
 	if err != nil {
 		panic(err)
@@ -60,7 +58,6 @@ func NewDBWithString(urlString string) *DB {
 	db.LogMode(true)
 	return NewDB(db)
 }
-
 func getConnectionString(u *url.URL) string {
 	if u.Scheme == "postgres" {
 		password, _ := u.User.Password()
@@ -84,8 +81,8 @@ func (db *DB) Query() *gorm.DB {
 }
 
 // AutoMigrate ...
-func (db *DB) AutoMigrate() {
-	db.db.AutoMigrate(
+func (db *DB) AutoMigrate() *gorm.DB {
+	return db.db.AutoMigrate(
 		User{},
 		Task{},
 	)
@@ -95,7 +92,6 @@ func (db *DB) AutoMigrate() {
 func (db *DB) Close() error {
 	return db.db.Close()
 }
-
 func (db *DB) Ping() error {
 	return db.db.DB().Ping()
 }

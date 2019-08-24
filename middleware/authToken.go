@@ -44,9 +44,9 @@ func AuthHandler(next http.Handler) http.Handler {
     // 返回前端的Token
     res, err := HandleUserJWTToken(req, "admin")
     if err == nil {
-      ctxt = context.WithValue(req.Context(), "Authorization", res)
+      ctxt = context.WithValue(ctxt, "Authorization", res)
     } else {
-      ctxt = context.WithValue(req.Context(), "Authorization", map[string]interface{}{})
+      ctxt = context.WithValue(ctxt, "Authorization", map[string]interface{}{})
     }
     next.ServeHTTP(response, req.WithContext(ctxt))
 	})

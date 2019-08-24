@@ -7,7 +7,7 @@ import (
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql-gorm/utils"
 	"github.com/maiguangyang/graphql-gorm/middleware"
-	// "github.com/maiguangyang/graphql-gorm/cache"
+	"github.com/maiguangyang/graphql-gorm/cache"
 )
 
 func New(db *gen.DB, ec *events.EventController) *Resolver {
@@ -34,9 +34,9 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 
   ip := ctx.Value("RemoteIp")
 
-  // rUser, has := gen.RidesCache.HGetAll("user")
+  _, has := gen.RidesCache.HGetAll("user")
 
-  // if has == false {
+  if has == false {
 		// 根据条件查询用户
 		var opts gen.QueryUserHandlerOptions
 		opts.Filter = &gen.UserFilterType{
@@ -49,7 +49,9 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 			resData = "登录密码错误"
 			return &resData, nil
 		}
-  // }
+
+		gen.RidesCache.HMSet(cache.RidesKeys["userInfo"] + user.ID, utils.StructToMap(user))
+  }
 
 	// 生成JWT Token
   token = middleware.SetToken(map[string]interface{}{
@@ -65,7 +67,6 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 		},
 		"token": token,
 	}
-
 
 	return &resData, nil
 }

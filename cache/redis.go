@@ -8,6 +8,10 @@ import (
   "github.com/go-redis/redis"
 )
 
+var RidesKeys = map[string]string{
+  "userInfo": "user_info", // 用户登录
+}
+
 type Cache struct {
   client redis.UniversalClient
   ttl    time.Duration
@@ -38,6 +42,14 @@ func (c *Cache) Get(ctx context.Context, hash string) (string, bool) {
   return s, true
 }
 
+// 设置hast 类型缓存
+func (c *Cache) HMSet(key string, fields map[string]interface{}) {
+  c.client.HMSet(key, map[string]interface{}{
+    "name": "yang",
+  })
+}
+
+// 获取hash全部参数
 func (c *Cache) HGetAll(hash string) (map[string]string, bool) {
   data, err := c.client.HGetAll(hash).Result()
   if err != nil || len(data) <= 0 {

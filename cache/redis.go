@@ -1,7 +1,7 @@
 package cache
 
 import (
-  // "fmt"
+  "fmt"
   "time"
   "context"
 
@@ -44,9 +44,9 @@ func (c *Cache) Get(ctx context.Context, hash string) (string, bool) {
 
 // 设置hast 类型缓存
 func (c *Cache) HMSet(key string, fields map[string]interface{}) {
-  c.client.HMSet(key, map[string]interface{}{
-    "name": "yang",
-  })
+  fmt.Println(key)
+  fmt.Println(fields)
+  c.client.HMSet(key, fields)
 }
 
 // 获取hash全部参数

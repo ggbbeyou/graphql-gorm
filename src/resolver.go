@@ -3,6 +3,7 @@ package src
 import (
 	// "fmt"
 	"context"
+	"encoding/json"
 	"github.com/maiguangyang/graphql-gorm/gen"
 	"github.com/maiguangyang/graphql/events"
 	"github.com/maiguangyang/graphql-gorm/utils"
@@ -34,9 +35,9 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 
   ip := ctx.Value("RemoteIp")
 
-  _, has := gen.RidesCache.HGetAll("user")
+  // _, has := gen.RidesCache.HGetAll("user")
 
-  if has == false {
+  // if has == false {
 		// 根据条件查询用户
 		var opts gen.QueryUserHandlerOptions
 		opts.Filter = &gen.UserFilterType{
@@ -50,8 +51,13 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 			return &resData, nil
 		}
 
-		gen.RidesCache.HMSet(cache.RidesKeys["userInfo"] + user.ID, utils.StructToMap(user))
-  }
+		// Struct To Map
+		userInfo := make(map[string]interface{})
+    j, _ := json.Marshal(user)
+    json.Unmarshal(j, &userInfo)
+
+		gen.RidesCache.HMSet(cache.RidesKeys["userInfo"] + user.ID, userInfo)
+  // }
 
 	// 生成JWT Token
   token = middleware.SetToken(map[string]interface{}{

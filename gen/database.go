@@ -85,6 +85,9 @@ func (db *DB) AutoMigrate() *gorm.DB {
 	return db.db.AutoMigrate(
 		User{},
 		Task{},
+		Admin{},
+		Group{},
+		Role{},
 	)
 }
 

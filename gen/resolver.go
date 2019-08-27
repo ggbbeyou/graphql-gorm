@@ -24,6 +24,39 @@ type ResolutionHandlers struct {
 	QueryTasks     func(ctx context.Context, r *GeneratedResolver, opts QueryTasksHandlerOptions) (*TaskResultType, error)
 
 	TaskAssignee func(ctx context.Context, r *GeneratedTaskResolver, obj *Task) (res *User, err error)
+
+	CreateAdmin     func(ctx context.Context, r *GeneratedResolver, input map[string]interface{}) (item *Admin, err error)
+	UpdateAdmin     func(ctx context.Context, r *GeneratedResolver, id string, input map[string]interface{}) (item *Admin, err error)
+	DeleteAdmin     func(ctx context.Context, r *GeneratedResolver, id string) (item *Admin, err error)
+	DeleteAllAdmins func(ctx context.Context, r *GeneratedResolver) (bool, error)
+	QueryAdmin      func(ctx context.Context, r *GeneratedResolver, opts QueryAdminHandlerOptions) (*Admin, error)
+	QueryAdmins     func(ctx context.Context, r *GeneratedResolver, opts QueryAdminsHandlerOptions) (*AdminResultType, error)
+
+	AdminGroups func(ctx context.Context, r *GeneratedAdminResolver, obj *Admin) (res []*Group, err error)
+
+	AdminRoles func(ctx context.Context, r *GeneratedAdminResolver, obj *Admin) (res []*Role, err error)
+
+	CreateGroup     func(ctx context.Context, r *GeneratedResolver, input map[string]interface{}) (item *Group, err error)
+	UpdateGroup     func(ctx context.Context, r *GeneratedResolver, id string, input map[string]interface{}) (item *Group, err error)
+	DeleteGroup     func(ctx context.Context, r *GeneratedResolver, id string) (item *Group, err error)
+	DeleteAllGroups func(ctx context.Context, r *GeneratedResolver) (bool, error)
+	QueryGroup      func(ctx context.Context, r *GeneratedResolver, opts QueryGroupHandlerOptions) (*Group, error)
+	QueryGroups     func(ctx context.Context, r *GeneratedResolver, opts QueryGroupsHandlerOptions) (*GroupResultType, error)
+
+	GroupAdmin func(ctx context.Context, r *GeneratedGroupResolver, obj *Group) (res []*Admin, err error)
+
+	GroupRoles func(ctx context.Context, r *GeneratedGroupResolver, obj *Group) (res []*Role, err error)
+
+	CreateRole     func(ctx context.Context, r *GeneratedResolver, input map[string]interface{}) (item *Role, err error)
+	UpdateRole     func(ctx context.Context, r *GeneratedResolver, id string, input map[string]interface{}) (item *Role, err error)
+	DeleteRole     func(ctx context.Context, r *GeneratedResolver, id string) (item *Role, err error)
+	DeleteAllRoles func(ctx context.Context, r *GeneratedResolver) (bool, error)
+	QueryRole      func(ctx context.Context, r *GeneratedResolver, opts QueryRoleHandlerOptions) (*Role, error)
+	QueryRoles     func(ctx context.Context, r *GeneratedResolver, opts QueryRolesHandlerOptions) (*RoleResultType, error)
+
+	RoleAdmin func(ctx context.Context, r *GeneratedRoleResolver, obj *Role) (res []*Admin, err error)
+
+	RoleGroup func(ctx context.Context, r *GeneratedRoleResolver, obj *Role) (res []*Admin, err error)
 }
 
 func DefaultResolutionHandlers() ResolutionHandlers {
@@ -46,6 +79,39 @@ func DefaultResolutionHandlers() ResolutionHandlers {
 		QueryTasks:     QueryTasksHandler,
 
 		TaskAssignee: TaskAssigneeHandler,
+
+		CreateAdmin:     CreateAdminHandler,
+		UpdateAdmin:     UpdateAdminHandler,
+		DeleteAdmin:     DeleteAdminHandler,
+		DeleteAllAdmins: DeleteAllAdminsHandler,
+		QueryAdmin:      QueryAdminHandler,
+		QueryAdmins:     QueryAdminsHandler,
+
+		AdminGroups: AdminGroupsHandler,
+
+		AdminRoles: AdminRolesHandler,
+
+		CreateGroup:     CreateGroupHandler,
+		UpdateGroup:     UpdateGroupHandler,
+		DeleteGroup:     DeleteGroupHandler,
+		DeleteAllGroups: DeleteAllGroupsHandler,
+		QueryGroup:      QueryGroupHandler,
+		QueryGroups:     QueryGroupsHandler,
+
+		GroupAdmin: GroupAdminHandler,
+
+		GroupRoles: GroupRolesHandler,
+
+		CreateRole:     CreateRoleHandler,
+		UpdateRole:     UpdateRoleHandler,
+		DeleteRole:     DeleteRoleHandler,
+		DeleteAllRoles: DeleteAllRolesHandler,
+		QueryRole:      QueryRoleHandler,
+		QueryRoles:     QueryRolesHandler,
+
+		RoleAdmin: RoleAdminHandler,
+
+		RoleGroup: RoleGroupHandler,
 	}
 	return handlers
 }

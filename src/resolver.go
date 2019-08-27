@@ -35,7 +35,7 @@ func (r *MutationResolver) Login(ctx context.Context, email string) (*interface{
 
   ip := ctx.Value("RemoteIp")
 
-  // _, has := gen.RidesCache.HGetAll("user")
+  // rUser, has := gen.RidesCache.HGetAll("user")
 
   // if has == false {
 		// 根据条件查询用户

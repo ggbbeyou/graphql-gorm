@@ -9,6 +9,303 @@ import (
 	"time"
 )
 
+type AdminFilterType struct {
+	And            []*AdminFilterType `json:"AND"`
+	Or             []*AdminFilterType `json:"OR"`
+	ID             *string            `json:"id"`
+	IDNe           *string            `json:"id_ne"`
+	IDGt           *string            `json:"id_gt"`
+	IDLt           *string            `json:"id_lt"`
+	IDGte          *string            `json:"id_gte"`
+	IDLte          *string            `json:"id_lte"`
+	IDIn           []string           `json:"id_in"`
+	Phone          *string            `json:"Phone"`
+	PhoneNe        *string            `json:"Phone_ne"`
+	PhoneGt        *string            `json:"Phone_gt"`
+	PhoneLt        *string            `json:"Phone_lt"`
+	PhoneGte       *string            `json:"Phone_gte"`
+	PhoneLte       *string            `json:"Phone_lte"`
+	PhoneIn        []string           `json:"Phone_in"`
+	PhoneLike      *string            `json:"Phone_like"`
+	PhonePrefix    *string            `json:"Phone_prefix"`
+	PhoneSuffix    *string            `json:"Phone_suffix"`
+	Password       *string            `json:"Password"`
+	PasswordNe     *string            `json:"Password_ne"`
+	PasswordGt     *string            `json:"Password_gt"`
+	PasswordLt     *string            `json:"Password_lt"`
+	PasswordGte    *string            `json:"Password_gte"`
+	PasswordLte    *string            `json:"Password_lte"`
+	PasswordIn     []string           `json:"Password_in"`
+	PasswordLike   *string            `json:"Password_like"`
+	PasswordPrefix *string            `json:"Password_prefix"`
+	PasswordSuffix *string            `json:"Password_suffix"`
+	Username       *string            `json:"Username"`
+	UsernameNe     *string            `json:"Username_ne"`
+	UsernameGt     *string            `json:"Username_gt"`
+	UsernameLt     *string            `json:"Username_lt"`
+	UsernameGte    *string            `json:"Username_gte"`
+	UsernameLte    *string            `json:"Username_lte"`
+	UsernameIn     []string           `json:"Username_in"`
+	UsernameLike   *string            `json:"Username_like"`
+	UsernamePrefix *string            `json:"Username_prefix"`
+	UsernameSuffix *string            `json:"Username_suffix"`
+	Money          *int               `json:"Money"`
+	MoneyNe        *int               `json:"Money_ne"`
+	MoneyGt        *int               `json:"Money_gt"`
+	MoneyLt        *int               `json:"Money_lt"`
+	MoneyGte       *int               `json:"Money_gte"`
+	MoneyLte       *int               `json:"Money_lte"`
+	MoneyIn        []int              `json:"Money_in"`
+	Sex            *int               `json:"Sex"`
+	SexNe          *int               `json:"Sex_ne"`
+	SexGt          *int               `json:"Sex_gt"`
+	SexLt          *int               `json:"Sex_lt"`
+	SexGte         *int               `json:"Sex_gte"`
+	SexLte         *int               `json:"Sex_lte"`
+	SexIn          []int              `json:"Sex_in"`
+	Super          *int               `json:"Super"`
+	SuperNe        *int               `json:"Super_ne"`
+	SuperGt        *int               `json:"Super_gt"`
+	SuperLt        *int               `json:"Super_lt"`
+	SuperGte       *int               `json:"Super_gte"`
+	SuperLte       *int               `json:"Super_lte"`
+	SuperIn        []int              `json:"Super_in"`
+	LoginCount     *int               `json:"LoginCount"`
+	LoginCountNe   *int               `json:"LoginCount_ne"`
+	LoginCountGt   *int               `json:"LoginCount_gt"`
+	LoginCountLt   *int               `json:"LoginCount_lt"`
+	LoginCountGte  *int               `json:"LoginCount_gte"`
+	LoginCountLte  *int               `json:"LoginCount_lte"`
+	LoginCountIn   []int              `json:"LoginCount_in"`
+	LoginIP        *string            `json:"LoginIp"`
+	LoginIPNe      *string            `json:"LoginIp_ne"`
+	LoginIPGt      *string            `json:"LoginIp_gt"`
+	LoginIPLt      *string            `json:"LoginIp_lt"`
+	LoginIPGte     *string            `json:"LoginIp_gte"`
+	LoginIPLte     *string            `json:"LoginIp_lte"`
+	LoginIPIn      []string           `json:"LoginIp_in"`
+	LoginIPLike    *string            `json:"LoginIp_like"`
+	LoginIPPrefix  *string            `json:"LoginIp_prefix"`
+	LoginIPSuffix  *string            `json:"LoginIp_suffix"`
+	LastIP         *string            `json:"LastIp"`
+	LastIPNe       *string            `json:"LastIp_ne"`
+	LastIPGt       *string            `json:"LastIp_gt"`
+	LastIPLt       *string            `json:"LastIp_lt"`
+	LastIPGte      *string            `json:"LastIp_gte"`
+	LastIPLte      *string            `json:"LastIp_lte"`
+	LastIPIn       []string           `json:"LastIp_in"`
+	LastIPLike     *string            `json:"LastIp_like"`
+	LastIPPrefix   *string            `json:"LastIp_prefix"`
+	LastIPSuffix   *string            `json:"LastIp_suffix"`
+	State          *int               `json:"state"`
+	StateNe        *int               `json:"state_ne"`
+	StateGt        *int               `json:"state_gt"`
+	StateLt        *int               `json:"state_lt"`
+	StateGte       *int               `json:"state_gte"`
+	StateLte       *int               `json:"state_lte"`
+	StateIn        []int              `json:"state_in"`
+	Del            *int               `json:"del"`
+	DelNe          *int               `json:"del_ne"`
+	DelGt          *int               `json:"del_gt"`
+	DelLt          *int               `json:"del_lt"`
+	DelGte         *int               `json:"del_gte"`
+	DelLte         *int               `json:"del_lte"`
+	DelIn          []int              `json:"del_in"`
+	UpdatedAt      *int               `json:"updatedAt"`
+	UpdatedAtNe    *int               `json:"updatedAt_ne"`
+	UpdatedAtGt    *int               `json:"updatedAt_gt"`
+	UpdatedAtLt    *int               `json:"updatedAt_lt"`
+	UpdatedAtGte   *int               `json:"updatedAt_gte"`
+	UpdatedAtLte   *int               `json:"updatedAt_lte"`
+	UpdatedAtIn    []int              `json:"updatedAt_in"`
+	CreatedAt      *int               `json:"createdAt"`
+	CreatedAtNe    *int               `json:"createdAt_ne"`
+	CreatedAtGt    *int               `json:"createdAt_gt"`
+	CreatedAtLt    *int               `json:"createdAt_lt"`
+	CreatedAtGte   *int               `json:"createdAt_gte"`
+	CreatedAtLte   *int               `json:"createdAt_lte"`
+	CreatedAtIn    []int              `json:"createdAt_in"`
+	DeletedBy      *string            `json:"deletedBy"`
+	DeletedByNe    *string            `json:"deletedBy_ne"`
+	DeletedByGt    *string            `json:"deletedBy_gt"`
+	DeletedByLt    *string            `json:"deletedBy_lt"`
+	DeletedByGte   *string            `json:"deletedBy_gte"`
+	DeletedByLte   *string            `json:"deletedBy_lte"`
+	DeletedByIn    []string           `json:"deletedBy_in"`
+	UpdatedBy      *string            `json:"updatedBy"`
+	UpdatedByNe    *string            `json:"updatedBy_ne"`
+	UpdatedByGt    *string            `json:"updatedBy_gt"`
+	UpdatedByLt    *string            `json:"updatedBy_lt"`
+	UpdatedByGte   *string            `json:"updatedBy_gte"`
+	UpdatedByLte   *string            `json:"updatedBy_lte"`
+	UpdatedByIn    []string           `json:"updatedBy_in"`
+	CreatedBy      *string            `json:"createdBy"`
+	CreatedByNe    *string            `json:"createdBy_ne"`
+	CreatedByGt    *string            `json:"createdBy_gt"`
+	CreatedByLt    *string            `json:"createdBy_lt"`
+	CreatedByGte   *string            `json:"createdBy_gte"`
+	CreatedByLte   *string            `json:"createdBy_lte"`
+	CreatedByIn    []string           `json:"createdBy_in"`
+	Groups         *GroupFilterType   `json:"groups"`
+	Roles          *RoleFilterType    `json:"roles"`
+}
+
+type GroupFilterType struct {
+	And          []*GroupFilterType `json:"AND"`
+	Or           []*GroupFilterType `json:"OR"`
+	ID           *string            `json:"id"`
+	IDNe         *string            `json:"id_ne"`
+	IDGt         *string            `json:"id_gt"`
+	IDLt         *string            `json:"id_lt"`
+	IDGte        *string            `json:"id_gte"`
+	IDLte        *string            `json:"id_lte"`
+	IDIn         []string           `json:"id_in"`
+	Name         *string            `json:"Name"`
+	NameNe       *string            `json:"Name_ne"`
+	NameGt       *string            `json:"Name_gt"`
+	NameLt       *string            `json:"Name_lt"`
+	NameGte      *string            `json:"Name_gte"`
+	NameLte      *string            `json:"Name_lte"`
+	NameIn       []string           `json:"Name_in"`
+	NameLike     *string            `json:"Name_like"`
+	NamePrefix   *string            `json:"Name_prefix"`
+	NameSuffix   *string            `json:"Name_suffix"`
+	State        *int               `json:"state"`
+	StateNe      *int               `json:"state_ne"`
+	StateGt      *int               `json:"state_gt"`
+	StateLt      *int               `json:"state_lt"`
+	StateGte     *int               `json:"state_gte"`
+	StateLte     *int               `json:"state_lte"`
+	StateIn      []int              `json:"state_in"`
+	Del          *int               `json:"del"`
+	DelNe        *int               `json:"del_ne"`
+	DelGt        *int               `json:"del_gt"`
+	DelLt        *int               `json:"del_lt"`
+	DelGte       *int               `json:"del_gte"`
+	DelLte       *int               `json:"del_lte"`
+	DelIn        []int              `json:"del_in"`
+	UpdatedAt    *int               `json:"updatedAt"`
+	UpdatedAtNe  *int               `json:"updatedAt_ne"`
+	UpdatedAtGt  *int               `json:"updatedAt_gt"`
+	UpdatedAtLt  *int               `json:"updatedAt_lt"`
+	UpdatedAtGte *int               `json:"updatedAt_gte"`
+	UpdatedAtLte *int               `json:"updatedAt_lte"`
+	UpdatedAtIn  []int              `json:"updatedAt_in"`
+	CreatedAt    *int               `json:"createdAt"`
+	CreatedAtNe  *int               `json:"createdAt_ne"`
+	CreatedAtGt  *int               `json:"createdAt_gt"`
+	CreatedAtLt  *int               `json:"createdAt_lt"`
+	CreatedAtGte *int               `json:"createdAt_gte"`
+	CreatedAtLte *int               `json:"createdAt_lte"`
+	CreatedAtIn  []int              `json:"createdAt_in"`
+	DeletedBy    *string            `json:"deletedBy"`
+	DeletedByNe  *string            `json:"deletedBy_ne"`
+	DeletedByGt  *string            `json:"deletedBy_gt"`
+	DeletedByLt  *string            `json:"deletedBy_lt"`
+	DeletedByGte *string            `json:"deletedBy_gte"`
+	DeletedByLte *string            `json:"deletedBy_lte"`
+	DeletedByIn  []string           `json:"deletedBy_in"`
+	UpdatedBy    *string            `json:"updatedBy"`
+	UpdatedByNe  *string            `json:"updatedBy_ne"`
+	UpdatedByGt  *string            `json:"updatedBy_gt"`
+	UpdatedByLt  *string            `json:"updatedBy_lt"`
+	UpdatedByGte *string            `json:"updatedBy_gte"`
+	UpdatedByLte *string            `json:"updatedBy_lte"`
+	UpdatedByIn  []string           `json:"updatedBy_in"`
+	CreatedBy    *string            `json:"createdBy"`
+	CreatedByNe  *string            `json:"createdBy_ne"`
+	CreatedByGt  *string            `json:"createdBy_gt"`
+	CreatedByLt  *string            `json:"createdBy_lt"`
+	CreatedByGte *string            `json:"createdBy_gte"`
+	CreatedByLte *string            `json:"createdBy_lte"`
+	CreatedByIn  []string           `json:"createdBy_in"`
+	Admin        *AdminFilterType   `json:"admin"`
+	Roles        *RoleFilterType    `json:"roles"`
+}
+
+type RoleFilterType struct {
+	And          []*RoleFilterType `json:"AND"`
+	Or           []*RoleFilterType `json:"OR"`
+	ID           *string           `json:"id"`
+	IDNe         *string           `json:"id_ne"`
+	IDGt         *string           `json:"id_gt"`
+	IDLt         *string           `json:"id_lt"`
+	IDGte        *string           `json:"id_gte"`
+	IDLte        *string           `json:"id_lte"`
+	IDIn         []string          `json:"id_in"`
+	Name         *string           `json:"Name"`
+	NameNe       *string           `json:"Name_ne"`
+	NameGt       *string           `json:"Name_gt"`
+	NameLt       *string           `json:"Name_lt"`
+	NameGte      *string           `json:"Name_gte"`
+	NameLte      *string           `json:"Name_lte"`
+	NameIn       []string          `json:"Name_in"`
+	NameLike     *string           `json:"Name_like"`
+	NamePrefix   *string           `json:"Name_prefix"`
+	NameSuffix   *string           `json:"Name_suffix"`
+	Pid          *string           `json:"Pid"`
+	PidNe        *string           `json:"Pid_ne"`
+	PidGt        *string           `json:"Pid_gt"`
+	PidLt        *string           `json:"Pid_lt"`
+	PidGte       *string           `json:"Pid_gte"`
+	PidLte       *string           `json:"Pid_lte"`
+	PidIn        []string          `json:"Pid_in"`
+	PidLike      *string           `json:"Pid_like"`
+	PidPrefix    *string           `json:"Pid_prefix"`
+	PidSuffix    *string           `json:"Pid_suffix"`
+	State        *int              `json:"state"`
+	StateNe      *int              `json:"state_ne"`
+	StateGt      *int              `json:"state_gt"`
+	StateLt      *int              `json:"state_lt"`
+	StateGte     *int              `json:"state_gte"`
+	StateLte     *int              `json:"state_lte"`
+	StateIn      []int             `json:"state_in"`
+	Del          *int              `json:"del"`
+	DelNe        *int              `json:"del_ne"`
+	DelGt        *int              `json:"del_gt"`
+	DelLt        *int              `json:"del_lt"`
+	DelGte       *int              `json:"del_gte"`
+	DelLte       *int              `json:"del_lte"`
+	DelIn        []int             `json:"del_in"`
+	UpdatedAt    *int              `json:"updatedAt"`
+	UpdatedAtNe  *int              `json:"updatedAt_ne"`
+	UpdatedAtGt  *int              `json:"updatedAt_gt"`
+	UpdatedAtLt  *int              `json:"updatedAt_lt"`
+	UpdatedAtGte *int              `json:"updatedAt_gte"`
+	UpdatedAtLte *int              `json:"updatedAt_lte"`
+	UpdatedAtIn  []int             `json:"updatedAt_in"`
+	CreatedAt    *int              `json:"createdAt"`
+	CreatedAtNe  *int              `json:"createdAt_ne"`
+	CreatedAtGt  *int              `json:"createdAt_gt"`
+	CreatedAtLt  *int              `json:"createdAt_lt"`
+	CreatedAtGte *int              `json:"createdAt_gte"`
+	CreatedAtLte *int              `json:"createdAt_lte"`
+	CreatedAtIn  []int             `json:"createdAt_in"`
+	DeletedBy    *string           `json:"deletedBy"`
+	DeletedByNe  *string           `json:"deletedBy_ne"`
+	DeletedByGt  *string           `json:"deletedBy_gt"`
+	DeletedByLt  *string           `json:"deletedBy_lt"`
+	DeletedByGte *string           `json:"deletedBy_gte"`
+	DeletedByLte *string           `json:"deletedBy_lte"`
+	DeletedByIn  []string          `json:"deletedBy_in"`
+	UpdatedBy    *string           `json:"updatedBy"`
+	UpdatedByNe  *string           `json:"updatedBy_ne"`
+	UpdatedByGt  *string           `json:"updatedBy_gt"`
+	UpdatedByLt  *string           `json:"updatedBy_lt"`
+	UpdatedByGte *string           `json:"updatedBy_gte"`
+	UpdatedByLte *string           `json:"updatedBy_lte"`
+	UpdatedByIn  []string          `json:"updatedBy_in"`
+	CreatedBy    *string           `json:"createdBy"`
+	CreatedByNe  *string           `json:"createdBy_ne"`
+	CreatedByGt  *string           `json:"createdBy_gt"`
+	CreatedByLt  *string           `json:"createdBy_lt"`
+	CreatedByGte *string           `json:"createdBy_gte"`
+	CreatedByLte *string           `json:"createdBy_lte"`
+	CreatedByIn  []string          `json:"createdBy_in"`
+	Admin        *AdminFilterType  `json:"admin"`
+	Group        *AdminFilterType  `json:"group"`
+}
+
 type TaskFilterType struct {
 	And           []*TaskFilterType `json:"AND"`
 	Or            []*TaskFilterType `json:"OR"`
@@ -57,6 +354,13 @@ type TaskFilterType struct {
 	StateGte      *int              `json:"state_gte"`
 	StateLte      *int              `json:"state_lte"`
 	StateIn       []int             `json:"state_in"`
+	Del           *int              `json:"del"`
+	DelNe         *int              `json:"del_ne"`
+	DelGt         *int              `json:"del_gt"`
+	DelLt         *int              `json:"del_lt"`
+	DelGte        *int              `json:"del_gte"`
+	DelLte        *int              `json:"del_lte"`
+	DelIn         []int             `json:"del_in"`
 	UpdatedAt     *int              `json:"updatedAt"`
 	UpdatedAtNe   *int              `json:"updatedAt_ne"`
 	UpdatedAtGt   *int              `json:"updatedAt_gt"`
@@ -142,6 +446,13 @@ type UserFilterType struct {
 	StateGte        *int              `json:"state_gte"`
 	StateLte        *int              `json:"state_lte"`
 	StateIn         []int             `json:"state_in"`
+	Del             *int              `json:"del"`
+	DelNe           *int              `json:"del_ne"`
+	DelGt           *int              `json:"del_gt"`
+	DelLt           *int              `json:"del_lt"`
+	DelGte          *int              `json:"del_gte"`
+	DelLte          *int              `json:"del_lte"`
+	DelIn           []int             `json:"del_in"`
 	UpdatedAt       *int              `json:"updatedAt"`
 	UpdatedAtNe     *int              `json:"updatedAt_ne"`
 	UpdatedAtGt     *int              `json:"updatedAt_gt"`
@@ -184,6 +495,285 @@ type _Service struct {
 	Sdl *string `json:"sdl"`
 }
 
+type AdminSortType string
+
+const (
+	AdminSortTypeIDAsc          AdminSortType = "ID_ASC"
+	AdminSortTypeIDDesc         AdminSortType = "ID_DESC"
+	AdminSortTypePhoneAsc       AdminSortType = "PHONE_ASC"
+	AdminSortTypePhoneDesc      AdminSortType = "PHONE_DESC"
+	AdminSortTypePasswordAsc    AdminSortType = "PASSWORD_ASC"
+	AdminSortTypePasswordDesc   AdminSortType = "PASSWORD_DESC"
+	AdminSortTypeUsernameAsc    AdminSortType = "USERNAME_ASC"
+	AdminSortTypeUsernameDesc   AdminSortType = "USERNAME_DESC"
+	AdminSortTypeMoneyAsc       AdminSortType = "MONEY_ASC"
+	AdminSortTypeMoneyDesc      AdminSortType = "MONEY_DESC"
+	AdminSortTypeSexAsc         AdminSortType = "SEX_ASC"
+	AdminSortTypeSexDesc        AdminSortType = "SEX_DESC"
+	AdminSortTypeSuperAsc       AdminSortType = "SUPER_ASC"
+	AdminSortTypeSuperDesc      AdminSortType = "SUPER_DESC"
+	AdminSortTypeLoginCountAsc  AdminSortType = "LOGIN_COUNT_ASC"
+	AdminSortTypeLoginCountDesc AdminSortType = "LOGIN_COUNT_DESC"
+	AdminSortTypeLoginIPAsc     AdminSortType = "LOGIN_IP_ASC"
+	AdminSortTypeLoginIPDesc    AdminSortType = "LOGIN_IP_DESC"
+	AdminSortTypeLastIPAsc      AdminSortType = "LAST_IP_ASC"
+	AdminSortTypeLastIPDesc     AdminSortType = "LAST_IP_DESC"
+	AdminSortTypeStateAsc       AdminSortType = "STATE_ASC"
+	AdminSortTypeStateDesc      AdminSortType = "STATE_DESC"
+	AdminSortTypeDelAsc         AdminSortType = "DEL_ASC"
+	AdminSortTypeDelDesc        AdminSortType = "DEL_DESC"
+	AdminSortTypeUpdatedAtAsc   AdminSortType = "UPDATED_AT_ASC"
+	AdminSortTypeUpdatedAtDesc  AdminSortType = "UPDATED_AT_DESC"
+	AdminSortTypeCreatedAtAsc   AdminSortType = "CREATED_AT_ASC"
+	AdminSortTypeCreatedAtDesc  AdminSortType = "CREATED_AT_DESC"
+	AdminSortTypeDeletedByAsc   AdminSortType = "DELETED_BY_ASC"
+	AdminSortTypeDeletedByDesc  AdminSortType = "DELETED_BY_DESC"
+	AdminSortTypeUpdatedByAsc   AdminSortType = "UPDATED_BY_ASC"
+	AdminSortTypeUpdatedByDesc  AdminSortType = "UPDATED_BY_DESC"
+	AdminSortTypeCreatedByAsc   AdminSortType = "CREATED_BY_ASC"
+	AdminSortTypeCreatedByDesc  AdminSortType = "CREATED_BY_DESC"
+	AdminSortTypeGroupsIDSAsc   AdminSortType = "GROUPS_IDS_ASC"
+	AdminSortTypeGroupsIDSDesc  AdminSortType = "GROUPS_IDS_DESC"
+	AdminSortTypeRolesIDSAsc    AdminSortType = "ROLES_IDS_ASC"
+	AdminSortTypeRolesIDSDesc   AdminSortType = "ROLES_IDS_DESC"
+)
+
+var AllAdminSortType = []AdminSortType{
+	AdminSortTypeIDAsc,
+	AdminSortTypeIDDesc,
+	AdminSortTypePhoneAsc,
+	AdminSortTypePhoneDesc,
+	AdminSortTypePasswordAsc,
+	AdminSortTypePasswordDesc,
+	AdminSortTypeUsernameAsc,
+	AdminSortTypeUsernameDesc,
+	AdminSortTypeMoneyAsc,
+	AdminSortTypeMoneyDesc,
+	AdminSortTypeSexAsc,
+	AdminSortTypeSexDesc,
+	AdminSortTypeSuperAsc,
+	AdminSortTypeSuperDesc,
+	AdminSortTypeLoginCountAsc,
+	AdminSortTypeLoginCountDesc,
+	AdminSortTypeLoginIPAsc,
+	AdminSortTypeLoginIPDesc,
+	AdminSortTypeLastIPAsc,
+	AdminSortTypeLastIPDesc,
+	AdminSortTypeStateAsc,
+	AdminSortTypeStateDesc,
+	AdminSortTypeDelAsc,
+	AdminSortTypeDelDesc,
+	AdminSortTypeUpdatedAtAsc,
+	AdminSortTypeUpdatedAtDesc,
+	AdminSortTypeCreatedAtAsc,
+	AdminSortTypeCreatedAtDesc,
+	AdminSortTypeDeletedByAsc,
+	AdminSortTypeDeletedByDesc,
+	AdminSortTypeUpdatedByAsc,
+	AdminSortTypeUpdatedByDesc,
+	AdminSortTypeCreatedByAsc,
+	AdminSortTypeCreatedByDesc,
+	AdminSortTypeGroupsIDSAsc,
+	AdminSortTypeGroupsIDSDesc,
+	AdminSortTypeRolesIDSAsc,
+	AdminSortTypeRolesIDSDesc,
+}
+
+func (e AdminSortType) IsValid() bool {
+	switch e {
+	case AdminSortTypeIDAsc, AdminSortTypeIDDesc, AdminSortTypePhoneAsc, AdminSortTypePhoneDesc, AdminSortTypePasswordAsc, AdminSortTypePasswordDesc, AdminSortTypeUsernameAsc, AdminSortTypeUsernameDesc, AdminSortTypeMoneyAsc, AdminSortTypeMoneyDesc, AdminSortTypeSexAsc, AdminSortTypeSexDesc, AdminSortTypeSuperAsc, AdminSortTypeSuperDesc, AdminSortTypeLoginCountAsc, AdminSortTypeLoginCountDesc, AdminSortTypeLoginIPAsc, AdminSortTypeLoginIPDesc, AdminSortTypeLastIPAsc, AdminSortTypeLastIPDesc, AdminSortTypeStateAsc, AdminSortTypeStateDesc, AdminSortTypeDelAsc, AdminSortTypeDelDesc, AdminSortTypeUpdatedAtAsc, AdminSortTypeUpdatedAtDesc, AdminSortTypeCreatedAtAsc, AdminSortTypeCreatedAtDesc, AdminSortTypeDeletedByAsc, AdminSortTypeDeletedByDesc, AdminSortTypeUpdatedByAsc, AdminSortTypeUpdatedByDesc, AdminSortTypeCreatedByAsc, AdminSortTypeCreatedByDesc, AdminSortTypeGroupsIDSAsc, AdminSortTypeGroupsIDSDesc, AdminSortTypeRolesIDSAsc, AdminSortTypeRolesIDSDesc:
+		return true
+	}
+	return false
+}
+
+func (e AdminSortType) String() string {
+	return string(e)
+}
+
+func (e *AdminSortType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = AdminSortType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid AdminSortType", str)
+	}
+	return nil
+}
+
+func (e AdminSortType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type GroupSortType string
+
+const (
+	GroupSortTypeIDAsc         GroupSortType = "ID_ASC"
+	GroupSortTypeIDDesc        GroupSortType = "ID_DESC"
+	GroupSortTypeNameAsc       GroupSortType = "NAME_ASC"
+	GroupSortTypeNameDesc      GroupSortType = "NAME_DESC"
+	GroupSortTypeStateAsc      GroupSortType = "STATE_ASC"
+	GroupSortTypeStateDesc     GroupSortType = "STATE_DESC"
+	GroupSortTypeDelAsc        GroupSortType = "DEL_ASC"
+	GroupSortTypeDelDesc       GroupSortType = "DEL_DESC"
+	GroupSortTypeUpdatedAtAsc  GroupSortType = "UPDATED_AT_ASC"
+	GroupSortTypeUpdatedAtDesc GroupSortType = "UPDATED_AT_DESC"
+	GroupSortTypeCreatedAtAsc  GroupSortType = "CREATED_AT_ASC"
+	GroupSortTypeCreatedAtDesc GroupSortType = "CREATED_AT_DESC"
+	GroupSortTypeDeletedByAsc  GroupSortType = "DELETED_BY_ASC"
+	GroupSortTypeDeletedByDesc GroupSortType = "DELETED_BY_DESC"
+	GroupSortTypeUpdatedByAsc  GroupSortType = "UPDATED_BY_ASC"
+	GroupSortTypeUpdatedByDesc GroupSortType = "UPDATED_BY_DESC"
+	GroupSortTypeCreatedByAsc  GroupSortType = "CREATED_BY_ASC"
+	GroupSortTypeCreatedByDesc GroupSortType = "CREATED_BY_DESC"
+	GroupSortTypeAdminIDSAsc   GroupSortType = "ADMIN_IDS_ASC"
+	GroupSortTypeAdminIDSDesc  GroupSortType = "ADMIN_IDS_DESC"
+	GroupSortTypeRolesIDSAsc   GroupSortType = "ROLES_IDS_ASC"
+	GroupSortTypeRolesIDSDesc  GroupSortType = "ROLES_IDS_DESC"
+)
+
+var AllGroupSortType = []GroupSortType{
+	GroupSortTypeIDAsc,
+	GroupSortTypeIDDesc,
+	GroupSortTypeNameAsc,
+	GroupSortTypeNameDesc,
+	GroupSortTypeStateAsc,
+	GroupSortTypeStateDesc,
+	GroupSortTypeDelAsc,
+	GroupSortTypeDelDesc,
+	GroupSortTypeUpdatedAtAsc,
+	GroupSortTypeUpdatedAtDesc,
+	GroupSortTypeCreatedAtAsc,
+	GroupSortTypeCreatedAtDesc,
+	GroupSortTypeDeletedByAsc,
+	GroupSortTypeDeletedByDesc,
+	GroupSortTypeUpdatedByAsc,
+	GroupSortTypeUpdatedByDesc,
+	GroupSortTypeCreatedByAsc,
+	GroupSortTypeCreatedByDesc,
+	GroupSortTypeAdminIDSAsc,
+	GroupSortTypeAdminIDSDesc,
+	GroupSortTypeRolesIDSAsc,
+	GroupSortTypeRolesIDSDesc,
+}
+
+func (e GroupSortType) IsValid() bool {
+	switch e {
+	case GroupSortTypeIDAsc, GroupSortTypeIDDesc, GroupSortTypeNameAsc, GroupSortTypeNameDesc, GroupSortTypeStateAsc, GroupSortTypeStateDesc, GroupSortTypeDelAsc, GroupSortTypeDelDesc, GroupSortTypeUpdatedAtAsc, GroupSortTypeUpdatedAtDesc, GroupSortTypeCreatedAtAsc, GroupSortTypeCreatedAtDesc, GroupSortTypeDeletedByAsc, GroupSortTypeDeletedByDesc, GroupSortTypeUpdatedByAsc, GroupSortTypeUpdatedByDesc, GroupSortTypeCreatedByAsc, GroupSortTypeCreatedByDesc, GroupSortTypeAdminIDSAsc, GroupSortTypeAdminIDSDesc, GroupSortTypeRolesIDSAsc, GroupSortTypeRolesIDSDesc:
+		return true
+	}
+	return false
+}
+
+func (e GroupSortType) String() string {
+	return string(e)
+}
+
+func (e *GroupSortType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = GroupSortType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid GroupSortType", str)
+	}
+	return nil
+}
+
+func (e GroupSortType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type RoleSortType string
+
+const (
+	RoleSortTypeIDAsc         RoleSortType = "ID_ASC"
+	RoleSortTypeIDDesc        RoleSortType = "ID_DESC"
+	RoleSortTypeNameAsc       RoleSortType = "NAME_ASC"
+	RoleSortTypeNameDesc      RoleSortType = "NAME_DESC"
+	RoleSortTypePidAsc        RoleSortType = "PID_ASC"
+	RoleSortTypePidDesc       RoleSortType = "PID_DESC"
+	RoleSortTypeStateAsc      RoleSortType = "STATE_ASC"
+	RoleSortTypeStateDesc     RoleSortType = "STATE_DESC"
+	RoleSortTypeDelAsc        RoleSortType = "DEL_ASC"
+	RoleSortTypeDelDesc       RoleSortType = "DEL_DESC"
+	RoleSortTypeUpdatedAtAsc  RoleSortType = "UPDATED_AT_ASC"
+	RoleSortTypeUpdatedAtDesc RoleSortType = "UPDATED_AT_DESC"
+	RoleSortTypeCreatedAtAsc  RoleSortType = "CREATED_AT_ASC"
+	RoleSortTypeCreatedAtDesc RoleSortType = "CREATED_AT_DESC"
+	RoleSortTypeDeletedByAsc  RoleSortType = "DELETED_BY_ASC"
+	RoleSortTypeDeletedByDesc RoleSortType = "DELETED_BY_DESC"
+	RoleSortTypeUpdatedByAsc  RoleSortType = "UPDATED_BY_ASC"
+	RoleSortTypeUpdatedByDesc RoleSortType = "UPDATED_BY_DESC"
+	RoleSortTypeCreatedByAsc  RoleSortType = "CREATED_BY_ASC"
+	RoleSortTypeCreatedByDesc RoleSortType = "CREATED_BY_DESC"
+	RoleSortTypeAdminIDSAsc   RoleSortType = "ADMIN_IDS_ASC"
+	RoleSortTypeAdminIDSDesc  RoleSortType = "ADMIN_IDS_DESC"
+	RoleSortTypeGroupIDSAsc   RoleSortType = "GROUP_IDS_ASC"
+	RoleSortTypeGroupIDSDesc  RoleSortType = "GROUP_IDS_DESC"
+)
+
+var AllRoleSortType = []RoleSortType{
+	RoleSortTypeIDAsc,
+	RoleSortTypeIDDesc,
+	RoleSortTypeNameAsc,
+	RoleSortTypeNameDesc,
+	RoleSortTypePidAsc,
+	RoleSortTypePidDesc,
+	RoleSortTypeStateAsc,
+	RoleSortTypeStateDesc,
+	RoleSortTypeDelAsc,
+	RoleSortTypeDelDesc,
+	RoleSortTypeUpdatedAtAsc,
+	RoleSortTypeUpdatedAtDesc,
+	RoleSortTypeCreatedAtAsc,
+	RoleSortTypeCreatedAtDesc,
+	RoleSortTypeDeletedByAsc,
+	RoleSortTypeDeletedByDesc,
+	RoleSortTypeUpdatedByAsc,
+	RoleSortTypeUpdatedByDesc,
+	RoleSortTypeCreatedByAsc,
+	RoleSortTypeCreatedByDesc,
+	RoleSortTypeAdminIDSAsc,
+	RoleSortTypeAdminIDSDesc,
+	RoleSortTypeGroupIDSAsc,
+	RoleSortTypeGroupIDSDesc,
+}
+
+func (e RoleSortType) IsValid() bool {
+	switch e {
+	case RoleSortTypeIDAsc, RoleSortTypeIDDesc, RoleSortTypeNameAsc, RoleSortTypeNameDesc, RoleSortTypePidAsc, RoleSortTypePidDesc, RoleSortTypeStateAsc, RoleSortTypeStateDesc, RoleSortTypeDelAsc, RoleSortTypeDelDesc, RoleSortTypeUpdatedAtAsc, RoleSortTypeUpdatedAtDesc, RoleSortTypeCreatedAtAsc, RoleSortTypeCreatedAtDesc, RoleSortTypeDeletedByAsc, RoleSortTypeDeletedByDesc, RoleSortTypeUpdatedByAsc, RoleSortTypeUpdatedByDesc, RoleSortTypeCreatedByAsc, RoleSortTypeCreatedByDesc, RoleSortTypeAdminIDSAsc, RoleSortTypeAdminIDSDesc, RoleSortTypeGroupIDSAsc, RoleSortTypeGroupIDSDesc:
+		return true
+	}
+	return false
+}
+
+func (e RoleSortType) String() string {
+	return string(e)
+}
+
+func (e *RoleSortType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = RoleSortType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid RoleSortType", str)
+	}
+	return nil
+}
+
+func (e RoleSortType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
 type TaskSortType string
 
 const (
@@ -199,6 +789,8 @@ const (
 	TaskSortTypeAssigneeIDDesc TaskSortType = "ASSIGNEE_ID_DESC"
 	TaskSortTypeStateAsc       TaskSortType = "STATE_ASC"
 	TaskSortTypeStateDesc      TaskSortType = "STATE_DESC"
+	TaskSortTypeDelAsc         TaskSortType = "DEL_ASC"
+	TaskSortTypeDelDesc        TaskSortType = "DEL_DESC"
 	TaskSortTypeUpdatedAtAsc   TaskSortType = "UPDATED_AT_ASC"
 	TaskSortTypeUpdatedAtDesc  TaskSortType = "UPDATED_AT_DESC"
 	TaskSortTypeCreatedAtAsc   TaskSortType = "CREATED_AT_ASC"
@@ -224,6 +816,8 @@ var AllTaskSortType = []TaskSortType{
 	TaskSortTypeAssigneeIDDesc,
 	TaskSortTypeStateAsc,
 	TaskSortTypeStateDesc,
+	TaskSortTypeDelAsc,
+	TaskSortTypeDelDesc,
 	TaskSortTypeUpdatedAtAsc,
 	TaskSortTypeUpdatedAtDesc,
 	TaskSortTypeCreatedAtAsc,
@@ -238,7 +832,7 @@ var AllTaskSortType = []TaskSortType{
 
 func (e TaskSortType) IsValid() bool {
 	switch e {
-	case TaskSortTypeIDAsc, TaskSortTypeIDDesc, TaskSortTypeTitleAsc, TaskSortTypeTitleDesc, TaskSortTypeCompletedAsc, TaskSortTypeCompletedDesc, TaskSortTypeDueDateAsc, TaskSortTypeDueDateDesc, TaskSortTypeAssigneeIDAsc, TaskSortTypeAssigneeIDDesc, TaskSortTypeStateAsc, TaskSortTypeStateDesc, TaskSortTypeUpdatedAtAsc, TaskSortTypeUpdatedAtDesc, TaskSortTypeCreatedAtAsc, TaskSortTypeCreatedAtDesc, TaskSortTypeDeletedByAsc, TaskSortTypeDeletedByDesc, TaskSortTypeUpdatedByAsc, TaskSortTypeUpdatedByDesc, TaskSortTypeCreatedByAsc, TaskSortTypeCreatedByDesc:
+	case TaskSortTypeIDAsc, TaskSortTypeIDDesc, TaskSortTypeTitleAsc, TaskSortTypeTitleDesc, TaskSortTypeCompletedAsc, TaskSortTypeCompletedDesc, TaskSortTypeDueDateAsc, TaskSortTypeDueDateDesc, TaskSortTypeAssigneeIDAsc, TaskSortTypeAssigneeIDDesc, TaskSortTypeStateAsc, TaskSortTypeStateDesc, TaskSortTypeDelAsc, TaskSortTypeDelDesc, TaskSortTypeUpdatedAtAsc, TaskSortTypeUpdatedAtDesc, TaskSortTypeCreatedAtAsc, TaskSortTypeCreatedAtDesc, TaskSortTypeDeletedByAsc, TaskSortTypeDeletedByDesc, TaskSortTypeUpdatedByAsc, TaskSortTypeUpdatedByDesc, TaskSortTypeCreatedByAsc, TaskSortTypeCreatedByDesc:
 		return true
 	}
 	return false
@@ -278,6 +872,8 @@ const (
 	UserSortTypeLastNameDesc  UserSortType = "LAST_NAME_DESC"
 	UserSortTypeStateAsc      UserSortType = "STATE_ASC"
 	UserSortTypeStateDesc     UserSortType = "STATE_DESC"
+	UserSortTypeDelAsc        UserSortType = "DEL_ASC"
+	UserSortTypeDelDesc       UserSortType = "DEL_DESC"
 	UserSortTypeUpdatedAtAsc  UserSortType = "UPDATED_AT_ASC"
 	UserSortTypeUpdatedAtDesc UserSortType = "UPDATED_AT_DESC"
 	UserSortTypeCreatedAtAsc  UserSortType = "CREATED_AT_ASC"
@@ -303,6 +899,8 @@ var AllUserSortType = []UserSortType{
 	UserSortTypeLastNameDesc,
 	UserSortTypeStateAsc,
 	UserSortTypeStateDesc,
+	UserSortTypeDelAsc,
+	UserSortTypeDelDesc,
 	UserSortTypeUpdatedAtAsc,
 	UserSortTypeUpdatedAtDesc,
 	UserSortTypeCreatedAtAsc,
@@ -319,7 +917,7 @@ var AllUserSortType = []UserSortType{
 
 func (e UserSortType) IsValid() bool {
 	switch e {
-	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeStateAsc, UserSortTypeStateDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc, UserSortTypeTasksIDSAsc, UserSortTypeTasksIDSDesc:
+	case UserSortTypeIDAsc, UserSortTypeIDDesc, UserSortTypeEmailAsc, UserSortTypeEmailDesc, UserSortTypeFirstNameAsc, UserSortTypeFirstNameDesc, UserSortTypeLastNameAsc, UserSortTypeLastNameDesc, UserSortTypeStateAsc, UserSortTypeStateDesc, UserSortTypeDelAsc, UserSortTypeDelDesc, UserSortTypeUpdatedAtAsc, UserSortTypeUpdatedAtDesc, UserSortTypeCreatedAtAsc, UserSortTypeCreatedAtDesc, UserSortTypeDeletedByAsc, UserSortTypeDeletedByDesc, UserSortTypeUpdatedByAsc, UserSortTypeUpdatedByDesc, UserSortTypeCreatedByAsc, UserSortTypeCreatedByDesc, UserSortTypeTasksIDSAsc, UserSortTypeTasksIDSDesc:
 		return true
 	}
 	return false

@@ -49,6 +49,63 @@ models:
   TaskUpdateInput:
     model: "map[string]interface{}"
   
+  Admin:
+    model: github.com/maiguangyang/graphql-gorm/gen.Admin
+    fields:
+      groups:
+        resolver: true
+      roles:
+        resolver: true
+  AdminResultType:
+    model: github.com/maiguangyang/graphql-gorm/gen.AdminResultType
+    fields:
+      count:
+        resolver: true
+      items:
+        resolver: true
+  AdminCreateInput:
+    model: "map[string]interface{}"
+  AdminUpdateInput:
+    model: "map[string]interface{}"
+  
+  Group:
+    model: github.com/maiguangyang/graphql-gorm/gen.Group
+    fields:
+      admin:
+        resolver: true
+      roles:
+        resolver: true
+  GroupResultType:
+    model: github.com/maiguangyang/graphql-gorm/gen.GroupResultType
+    fields:
+      count:
+        resolver: true
+      items:
+        resolver: true
+  GroupCreateInput:
+    model: "map[string]interface{}"
+  GroupUpdateInput:
+    model: "map[string]interface{}"
+  
+  Role:
+    model: github.com/maiguangyang/graphql-gorm/gen.Role
+    fields:
+      admin:
+        resolver: true
+      group:
+        resolver: true
+  RoleResultType:
+    model: github.com/maiguangyang/graphql-gorm/gen.RoleResultType
+    fields:
+      count:
+        resolver: true
+      items:
+        resolver: true
+  RoleCreateInput:
+    model: "map[string]interface{}"
+  RoleUpdateInput:
+    model: "map[string]interface{}"
+  
   
   
   _Any:

@@ -1,19 +1,18 @@
 package gen
 
 import (
-	// "fmt"
-	"log"
-	"time"
 	"context"
+	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/99designs/gqlgen/handler"
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
+	"github.com/maiguangyang/graphql-gorm/cache"
 	"github.com/maiguangyang/graphql-gorm/middleware"
 	"github.com/maiguangyang/graphql-gorm/utils"
-	"github.com/maiguangyang/graphql-gorm/cache"
 )
 
 var RidesCache *cache.Cache
@@ -24,18 +23,18 @@ func GetHTTPServeMux(r ResolverRoot, db *DB) *mux.Router {
 	mux := mux.NewRouter()
 	mux.Use(middleware.AuthHandler)
 
-  RidesCache, redisErr = cache.NewCache("localhost:6379", "", 24*time.Hour)
-  if redisErr != nil {
-    log.Fatalf("cannot create APQ redis cache: %v", redisErr)
-  }
+	RidesCache, redisErr = cache.NewCache("localhost:6379", "", 24*time.Hour)
+	if redisErr != nil {
+		log.Fatalf("cannot create APQ redis cache: %v", redisErr)
+	}
 
 	executableSchema := NewExecutableSchema(Config{Resolvers: r})
 	gqlHandler := handler.GraphQL(executableSchema,
 		// 中间件进行登录Token校验
 		utils.RouterIsAuthMiddleware,
 
-    // redis缓存
-    handler.EnablePersistedQueryCache(RidesCache),
+		// redis缓存
+		handler.EnablePersistedQueryCache(RidesCache),
 	)
 
 	loaders := GetLoaders(db)
@@ -46,7 +45,6 @@ func GetHTTPServeMux(r ResolverRoot, db *DB) *mux.Router {
 		ctx := context.WithValue(req.Context(), KeyPrincipalID, principalID)
 		ctx = context.WithValue(ctx, KeyLoaders, loaders)
 		ctx = context.WithValue(ctx, KeyExecutableSchema, executableSchema)
-
 		req = req.WithContext(ctx)
 		if req.Method == "GET" {
 			playgroundHandler(res, req)

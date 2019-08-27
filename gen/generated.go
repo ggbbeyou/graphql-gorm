@@ -35,8 +35,14 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Admin() AdminResolver
+	AdminResultType() AdminResultTypeResolver
+	Group() GroupResolver
+	GroupResultType() GroupResultTypeResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
+	Role() RoleResolver
+	RoleResultType() RoleResultTypeResolver
 	Task() TaskResolver
 	TaskResultType() TaskResultTypeResolver
 	User() UserResolver
@@ -47,24 +53,123 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Admin struct {
+		CreatedAt  func(childComplexity int) int
+		CreatedBy  func(childComplexity int) int
+		Del        func(childComplexity int) int
+		DeletedBy  func(childComplexity int) int
+		Groups     func(childComplexity int) int
+		GroupsIds  func(childComplexity int) int
+		ID         func(childComplexity int) int
+		LastIP     func(childComplexity int) int
+		LoginCount func(childComplexity int) int
+		LoginIP    func(childComplexity int) int
+		Money      func(childComplexity int) int
+		Password   func(childComplexity int) int
+		Phone      func(childComplexity int) int
+		Roles      func(childComplexity int) int
+		RolesIds   func(childComplexity int) int
+		Sex        func(childComplexity int) int
+		State      func(childComplexity int) int
+		Super      func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+		UpdatedBy  func(childComplexity int) int
+		Username   func(childComplexity int) int
+	}
+
+	AdminResultType struct {
+		CurrentPage func(childComplexity int) int
+		Data        func(childComplexity int) int
+		PerPage     func(childComplexity int) int
+		Total       func(childComplexity int) int
+		TotalPage   func(childComplexity int) int
+	}
+
+	Group struct {
+		Admin     func(childComplexity int) int
+		AdminIds  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		Del       func(childComplexity int) int
+		DeletedBy func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Roles     func(childComplexity int) int
+		RolesIds  func(childComplexity int) int
+		State     func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
+	GroupResultType struct {
+		CurrentPage func(childComplexity int) int
+		Data        func(childComplexity int) int
+		PerPage     func(childComplexity int) int
+		Total       func(childComplexity int) int
+		TotalPage   func(childComplexity int) int
+	}
+
 	Mutation struct {
-		CreateTask     func(childComplexity int, input map[string]interface{}) int
-		CreateUser     func(childComplexity int, input map[string]interface{}) int
-		DeleteAllTasks func(childComplexity int) int
-		DeleteAllUsers func(childComplexity int) int
-		DeleteTask     func(childComplexity int, id string) int
-		DeleteUser     func(childComplexity int, id string) int
-		Login          func(childComplexity int, email string) int
-		UpdateTask     func(childComplexity int, id string, input map[string]interface{}) int
-		UpdateUser     func(childComplexity int, id string, input map[string]interface{}) int
+		CreateAdmin     func(childComplexity int, input map[string]interface{}) int
+		CreateGroup     func(childComplexity int, input map[string]interface{}) int
+		CreateRole      func(childComplexity int, input map[string]interface{}) int
+		CreateTask      func(childComplexity int, input map[string]interface{}) int
+		CreateUser      func(childComplexity int, input map[string]interface{}) int
+		DeleteAdmin     func(childComplexity int, id string) int
+		DeleteAllAdmins func(childComplexity int) int
+		DeleteAllGroups func(childComplexity int) int
+		DeleteAllRoles  func(childComplexity int) int
+		DeleteAllTasks  func(childComplexity int) int
+		DeleteAllUsers  func(childComplexity int) int
+		DeleteGroup     func(childComplexity int, id string) int
+		DeleteRole      func(childComplexity int, id string) int
+		DeleteTask      func(childComplexity int, id string) int
+		DeleteUser      func(childComplexity int, id string) int
+		Login           func(childComplexity int, email string) int
+		UpdateAdmin     func(childComplexity int, id string, input map[string]interface{}) int
+		UpdateGroup     func(childComplexity int, id string, input map[string]interface{}) int
+		UpdateRole      func(childComplexity int, id string, input map[string]interface{}) int
+		UpdateTask      func(childComplexity int, id string, input map[string]interface{}) int
+		UpdateUser      func(childComplexity int, id string, input map[string]interface{}) int
 	}
 
 	Query struct {
+		Admin    func(childComplexity int, id *string, q *string, filter *AdminFilterType) int
+		Admins   func(childComplexity int, currentPage *int, perPage *int, q *string, sort []AdminSortType, filter *AdminFilterType) int
+		Group    func(childComplexity int, id *string, q *string, filter *GroupFilterType) int
+		Groups   func(childComplexity int, currentPage *int, perPage *int, q *string, sort []GroupSortType, filter *GroupFilterType) int
+		Role     func(childComplexity int, id *string, q *string, filter *RoleFilterType) int
+		Roles    func(childComplexity int, currentPage *int, perPage *int, q *string, sort []RoleSortType, filter *RoleFilterType) int
 		Task     func(childComplexity int, id *string, q *string, filter *TaskFilterType) int
 		Tasks    func(childComplexity int, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) int
 		User     func(childComplexity int, id *string, q *string, filter *UserFilterType) int
 		Users    func(childComplexity int, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) int
 		_service func(childComplexity int) int
+	}
+
+	Role struct {
+		Admin     func(childComplexity int) int
+		AdminIds  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		Del       func(childComplexity int) int
+		DeletedBy func(childComplexity int) int
+		Group     func(childComplexity int) int
+		GroupIds  func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Pid       func(childComplexity int) int
+		State     func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
+	RoleResultType struct {
+		CurrentPage func(childComplexity int) int
+		Data        func(childComplexity int) int
+		PerPage     func(childComplexity int) int
+		Total       func(childComplexity int) int
+		TotalPage   func(childComplexity int) int
 	}
 
 	Task struct {
@@ -73,6 +178,7 @@ type ComplexityRoot struct {
 		Completed  func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
 		CreatedBy  func(childComplexity int) int
+		Del        func(childComplexity int) int
 		DeletedBy  func(childComplexity int) int
 		DueDate    func(childComplexity int) int
 		ID         func(childComplexity int) int
@@ -93,6 +199,7 @@ type ComplexityRoot struct {
 	User struct {
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
+		Del       func(childComplexity int) int
 		DeletedBy func(childComplexity int) int
 		Email     func(childComplexity int) int
 		FirstName func(childComplexity int) int
@@ -118,6 +225,32 @@ type ComplexityRoot struct {
 	}
 }
 
+type AdminResolver interface {
+	Groups(ctx context.Context, obj *Admin) ([]*Group, error)
+	Roles(ctx context.Context, obj *Admin) ([]*Role, error)
+
+	GroupsIds(ctx context.Context, obj *Admin) ([]string, error)
+	RolesIds(ctx context.Context, obj *Admin) ([]string, error)
+}
+type AdminResultTypeResolver interface {
+	Data(ctx context.Context, obj *AdminResultType) ([]*Admin, error)
+	Total(ctx context.Context, obj *AdminResultType) (int, error)
+
+	TotalPage(ctx context.Context, obj *AdminResultType) (int, error)
+}
+type GroupResolver interface {
+	Admin(ctx context.Context, obj *Group) ([]*Admin, error)
+	Roles(ctx context.Context, obj *Group) ([]*Role, error)
+
+	AdminIds(ctx context.Context, obj *Group) ([]string, error)
+	RolesIds(ctx context.Context, obj *Group) ([]string, error)
+}
+type GroupResultTypeResolver interface {
+	Data(ctx context.Context, obj *GroupResultType) ([]*Group, error)
+	Total(ctx context.Context, obj *GroupResultType) (int, error)
+
+	TotalPage(ctx context.Context, obj *GroupResultType) (int, error)
+}
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input map[string]interface{}) (*User, error)
 	UpdateUser(ctx context.Context, id string, input map[string]interface{}) (*User, error)
@@ -127,6 +260,18 @@ type MutationResolver interface {
 	UpdateTask(ctx context.Context, id string, input map[string]interface{}) (*Task, error)
 	DeleteTask(ctx context.Context, id string) (*Task, error)
 	DeleteAllTasks(ctx context.Context) (bool, error)
+	CreateAdmin(ctx context.Context, input map[string]interface{}) (*Admin, error)
+	UpdateAdmin(ctx context.Context, id string, input map[string]interface{}) (*Admin, error)
+	DeleteAdmin(ctx context.Context, id string) (*Admin, error)
+	DeleteAllAdmins(ctx context.Context) (bool, error)
+	CreateGroup(ctx context.Context, input map[string]interface{}) (*Group, error)
+	UpdateGroup(ctx context.Context, id string, input map[string]interface{}) (*Group, error)
+	DeleteGroup(ctx context.Context, id string) (*Group, error)
+	DeleteAllGroups(ctx context.Context) (bool, error)
+	CreateRole(ctx context.Context, input map[string]interface{}) (*Role, error)
+	UpdateRole(ctx context.Context, id string, input map[string]interface{}) (*Role, error)
+	DeleteRole(ctx context.Context, id string) (*Role, error)
+	DeleteAllRoles(ctx context.Context) (bool, error)
 	Login(ctx context.Context, email string) (*interface{}, error)
 }
 type QueryResolver interface {
@@ -135,6 +280,25 @@ type QueryResolver interface {
 	Users(ctx context.Context, currentPage *int, perPage *int, q *string, sort []UserSortType, filter *UserFilterType) (*UserResultType, error)
 	Task(ctx context.Context, id *string, q *string, filter *TaskFilterType) (*Task, error)
 	Tasks(ctx context.Context, currentPage *int, perPage *int, q *string, sort []TaskSortType, filter *TaskFilterType) (*TaskResultType, error)
+	Admin(ctx context.Context, id *string, q *string, filter *AdminFilterType) (*Admin, error)
+	Admins(ctx context.Context, currentPage *int, perPage *int, q *string, sort []AdminSortType, filter *AdminFilterType) (*AdminResultType, error)
+	Group(ctx context.Context, id *string, q *string, filter *GroupFilterType) (*Group, error)
+	Groups(ctx context.Context, currentPage *int, perPage *int, q *string, sort []GroupSortType, filter *GroupFilterType) (*GroupResultType, error)
+	Role(ctx context.Context, id *string, q *string, filter *RoleFilterType) (*Role, error)
+	Roles(ctx context.Context, currentPage *int, perPage *int, q *string, sort []RoleSortType, filter *RoleFilterType) (*RoleResultType, error)
+}
+type RoleResolver interface {
+	Admin(ctx context.Context, obj *Role) ([]*Admin, error)
+	Group(ctx context.Context, obj *Role) ([]*Admin, error)
+
+	AdminIds(ctx context.Context, obj *Role) ([]string, error)
+	GroupIds(ctx context.Context, obj *Role) ([]string, error)
+}
+type RoleResultTypeResolver interface {
+	Data(ctx context.Context, obj *RoleResultType) ([]*Role, error)
+	Total(ctx context.Context, obj *RoleResultType) (int, error)
+
+	TotalPage(ctx context.Context, obj *RoleResultType) (int, error)
 }
 type TaskResolver interface {
 	Assignee(ctx context.Context, obj *Task) (*User, error)
@@ -172,6 +336,350 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Admin.createdAt":
+		if e.complexity.Admin.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Admin.CreatedAt(childComplexity), true
+
+	case "Admin.createdBy":
+		if e.complexity.Admin.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Admin.CreatedBy(childComplexity), true
+
+	case "Admin.del":
+		if e.complexity.Admin.Del == nil {
+			break
+		}
+
+		return e.complexity.Admin.Del(childComplexity), true
+
+	case "Admin.deletedBy":
+		if e.complexity.Admin.DeletedBy == nil {
+			break
+		}
+
+		return e.complexity.Admin.DeletedBy(childComplexity), true
+
+	case "Admin.groups":
+		if e.complexity.Admin.Groups == nil {
+			break
+		}
+
+		return e.complexity.Admin.Groups(childComplexity), true
+
+	case "Admin.groupsIds":
+		if e.complexity.Admin.GroupsIds == nil {
+			break
+		}
+
+		return e.complexity.Admin.GroupsIds(childComplexity), true
+
+	case "Admin.id":
+		if e.complexity.Admin.ID == nil {
+			break
+		}
+
+		return e.complexity.Admin.ID(childComplexity), true
+
+	case "Admin.LastIp":
+		if e.complexity.Admin.LastIP == nil {
+			break
+		}
+
+		return e.complexity.Admin.LastIP(childComplexity), true
+
+	case "Admin.LoginCount":
+		if e.complexity.Admin.LoginCount == nil {
+			break
+		}
+
+		return e.complexity.Admin.LoginCount(childComplexity), true
+
+	case "Admin.LoginIp":
+		if e.complexity.Admin.LoginIP == nil {
+			break
+		}
+
+		return e.complexity.Admin.LoginIP(childComplexity), true
+
+	case "Admin.Money":
+		if e.complexity.Admin.Money == nil {
+			break
+		}
+
+		return e.complexity.Admin.Money(childComplexity), true
+
+	case "Admin.Password":
+		if e.complexity.Admin.Password == nil {
+			break
+		}
+
+		return e.complexity.Admin.Password(childComplexity), true
+
+	case "Admin.Phone":
+		if e.complexity.Admin.Phone == nil {
+			break
+		}
+
+		return e.complexity.Admin.Phone(childComplexity), true
+
+	case "Admin.roles":
+		if e.complexity.Admin.Roles == nil {
+			break
+		}
+
+		return e.complexity.Admin.Roles(childComplexity), true
+
+	case "Admin.rolesIds":
+		if e.complexity.Admin.RolesIds == nil {
+			break
+		}
+
+		return e.complexity.Admin.RolesIds(childComplexity), true
+
+	case "Admin.Sex":
+		if e.complexity.Admin.Sex == nil {
+			break
+		}
+
+		return e.complexity.Admin.Sex(childComplexity), true
+
+	case "Admin.state":
+		if e.complexity.Admin.State == nil {
+			break
+		}
+
+		return e.complexity.Admin.State(childComplexity), true
+
+	case "Admin.Super":
+		if e.complexity.Admin.Super == nil {
+			break
+		}
+
+		return e.complexity.Admin.Super(childComplexity), true
+
+	case "Admin.updatedAt":
+		if e.complexity.Admin.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Admin.UpdatedAt(childComplexity), true
+
+	case "Admin.updatedBy":
+		if e.complexity.Admin.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Admin.UpdatedBy(childComplexity), true
+
+	case "Admin.Username":
+		if e.complexity.Admin.Username == nil {
+			break
+		}
+
+		return e.complexity.Admin.Username(childComplexity), true
+
+	case "AdminResultType.current_page":
+		if e.complexity.AdminResultType.CurrentPage == nil {
+			break
+		}
+
+		return e.complexity.AdminResultType.CurrentPage(childComplexity), true
+
+	case "AdminResultType.data":
+		if e.complexity.AdminResultType.Data == nil {
+			break
+		}
+
+		return e.complexity.AdminResultType.Data(childComplexity), true
+
+	case "AdminResultType.per_page":
+		if e.complexity.AdminResultType.PerPage == nil {
+			break
+		}
+
+		return e.complexity.AdminResultType.PerPage(childComplexity), true
+
+	case "AdminResultType.total":
+		if e.complexity.AdminResultType.Total == nil {
+			break
+		}
+
+		return e.complexity.AdminResultType.Total(childComplexity), true
+
+	case "AdminResultType.total_page":
+		if e.complexity.AdminResultType.TotalPage == nil {
+			break
+		}
+
+		return e.complexity.AdminResultType.TotalPage(childComplexity), true
+
+	case "Group.admin":
+		if e.complexity.Group.Admin == nil {
+			break
+		}
+
+		return e.complexity.Group.Admin(childComplexity), true
+
+	case "Group.adminIds":
+		if e.complexity.Group.AdminIds == nil {
+			break
+		}
+
+		return e.complexity.Group.AdminIds(childComplexity), true
+
+	case "Group.createdAt":
+		if e.complexity.Group.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Group.CreatedAt(childComplexity), true
+
+	case "Group.createdBy":
+		if e.complexity.Group.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Group.CreatedBy(childComplexity), true
+
+	case "Group.del":
+		if e.complexity.Group.Del == nil {
+			break
+		}
+
+		return e.complexity.Group.Del(childComplexity), true
+
+	case "Group.deletedBy":
+		if e.complexity.Group.DeletedBy == nil {
+			break
+		}
+
+		return e.complexity.Group.DeletedBy(childComplexity), true
+
+	case "Group.id":
+		if e.complexity.Group.ID == nil {
+			break
+		}
+
+		return e.complexity.Group.ID(childComplexity), true
+
+	case "Group.Name":
+		if e.complexity.Group.Name == nil {
+			break
+		}
+
+		return e.complexity.Group.Name(childComplexity), true
+
+	case "Group.roles":
+		if e.complexity.Group.Roles == nil {
+			break
+		}
+
+		return e.complexity.Group.Roles(childComplexity), true
+
+	case "Group.rolesIds":
+		if e.complexity.Group.RolesIds == nil {
+			break
+		}
+
+		return e.complexity.Group.RolesIds(childComplexity), true
+
+	case "Group.state":
+		if e.complexity.Group.State == nil {
+			break
+		}
+
+		return e.complexity.Group.State(childComplexity), true
+
+	case "Group.updatedAt":
+		if e.complexity.Group.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Group.UpdatedAt(childComplexity), true
+
+	case "Group.updatedBy":
+		if e.complexity.Group.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Group.UpdatedBy(childComplexity), true
+
+	case "GroupResultType.current_page":
+		if e.complexity.GroupResultType.CurrentPage == nil {
+			break
+		}
+
+		return e.complexity.GroupResultType.CurrentPage(childComplexity), true
+
+	case "GroupResultType.data":
+		if e.complexity.GroupResultType.Data == nil {
+			break
+		}
+
+		return e.complexity.GroupResultType.Data(childComplexity), true
+
+	case "GroupResultType.per_page":
+		if e.complexity.GroupResultType.PerPage == nil {
+			break
+		}
+
+		return e.complexity.GroupResultType.PerPage(childComplexity), true
+
+	case "GroupResultType.total":
+		if e.complexity.GroupResultType.Total == nil {
+			break
+		}
+
+		return e.complexity.GroupResultType.Total(childComplexity), true
+
+	case "GroupResultType.total_page":
+		if e.complexity.GroupResultType.TotalPage == nil {
+			break
+		}
+
+		return e.complexity.GroupResultType.TotalPage(childComplexity), true
+
+	case "Mutation.createAdmin":
+		if e.complexity.Mutation.CreateAdmin == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAdmin_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAdmin(childComplexity, args["input"].(map[string]interface{})), true
+
+	case "Mutation.createGroup":
+		if e.complexity.Mutation.CreateGroup == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createGroup_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateGroup(childComplexity, args["input"].(map[string]interface{})), true
+
+	case "Mutation.createRole":
+		if e.complexity.Mutation.CreateRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateRole(childComplexity, args["input"].(map[string]interface{})), true
+
 	case "Mutation.createTask":
 		if e.complexity.Mutation.CreateTask == nil {
 			break
@@ -196,6 +704,39 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(map[string]interface{})), true
 
+	case "Mutation.deleteAdmin":
+		if e.complexity.Mutation.DeleteAdmin == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAdmin_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAdmin(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteAllAdmins":
+		if e.complexity.Mutation.DeleteAllAdmins == nil {
+			break
+		}
+
+		return e.complexity.Mutation.DeleteAllAdmins(childComplexity), true
+
+	case "Mutation.deleteAllGroups":
+		if e.complexity.Mutation.DeleteAllGroups == nil {
+			break
+		}
+
+		return e.complexity.Mutation.DeleteAllGroups(childComplexity), true
+
+	case "Mutation.deleteAllRoles":
+		if e.complexity.Mutation.DeleteAllRoles == nil {
+			break
+		}
+
+		return e.complexity.Mutation.DeleteAllRoles(childComplexity), true
+
 	case "Mutation.deleteAllTasks":
 		if e.complexity.Mutation.DeleteAllTasks == nil {
 			break
@@ -209,6 +750,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteAllUsers(childComplexity), true
+
+	case "Mutation.deleteGroup":
+		if e.complexity.Mutation.DeleteGroup == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteGroup_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteGroup(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteRole":
+		if e.complexity.Mutation.DeleteRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteRole(childComplexity, args["id"].(string)), true
 
 	case "Mutation.deleteTask":
 		if e.complexity.Mutation.DeleteTask == nil {
@@ -246,6 +811,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Login(childComplexity, args["email"].(string)), true
 
+	case "Mutation.updateAdmin":
+		if e.complexity.Mutation.UpdateAdmin == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAdmin_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAdmin(childComplexity, args["id"].(string), args["input"].(map[string]interface{})), true
+
+	case "Mutation.updateGroup":
+		if e.complexity.Mutation.UpdateGroup == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateGroup_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateGroup(childComplexity, args["id"].(string), args["input"].(map[string]interface{})), true
+
+	case "Mutation.updateRole":
+		if e.complexity.Mutation.UpdateRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateRole(childComplexity, args["id"].(string), args["input"].(map[string]interface{})), true
+
 	case "Mutation.updateTask":
 		if e.complexity.Mutation.UpdateTask == nil {
 			break
@@ -269,6 +870,78 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(string), args["input"].(map[string]interface{})), true
+
+	case "Query.admin":
+		if e.complexity.Query.Admin == nil {
+			break
+		}
+
+		args, err := ec.field_Query_admin_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Admin(childComplexity, args["id"].(*string), args["q"].(*string), args["filter"].(*AdminFilterType)), true
+
+	case "Query.admins":
+		if e.complexity.Query.Admins == nil {
+			break
+		}
+
+		args, err := ec.field_Query_admins_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Admins(childComplexity, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]AdminSortType), args["filter"].(*AdminFilterType)), true
+
+	case "Query.group":
+		if e.complexity.Query.Group == nil {
+			break
+		}
+
+		args, err := ec.field_Query_group_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Group(childComplexity, args["id"].(*string), args["q"].(*string), args["filter"].(*GroupFilterType)), true
+
+	case "Query.groups":
+		if e.complexity.Query.Groups == nil {
+			break
+		}
+
+		args, err := ec.field_Query_groups_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Groups(childComplexity, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]GroupSortType), args["filter"].(*GroupFilterType)), true
+
+	case "Query.role":
+		if e.complexity.Query.Role == nil {
+			break
+		}
+
+		args, err := ec.field_Query_role_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Role(childComplexity, args["id"].(*string), args["q"].(*string), args["filter"].(*RoleFilterType)), true
+
+	case "Query.roles":
+		if e.complexity.Query.Roles == nil {
+			break
+		}
+
+		args, err := ec.field_Query_roles_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Roles(childComplexity, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]RoleSortType), args["filter"].(*RoleFilterType)), true
 
 	case "Query.task":
 		if e.complexity.Query.Task == nil {
@@ -325,6 +998,139 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query._service(childComplexity), true
 
+	case "Role.admin":
+		if e.complexity.Role.Admin == nil {
+			break
+		}
+
+		return e.complexity.Role.Admin(childComplexity), true
+
+	case "Role.adminIds":
+		if e.complexity.Role.AdminIds == nil {
+			break
+		}
+
+		return e.complexity.Role.AdminIds(childComplexity), true
+
+	case "Role.createdAt":
+		if e.complexity.Role.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Role.CreatedAt(childComplexity), true
+
+	case "Role.createdBy":
+		if e.complexity.Role.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Role.CreatedBy(childComplexity), true
+
+	case "Role.del":
+		if e.complexity.Role.Del == nil {
+			break
+		}
+
+		return e.complexity.Role.Del(childComplexity), true
+
+	case "Role.deletedBy":
+		if e.complexity.Role.DeletedBy == nil {
+			break
+		}
+
+		return e.complexity.Role.DeletedBy(childComplexity), true
+
+	case "Role.group":
+		if e.complexity.Role.Group == nil {
+			break
+		}
+
+		return e.complexity.Role.Group(childComplexity), true
+
+	case "Role.groupIds":
+		if e.complexity.Role.GroupIds == nil {
+			break
+		}
+
+		return e.complexity.Role.GroupIds(childComplexity), true
+
+	case "Role.id":
+		if e.complexity.Role.ID == nil {
+			break
+		}
+
+		return e.complexity.Role.ID(childComplexity), true
+
+	case "Role.Name":
+		if e.complexity.Role.Name == nil {
+			break
+		}
+
+		return e.complexity.Role.Name(childComplexity), true
+
+	case "Role.Pid":
+		if e.complexity.Role.Pid == nil {
+			break
+		}
+
+		return e.complexity.Role.Pid(childComplexity), true
+
+	case "Role.state":
+		if e.complexity.Role.State == nil {
+			break
+		}
+
+		return e.complexity.Role.State(childComplexity), true
+
+	case "Role.updatedAt":
+		if e.complexity.Role.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Role.UpdatedAt(childComplexity), true
+
+	case "Role.updatedBy":
+		if e.complexity.Role.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Role.UpdatedBy(childComplexity), true
+
+	case "RoleResultType.current_page":
+		if e.complexity.RoleResultType.CurrentPage == nil {
+			break
+		}
+
+		return e.complexity.RoleResultType.CurrentPage(childComplexity), true
+
+	case "RoleResultType.data":
+		if e.complexity.RoleResultType.Data == nil {
+			break
+		}
+
+		return e.complexity.RoleResultType.Data(childComplexity), true
+
+	case "RoleResultType.per_page":
+		if e.complexity.RoleResultType.PerPage == nil {
+			break
+		}
+
+		return e.complexity.RoleResultType.PerPage(childComplexity), true
+
+	case "RoleResultType.total":
+		if e.complexity.RoleResultType.Total == nil {
+			break
+		}
+
+		return e.complexity.RoleResultType.Total(childComplexity), true
+
+	case "RoleResultType.total_page":
+		if e.complexity.RoleResultType.TotalPage == nil {
+			break
+		}
+
+		return e.complexity.RoleResultType.TotalPage(childComplexity), true
+
 	case "Task.assignee":
 		if e.complexity.Task.Assignee == nil {
 			break
@@ -359,6 +1165,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Task.CreatedBy(childComplexity), true
+
+	case "Task.del":
+		if e.complexity.Task.Del == nil {
+			break
+		}
+
+		return e.complexity.Task.Del(childComplexity), true
 
 	case "Task.deletedBy":
 		if e.complexity.Task.DeletedBy == nil {
@@ -457,6 +1270,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.CreatedBy(childComplexity), true
+
+	case "User.del":
+		if e.complexity.User.Del == nil {
+			break
+		}
+
+		return e.complexity.User.Del(childComplexity), true
 
 	case "User.deletedBy":
 		if e.complexity.User.DeletedBy == nil {
@@ -649,6 +1469,12 @@ type Query {
   users(current_page: Int = 1, per_page: Int = 20, q: String, sort: [UserSortType!], filter: UserFilterType): UserResultType
   task(id: ID, q: String, filter: TaskFilterType): Task
   tasks(current_page: Int = 1, per_page: Int = 20, q: String, sort: [TaskSortType!], filter: TaskFilterType): TaskResultType
+  admin(id: ID, q: String, filter: AdminFilterType): Admin
+  admins(current_page: Int = 1, per_page: Int = 20, q: String, sort: [AdminSortType!], filter: AdminFilterType): AdminResultType
+  group(id: ID, q: String, filter: GroupFilterType): Group
+  groups(current_page: Int = 1, per_page: Int = 20, q: String, sort: [GroupSortType!], filter: GroupFilterType): GroupResultType
+  role(id: ID, q: String, filter: RoleFilterType): Role
+  roles(current_page: Int = 1, per_page: Int = 20, q: String, sort: [RoleSortType!], filter: RoleFilterType): RoleResultType
 }
 
 type Mutation {
@@ -660,6 +1486,18 @@ type Mutation {
   updateTask(id: ID!, input: TaskUpdateInput!): Task!
   deleteTask(id: ID!): Task!
   deleteAllTasks: Boolean!
+  createAdmin(input: AdminCreateInput!): Admin!
+  updateAdmin(id: ID!, input: AdminUpdateInput!): Admin!
+  deleteAdmin(id: ID!): Admin!
+  deleteAllAdmins: Boolean!
+  createGroup(input: GroupCreateInput!): Group!
+  updateGroup(id: ID!, input: GroupUpdateInput!): Group!
+  deleteGroup(id: ID!): Group!
+  deleteAllGroups: Boolean!
+  createRole(input: RoleCreateInput!): Role!
+  updateRole(id: ID!, input: RoleUpdateInput!): Role!
+  deleteRole(id: ID!): Role!
+  deleteAllRoles: Boolean!
 }
 
 scalar Any
@@ -671,6 +1509,7 @@ type User {
   lastName: String
   tasks: [Task!]!
   state: Int
+  del: Int
   updatedAt: Int
   createdAt: Int
   deletedBy: ID
@@ -687,11 +1526,69 @@ type Task {
   assignee: User
   assigneeId: ID
   state: Int
+  del: Int
   updatedAt: Int
   createdAt: Int
   deletedBy: ID
   updatedBy: ID
   createdBy: ID
+}
+
+type Admin {
+  id: ID!
+  Phone: String
+  Password: String
+  Username: String
+  Money: Int
+  Sex: Int
+  Super: Int
+  LoginCount: Int
+  LoginIp: String
+  LastIp: String
+  groups: [Group!]
+  roles: [Role!]
+  state: Int
+  del: Int
+  updatedAt: Int
+  createdAt: Int
+  deletedBy: ID
+  updatedBy: ID
+  createdBy: ID
+  groupsIds: [ID!]!
+  rolesIds: [ID!]!
+}
+
+type Group {
+  id: ID!
+  Name: String
+  admin: [Admin!]
+  roles: [Role!]
+  state: Int
+  del: Int
+  updatedAt: Int
+  createdAt: Int
+  deletedBy: ID
+  updatedBy: ID
+  createdBy: ID
+  adminIds: [ID!]!
+  rolesIds: [ID!]!
+}
+
+type Role {
+  id: ID!
+  Name: String
+  admin: [Admin!]
+  group: [Admin]
+  Pid: String
+  state: Int
+  del: Int
+  updatedAt: Int
+  createdAt: Int
+  deletedBy: ID
+  updatedBy: ID
+  createdBy: ID
+  adminIds: [ID!]!
+  groupIds: [ID!]!
 }
 
 extend type Mutation {
@@ -704,6 +1601,7 @@ input UserCreateInput {
   firstName: String
   lastName: String
   state: Int
+  del: Int
   tasksIds: [ID!]
 }
 
@@ -712,6 +1610,7 @@ input UserUpdateInput {
   firstName: String
   lastName: String
   state: Int
+  del: Int
   tasksIds: [ID!]
 }
 
@@ -726,6 +1625,8 @@ enum UserSortType {
   LAST_NAME_DESC
   STATE_ASC
   STATE_DESC
+  DEL_ASC
+  DEL_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
@@ -787,6 +1688,13 @@ input UserFilterType {
   state_gte: Int
   state_lte: Int
   state_in: [Int!]
+  del: Int
+  del_ne: Int
+  del_gt: Int
+  del_lt: Int
+  del_gte: Int
+  del_lte: Int
+  del_in: [Int!]
   updatedAt: Int
   updatedAt_ne: Int
   updatedAt_gt: Int
@@ -840,6 +1748,7 @@ input TaskCreateInput {
   dueDate: Time
   assigneeId: ID
   state: Int
+  del: Int
 }
 
 input TaskUpdateInput {
@@ -848,6 +1757,7 @@ input TaskUpdateInput {
   dueDate: Time
   assigneeId: ID
   state: Int
+  del: Int
 }
 
 enum TaskSortType {
@@ -863,6 +1773,8 @@ enum TaskSortType {
   ASSIGNEE_ID_DESC
   STATE_ASC
   STATE_DESC
+  DEL_ASC
+  DEL_DESC
   UPDATED_AT_ASC
   UPDATED_AT_DESC
   CREATED_AT_ASC
@@ -923,6 +1835,13 @@ input TaskFilterType {
   state_gte: Int
   state_lte: Int
   state_in: [Int!]
+  del: Int
+  del_ne: Int
+  del_gt: Int
+  del_lt: Int
+  del_gte: Int
+  del_lte: Int
+  del_in: [Int!]
   updatedAt: Int
   updatedAt_ne: Int
   updatedAt_gt: Int
@@ -969,6 +1888,489 @@ type TaskResultType {
   total_page: Int!
 }
 
+input AdminCreateInput {
+  id: ID
+  Phone: String
+  Password: String
+  Username: String
+  Money: Int
+  Sex: Int
+  Super: Int
+  LoginCount: Int
+  LoginIp: String
+  LastIp: String
+  state: Int
+  del: Int
+  groupsIds: [ID!]
+  rolesIds: [ID!]
+}
+
+input AdminUpdateInput {
+  Phone: String
+  Password: String
+  Username: String
+  Money: Int
+  Sex: Int
+  Super: Int
+  LoginCount: Int
+  LoginIp: String
+  LastIp: String
+  state: Int
+  del: Int
+  groupsIds: [ID!]
+  rolesIds: [ID!]
+}
+
+enum AdminSortType {
+  ID_ASC
+  ID_DESC
+  PHONE_ASC
+  PHONE_DESC
+  PASSWORD_ASC
+  PASSWORD_DESC
+  USERNAME_ASC
+  USERNAME_DESC
+  MONEY_ASC
+  MONEY_DESC
+  SEX_ASC
+  SEX_DESC
+  SUPER_ASC
+  SUPER_DESC
+  LOGIN_COUNT_ASC
+  LOGIN_COUNT_DESC
+  LOGIN_IP_ASC
+  LOGIN_IP_DESC
+  LAST_IP_ASC
+  LAST_IP_DESC
+  STATE_ASC
+  STATE_DESC
+  DEL_ASC
+  DEL_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  DELETED_BY_ASC
+  DELETED_BY_DESC
+  UPDATED_BY_ASC
+  UPDATED_BY_DESC
+  CREATED_BY_ASC
+  CREATED_BY_DESC
+  GROUPS_IDS_ASC
+  GROUPS_IDS_DESC
+  ROLES_IDS_ASC
+  ROLES_IDS_DESC
+}
+
+input AdminFilterType {
+  AND: [AdminFilterType!]
+  OR: [AdminFilterType!]
+  id: ID
+  id_ne: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  Phone: String
+  Phone_ne: String
+  Phone_gt: String
+  Phone_lt: String
+  Phone_gte: String
+  Phone_lte: String
+  Phone_in: [String!]
+  Phone_like: String
+  Phone_prefix: String
+  Phone_suffix: String
+  Password: String
+  Password_ne: String
+  Password_gt: String
+  Password_lt: String
+  Password_gte: String
+  Password_lte: String
+  Password_in: [String!]
+  Password_like: String
+  Password_prefix: String
+  Password_suffix: String
+  Username: String
+  Username_ne: String
+  Username_gt: String
+  Username_lt: String
+  Username_gte: String
+  Username_lte: String
+  Username_in: [String!]
+  Username_like: String
+  Username_prefix: String
+  Username_suffix: String
+  Money: Int
+  Money_ne: Int
+  Money_gt: Int
+  Money_lt: Int
+  Money_gte: Int
+  Money_lte: Int
+  Money_in: [Int!]
+  Sex: Int
+  Sex_ne: Int
+  Sex_gt: Int
+  Sex_lt: Int
+  Sex_gte: Int
+  Sex_lte: Int
+  Sex_in: [Int!]
+  Super: Int
+  Super_ne: Int
+  Super_gt: Int
+  Super_lt: Int
+  Super_gte: Int
+  Super_lte: Int
+  Super_in: [Int!]
+  LoginCount: Int
+  LoginCount_ne: Int
+  LoginCount_gt: Int
+  LoginCount_lt: Int
+  LoginCount_gte: Int
+  LoginCount_lte: Int
+  LoginCount_in: [Int!]
+  LoginIp: String
+  LoginIp_ne: String
+  LoginIp_gt: String
+  LoginIp_lt: String
+  LoginIp_gte: String
+  LoginIp_lte: String
+  LoginIp_in: [String!]
+  LoginIp_like: String
+  LoginIp_prefix: String
+  LoginIp_suffix: String
+  LastIp: String
+  LastIp_ne: String
+  LastIp_gt: String
+  LastIp_lt: String
+  LastIp_gte: String
+  LastIp_lte: String
+  LastIp_in: [String!]
+  LastIp_like: String
+  LastIp_prefix: String
+  LastIp_suffix: String
+  state: Int
+  state_ne: Int
+  state_gt: Int
+  state_lt: Int
+  state_gte: Int
+  state_lte: Int
+  state_in: [Int!]
+  del: Int
+  del_ne: Int
+  del_gt: Int
+  del_lt: Int
+  del_gte: Int
+  del_lte: Int
+  del_in: [Int!]
+  updatedAt: Int
+  updatedAt_ne: Int
+  updatedAt_gt: Int
+  updatedAt_lt: Int
+  updatedAt_gte: Int
+  updatedAt_lte: Int
+  updatedAt_in: [Int!]
+  createdAt: Int
+  createdAt_ne: Int
+  createdAt_gt: Int
+  createdAt_lt: Int
+  createdAt_gte: Int
+  createdAt_lte: Int
+  createdAt_in: [Int!]
+  deletedBy: ID
+  deletedBy_ne: ID
+  deletedBy_gt: ID
+  deletedBy_lt: ID
+  deletedBy_gte: ID
+  deletedBy_lte: ID
+  deletedBy_in: [ID!]
+  updatedBy: ID
+  updatedBy_ne: ID
+  updatedBy_gt: ID
+  updatedBy_lt: ID
+  updatedBy_gte: ID
+  updatedBy_lte: ID
+  updatedBy_in: [ID!]
+  createdBy: ID
+  createdBy_ne: ID
+  createdBy_gt: ID
+  createdBy_lt: ID
+  createdBy_gte: ID
+  createdBy_lte: ID
+  createdBy_in: [ID!]
+  groups: GroupFilterType
+  roles: RoleFilterType
+}
+
+type AdminResultType {
+  data: [Admin!]!
+  total: Int!
+  current_page: Int!
+  per_page: Int!
+  total_page: Int!
+}
+
+input GroupCreateInput {
+  id: ID
+  Name: String
+  state: Int
+  del: Int
+  adminIds: [ID!]
+  rolesIds: [ID!]
+}
+
+input GroupUpdateInput {
+  Name: String
+  state: Int
+  del: Int
+  adminIds: [ID!]
+  rolesIds: [ID!]
+}
+
+enum GroupSortType {
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  STATE_ASC
+  STATE_DESC
+  DEL_ASC
+  DEL_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  DELETED_BY_ASC
+  DELETED_BY_DESC
+  UPDATED_BY_ASC
+  UPDATED_BY_DESC
+  CREATED_BY_ASC
+  CREATED_BY_DESC
+  ADMIN_IDS_ASC
+  ADMIN_IDS_DESC
+  ROLES_IDS_ASC
+  ROLES_IDS_DESC
+}
+
+input GroupFilterType {
+  AND: [GroupFilterType!]
+  OR: [GroupFilterType!]
+  id: ID
+  id_ne: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  Name: String
+  Name_ne: String
+  Name_gt: String
+  Name_lt: String
+  Name_gte: String
+  Name_lte: String
+  Name_in: [String!]
+  Name_like: String
+  Name_prefix: String
+  Name_suffix: String
+  state: Int
+  state_ne: Int
+  state_gt: Int
+  state_lt: Int
+  state_gte: Int
+  state_lte: Int
+  state_in: [Int!]
+  del: Int
+  del_ne: Int
+  del_gt: Int
+  del_lt: Int
+  del_gte: Int
+  del_lte: Int
+  del_in: [Int!]
+  updatedAt: Int
+  updatedAt_ne: Int
+  updatedAt_gt: Int
+  updatedAt_lt: Int
+  updatedAt_gte: Int
+  updatedAt_lte: Int
+  updatedAt_in: [Int!]
+  createdAt: Int
+  createdAt_ne: Int
+  createdAt_gt: Int
+  createdAt_lt: Int
+  createdAt_gte: Int
+  createdAt_lte: Int
+  createdAt_in: [Int!]
+  deletedBy: ID
+  deletedBy_ne: ID
+  deletedBy_gt: ID
+  deletedBy_lt: ID
+  deletedBy_gte: ID
+  deletedBy_lte: ID
+  deletedBy_in: [ID!]
+  updatedBy: ID
+  updatedBy_ne: ID
+  updatedBy_gt: ID
+  updatedBy_lt: ID
+  updatedBy_gte: ID
+  updatedBy_lte: ID
+  updatedBy_in: [ID!]
+  createdBy: ID
+  createdBy_ne: ID
+  createdBy_gt: ID
+  createdBy_lt: ID
+  createdBy_gte: ID
+  createdBy_lte: ID
+  createdBy_in: [ID!]
+  admin: AdminFilterType
+  roles: RoleFilterType
+}
+
+type GroupResultType {
+  data: [Group!]!
+  total: Int!
+  current_page: Int!
+  per_page: Int!
+  total_page: Int!
+}
+
+input RoleCreateInput {
+  id: ID
+  Name: String
+  Pid: String
+  state: Int
+  del: Int
+  adminIds: [ID!]
+  groupIds: [ID!]
+}
+
+input RoleUpdateInput {
+  Name: String
+  Pid: String
+  state: Int
+  del: Int
+  adminIds: [ID!]
+  groupIds: [ID!]
+}
+
+enum RoleSortType {
+  ID_ASC
+  ID_DESC
+  NAME_ASC
+  NAME_DESC
+  PID_ASC
+  PID_DESC
+  STATE_ASC
+  STATE_DESC
+  DEL_ASC
+  DEL_DESC
+  UPDATED_AT_ASC
+  UPDATED_AT_DESC
+  CREATED_AT_ASC
+  CREATED_AT_DESC
+  DELETED_BY_ASC
+  DELETED_BY_DESC
+  UPDATED_BY_ASC
+  UPDATED_BY_DESC
+  CREATED_BY_ASC
+  CREATED_BY_DESC
+  ADMIN_IDS_ASC
+  ADMIN_IDS_DESC
+  GROUP_IDS_ASC
+  GROUP_IDS_DESC
+}
+
+input RoleFilterType {
+  AND: [RoleFilterType!]
+  OR: [RoleFilterType!]
+  id: ID
+  id_ne: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  Name: String
+  Name_ne: String
+  Name_gt: String
+  Name_lt: String
+  Name_gte: String
+  Name_lte: String
+  Name_in: [String!]
+  Name_like: String
+  Name_prefix: String
+  Name_suffix: String
+  Pid: String
+  Pid_ne: String
+  Pid_gt: String
+  Pid_lt: String
+  Pid_gte: String
+  Pid_lte: String
+  Pid_in: [String!]
+  Pid_like: String
+  Pid_prefix: String
+  Pid_suffix: String
+  state: Int
+  state_ne: Int
+  state_gt: Int
+  state_lt: Int
+  state_gte: Int
+  state_lte: Int
+  state_in: [Int!]
+  del: Int
+  del_ne: Int
+  del_gt: Int
+  del_lt: Int
+  del_gte: Int
+  del_lte: Int
+  del_in: [Int!]
+  updatedAt: Int
+  updatedAt_ne: Int
+  updatedAt_gt: Int
+  updatedAt_lt: Int
+  updatedAt_gte: Int
+  updatedAt_lte: Int
+  updatedAt_in: [Int!]
+  createdAt: Int
+  createdAt_ne: Int
+  createdAt_gt: Int
+  createdAt_lt: Int
+  createdAt_gte: Int
+  createdAt_lte: Int
+  createdAt_in: [Int!]
+  deletedBy: ID
+  deletedBy_ne: ID
+  deletedBy_gt: ID
+  deletedBy_lt: ID
+  deletedBy_gte: ID
+  deletedBy_lte: ID
+  deletedBy_in: [ID!]
+  updatedBy: ID
+  updatedBy_ne: ID
+  updatedBy_gt: ID
+  updatedBy_lt: ID
+  updatedBy_gte: ID
+  updatedBy_lte: ID
+  updatedBy_in: [ID!]
+  createdBy: ID
+  createdBy_ne: ID
+  createdBy_gt: ID
+  createdBy_lt: ID
+  createdBy_gte: ID
+  createdBy_lte: ID
+  createdBy_in: [ID!]
+  admin: AdminFilterType
+  group: AdminFilterType
+}
+
+type RoleResultType {
+  data: [Role!]!
+  total: Int!
+  current_page: Int!
+  per_page: Int!
+  total_page: Int!
+}
+
 type _Service {
   sdl: String
 }
@@ -978,6 +2380,48 @@ type _Service {
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createAdmin_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 map[string]interface{}
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNAdminCreateInput2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createGroup_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 map[string]interface{}
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNGroupCreateInput2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 map[string]interface{}
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNRoleCreateInput2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1004,6 +2448,48 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteAdmin_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteGroup_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -1046,6 +2532,72 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 		}
 	}
 	args["email"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAdmin_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 map[string]interface{}
+	if tmp, ok := rawArgs["input"]; ok {
+		arg1, err = ec.unmarshalNAdminUpdateInput2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateGroup_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 map[string]interface{}
+	if tmp, ok := rawArgs["input"]; ok {
+		arg1, err = ec.unmarshalNGroupUpdateInput2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 map[string]interface{}
+	if tmp, ok := rawArgs["input"]; ok {
+		arg1, err = ec.unmarshalNRoleUpdateInput2map(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -1104,6 +2656,234 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_admin_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["q"]; ok {
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["q"] = arg1
+	var arg2 *AdminFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg2, err = ec.unmarshalOAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_admins_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["current_page"]; ok {
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["current_page"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["per_page"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["per_page"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["q"]; ok {
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["q"] = arg2
+	var arg3 []AdminSortType
+	if tmp, ok := rawArgs["sort"]; ok {
+		arg3, err = ec.unmarshalOAdminSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminSortType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sort"] = arg3
+	var arg4 *AdminFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg4, err = ec.unmarshalOAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg4
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_group_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["q"]; ok {
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["q"] = arg1
+	var arg2 *GroupFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg2, err = ec.unmarshalOGroupFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_groups_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["current_page"]; ok {
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["current_page"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["per_page"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["per_page"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["q"]; ok {
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["q"] = arg2
+	var arg3 []GroupSortType
+	if tmp, ok := rawArgs["sort"]; ok {
+		arg3, err = ec.unmarshalOGroupSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupSortType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sort"] = arg3
+	var arg4 *GroupFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg4, err = ec.unmarshalOGroupFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg4
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_role_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["q"]; ok {
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["q"] = arg1
+	var arg2 *RoleFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg2, err = ec.unmarshalORoleFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_roles_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["current_page"]; ok {
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["current_page"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["per_page"]; ok {
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["per_page"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["q"]; ok {
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["q"] = arg2
+	var arg3 []RoleSortType
+	if tmp, ok := rawArgs["sort"]; ok {
+		arg3, err = ec.unmarshalORoleSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleSortType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sort"] = arg3
+	var arg4 *RoleFilterType
+	if tmp, ok := rawArgs["filter"]; ok {
+		arg4, err = ec.unmarshalORoleFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg4
 	return args, nil
 }
 
@@ -1294,6 +3074,1550 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _Admin_id(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_Phone(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Phone, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_Password(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Password, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_Username(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Username, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_Money(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Money, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_Sex(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sex, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_Super(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Super, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_LoginCount(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LoginCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_LoginIp(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LoginIP, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_LastIp(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastIP, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_groups(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Admin().Groups(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*Group)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_roles(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Admin().Roles(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*Role)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalORole2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_state(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_del(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Del, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_updatedAt(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_createdAt(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_deletedBy(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_updatedBy(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_createdBy(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_groupsIds(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Admin().GroupsIds(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Admin_rolesIds(ctx context.Context, field graphql.CollectedField, obj *Admin) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Admin",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Admin().RolesIds(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AdminResultType_data(ctx context.Context, field graphql.CollectedField, obj *AdminResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "AdminResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AdminResultType().Data(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNAdmin2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AdminResultType_total(ctx context.Context, field graphql.CollectedField, obj *AdminResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "AdminResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AdminResultType().Total(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AdminResultType_current_page(ctx context.Context, field graphql.CollectedField, obj *AdminResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "AdminResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrentPage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AdminResultType_per_page(ctx context.Context, field graphql.CollectedField, obj *AdminResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "AdminResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PerPage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AdminResultType_total_page(ctx context.Context, field graphql.CollectedField, obj *AdminResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "AdminResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AdminResultType().TotalPage(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_id(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_Name(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_admin(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Group().Admin(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAdmin2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_roles(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Group().Roles(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*Role)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalORole2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_state(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_del(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Del, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_updatedAt(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_createdAt(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_deletedBy(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_updatedBy(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_createdBy(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_adminIds(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Group().AdminIds(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Group_rolesIds(ctx context.Context, field graphql.CollectedField, obj *Group) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Group",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Group().RolesIds(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GroupResultType_data(ctx context.Context, field graphql.CollectedField, obj *GroupResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "GroupResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GroupResultType().Data(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*Group)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNGroup2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GroupResultType_total(ctx context.Context, field graphql.CollectedField, obj *GroupResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "GroupResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GroupResultType().Total(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GroupResultType_current_page(ctx context.Context, field graphql.CollectedField, obj *GroupResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "GroupResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrentPage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GroupResultType_per_page(ctx context.Context, field graphql.CollectedField, obj *GroupResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "GroupResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PerPage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GroupResultType_total_page(ctx context.Context, field graphql.CollectedField, obj *GroupResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "GroupResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GroupResultType().TotalPage(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
 
 func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
@@ -1633,6 +4957,513 @@ func (ec *executionContext) _Mutation_deleteAllTasks(ctx context.Context, field 
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createAdmin(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createAdmin_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateAdmin(rctx, args["input"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateAdmin(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateAdmin_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateAdmin(rctx, args["id"].(string), args["input"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteAdmin(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteAdmin_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAdmin(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteAllAdmins(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAllAdmins(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createGroup(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createGroup_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateGroup(rctx, args["input"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Group)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateGroup(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateGroup_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateGroup(rctx, args["id"].(string), args["input"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Group)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteGroup(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteGroup_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteGroup(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Group)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteAllGroups(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAllGroups(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createRole_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateRole(rctx, args["input"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Role)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNRole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateRole_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateRole(rctx, args["id"].(string), args["input"].(map[string]interface{}))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Role)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNRole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteRole_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteRole(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Role)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNRole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteAllRoles(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAllRoles(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1875,6 +5706,252 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 	return ec.marshalOTaskResultType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐTaskResultType(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_admin(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_admin_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Admin(rctx, args["id"].(*string), args["q"].(*string), args["filter"].(*AdminFilterType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_admins(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_admins_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Admins(rctx, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]AdminSortType), args["filter"].(*AdminFilterType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*AdminResultType)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAdminResultType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminResultType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_group(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_group_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Group(rctx, args["id"].(*string), args["q"].(*string), args["filter"].(*GroupFilterType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*Group)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_groups(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_groups_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Groups(rctx, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]GroupSortType), args["filter"].(*GroupFilterType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*GroupResultType)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOGroupResultType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupResultType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_role(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_role_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Role(rctx, args["id"].(*string), args["q"].(*string), args["filter"].(*RoleFilterType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*Role)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalORole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_roles(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_roles_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Roles(rctx, args["current_page"].(*int), args["per_page"].(*int), args["q"].(*string), args["sort"].([]RoleSortType), args["filter"].(*RoleFilterType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*RoleResultType)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalORoleResultType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleResultType(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1948,6 +6025,676 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_id(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_Name(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_admin(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Role().Admin(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAdmin2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_group(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Role().Group(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*Admin)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAdmin2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_Pid(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Pid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_state(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_del(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Del, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_updatedAt(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_createdAt(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_deletedBy(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_updatedBy(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_createdBy(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_adminIds(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Role().AdminIds(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Role_groupIds(ctx context.Context, field graphql.CollectedField, obj *Role) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Role",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Role().GroupIds(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNID2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RoleResultType_data(ctx context.Context, field graphql.CollectedField, obj *RoleResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "RoleResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.RoleResultType().Data(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*Role)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNRole2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RoleResultType_total(ctx context.Context, field graphql.CollectedField, obj *RoleResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "RoleResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.RoleResultType().Total(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RoleResultType_current_page(ctx context.Context, field graphql.CollectedField, obj *RoleResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "RoleResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrentPage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RoleResultType_per_page(ctx context.Context, field graphql.CollectedField, obj *RoleResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "RoleResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PerPage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RoleResultType_total_page(ctx context.Context, field graphql.CollectedField, obj *RoleResultType) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "RoleResultType",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.RoleResultType().TotalPage(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Task_id(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
@@ -2177,6 +6924,40 @@ func (ec *executionContext) _Task_state(ctx context.Context, field graphql.Colle
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Task_del(ctx context.Context, field graphql.CollectedField, obj *Task) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Task",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Del, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2742,6 +7523,40 @@ func (ec *executionContext) _User_state(ctx context.Context, field graphql.Colle
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_del(ctx context.Context, field graphql.CollectedField, obj *User) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "User",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Del, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4333,6 +9148,1770 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputAdminFilterType(ctx context.Context, obj interface{}) (AdminFilterType, error) {
+	var it AdminFilterType
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "AND":
+			var err error
+			it.And, err = ec.unmarshalOAdminFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "OR":
+			var err error
+			it.Or, err = ec.unmarshalOAdminFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_ne":
+			var err error
+			it.IDNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_gt":
+			var err error
+			it.IDGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_lt":
+			var err error
+			it.IDLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_gte":
+			var err error
+			it.IDGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_lte":
+			var err error
+			it.IDLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_in":
+			var err error
+			it.IDIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone":
+			var err error
+			it.Phone, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_ne":
+			var err error
+			it.PhoneNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_gt":
+			var err error
+			it.PhoneGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_lt":
+			var err error
+			it.PhoneLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_gte":
+			var err error
+			it.PhoneGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_lte":
+			var err error
+			it.PhoneLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_in":
+			var err error
+			it.PhoneIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_like":
+			var err error
+			it.PhoneLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_prefix":
+			var err error
+			it.PhonePrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Phone_suffix":
+			var err error
+			it.PhoneSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password":
+			var err error
+			it.Password, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_ne":
+			var err error
+			it.PasswordNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_gt":
+			var err error
+			it.PasswordGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_lt":
+			var err error
+			it.PasswordLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_gte":
+			var err error
+			it.PasswordGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_lte":
+			var err error
+			it.PasswordLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_in":
+			var err error
+			it.PasswordIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_like":
+			var err error
+			it.PasswordLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_prefix":
+			var err error
+			it.PasswordPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Password_suffix":
+			var err error
+			it.PasswordSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username":
+			var err error
+			it.Username, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_ne":
+			var err error
+			it.UsernameNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_gt":
+			var err error
+			it.UsernameGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_lt":
+			var err error
+			it.UsernameLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_gte":
+			var err error
+			it.UsernameGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_lte":
+			var err error
+			it.UsernameLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_in":
+			var err error
+			it.UsernameIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_like":
+			var err error
+			it.UsernameLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_prefix":
+			var err error
+			it.UsernamePrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username_suffix":
+			var err error
+			it.UsernameSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Money":
+			var err error
+			it.Money, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Money_ne":
+			var err error
+			it.MoneyNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Money_gt":
+			var err error
+			it.MoneyGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Money_lt":
+			var err error
+			it.MoneyLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Money_gte":
+			var err error
+			it.MoneyGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Money_lte":
+			var err error
+			it.MoneyLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Money_in":
+			var err error
+			it.MoneyIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Sex":
+			var err error
+			it.Sex, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Sex_ne":
+			var err error
+			it.SexNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Sex_gt":
+			var err error
+			it.SexGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Sex_lt":
+			var err error
+			it.SexLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Sex_gte":
+			var err error
+			it.SexGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Sex_lte":
+			var err error
+			it.SexLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Sex_in":
+			var err error
+			it.SexIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Super":
+			var err error
+			it.Super, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Super_ne":
+			var err error
+			it.SuperNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Super_gt":
+			var err error
+			it.SuperGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Super_lt":
+			var err error
+			it.SuperLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Super_gte":
+			var err error
+			it.SuperGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Super_lte":
+			var err error
+			it.SuperLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Super_in":
+			var err error
+			it.SuperIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginCount":
+			var err error
+			it.LoginCount, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginCount_ne":
+			var err error
+			it.LoginCountNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginCount_gt":
+			var err error
+			it.LoginCountGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginCount_lt":
+			var err error
+			it.LoginCountLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginCount_gte":
+			var err error
+			it.LoginCountGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginCount_lte":
+			var err error
+			it.LoginCountLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginCount_in":
+			var err error
+			it.LoginCountIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp":
+			var err error
+			it.LoginIP, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_ne":
+			var err error
+			it.LoginIPNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_gt":
+			var err error
+			it.LoginIPGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_lt":
+			var err error
+			it.LoginIPLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_gte":
+			var err error
+			it.LoginIPGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_lte":
+			var err error
+			it.LoginIPLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_in":
+			var err error
+			it.LoginIPIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_like":
+			var err error
+			it.LoginIPLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_prefix":
+			var err error
+			it.LoginIPPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LoginIp_suffix":
+			var err error
+			it.LoginIPSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp":
+			var err error
+			it.LastIP, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_ne":
+			var err error
+			it.LastIPNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_gt":
+			var err error
+			it.LastIPGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_lt":
+			var err error
+			it.LastIPLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_gte":
+			var err error
+			it.LastIPGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_lte":
+			var err error
+			it.LastIPLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_in":
+			var err error
+			it.LastIPIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_like":
+			var err error
+			it.LastIPLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_prefix":
+			var err error
+			it.LastIPPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "LastIp_suffix":
+			var err error
+			it.LastIPSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state":
+			var err error
+			it.State, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_ne":
+			var err error
+			it.StateNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_gt":
+			var err error
+			it.StateGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_lt":
+			var err error
+			it.StateLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_gte":
+			var err error
+			it.StateGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_lte":
+			var err error
+			it.StateLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_in":
+			var err error
+			it.StateIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del":
+			var err error
+			it.Del, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_ne":
+			var err error
+			it.DelNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gt":
+			var err error
+			it.DelGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lt":
+			var err error
+			it.DelLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gte":
+			var err error
+			it.DelGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lte":
+			var err error
+			it.DelLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_in":
+			var err error
+			it.DelIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt":
+			var err error
+			it.UpdatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_ne":
+			var err error
+			it.UpdatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_gt":
+			var err error
+			it.UpdatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_lt":
+			var err error
+			it.UpdatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_gte":
+			var err error
+			it.UpdatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_lte":
+			var err error
+			it.UpdatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_in":
+			var err error
+			it.UpdatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt":
+			var err error
+			it.CreatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_ne":
+			var err error
+			it.CreatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_gt":
+			var err error
+			it.CreatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_lt":
+			var err error
+			it.CreatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_gte":
+			var err error
+			it.CreatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_lte":
+			var err error
+			it.CreatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_in":
+			var err error
+			it.CreatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy":
+			var err error
+			it.DeletedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_ne":
+			var err error
+			it.DeletedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gt":
+			var err error
+			it.DeletedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lt":
+			var err error
+			it.DeletedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gte":
+			var err error
+			it.DeletedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lte":
+			var err error
+			it.DeletedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_in":
+			var err error
+			it.DeletedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy":
+			var err error
+			it.UpdatedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_ne":
+			var err error
+			it.UpdatedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_gt":
+			var err error
+			it.UpdatedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_lt":
+			var err error
+			it.UpdatedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_gte":
+			var err error
+			it.UpdatedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_lte":
+			var err error
+			it.UpdatedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_in":
+			var err error
+			it.UpdatedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy":
+			var err error
+			it.CreatedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_ne":
+			var err error
+			it.CreatedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_gt":
+			var err error
+			it.CreatedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_lt":
+			var err error
+			it.CreatedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_gte":
+			var err error
+			it.CreatedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_lte":
+			var err error
+			it.CreatedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_in":
+			var err error
+			it.CreatedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "groups":
+			var err error
+			it.Groups, err = ec.unmarshalOGroupFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "roles":
+			var err error
+			it.Roles, err = ec.unmarshalORoleFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputGroupFilterType(ctx context.Context, obj interface{}) (GroupFilterType, error) {
+	var it GroupFilterType
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "AND":
+			var err error
+			it.And, err = ec.unmarshalOGroupFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "OR":
+			var err error
+			it.Or, err = ec.unmarshalOGroupFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_ne":
+			var err error
+			it.IDNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_gt":
+			var err error
+			it.IDGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_lt":
+			var err error
+			it.IDLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_gte":
+			var err error
+			it.IDGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_lte":
+			var err error
+			it.IDLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_in":
+			var err error
+			it.IDIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name":
+			var err error
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_ne":
+			var err error
+			it.NameNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_gt":
+			var err error
+			it.NameGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_lt":
+			var err error
+			it.NameLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_gte":
+			var err error
+			it.NameGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_lte":
+			var err error
+			it.NameLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_in":
+			var err error
+			it.NameIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_like":
+			var err error
+			it.NameLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_prefix":
+			var err error
+			it.NamePrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_suffix":
+			var err error
+			it.NameSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state":
+			var err error
+			it.State, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_ne":
+			var err error
+			it.StateNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_gt":
+			var err error
+			it.StateGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_lt":
+			var err error
+			it.StateLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_gte":
+			var err error
+			it.StateGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_lte":
+			var err error
+			it.StateLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_in":
+			var err error
+			it.StateIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del":
+			var err error
+			it.Del, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_ne":
+			var err error
+			it.DelNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gt":
+			var err error
+			it.DelGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lt":
+			var err error
+			it.DelLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gte":
+			var err error
+			it.DelGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lte":
+			var err error
+			it.DelLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_in":
+			var err error
+			it.DelIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt":
+			var err error
+			it.UpdatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_ne":
+			var err error
+			it.UpdatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_gt":
+			var err error
+			it.UpdatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_lt":
+			var err error
+			it.UpdatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_gte":
+			var err error
+			it.UpdatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_lte":
+			var err error
+			it.UpdatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_in":
+			var err error
+			it.UpdatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt":
+			var err error
+			it.CreatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_ne":
+			var err error
+			it.CreatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_gt":
+			var err error
+			it.CreatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_lt":
+			var err error
+			it.CreatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_gte":
+			var err error
+			it.CreatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_lte":
+			var err error
+			it.CreatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_in":
+			var err error
+			it.CreatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy":
+			var err error
+			it.DeletedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_ne":
+			var err error
+			it.DeletedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gt":
+			var err error
+			it.DeletedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lt":
+			var err error
+			it.DeletedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gte":
+			var err error
+			it.DeletedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lte":
+			var err error
+			it.DeletedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_in":
+			var err error
+			it.DeletedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy":
+			var err error
+			it.UpdatedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_ne":
+			var err error
+			it.UpdatedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_gt":
+			var err error
+			it.UpdatedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_lt":
+			var err error
+			it.UpdatedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_gte":
+			var err error
+			it.UpdatedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_lte":
+			var err error
+			it.UpdatedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_in":
+			var err error
+			it.UpdatedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy":
+			var err error
+			it.CreatedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_ne":
+			var err error
+			it.CreatedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_gt":
+			var err error
+			it.CreatedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_lt":
+			var err error
+			it.CreatedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_gte":
+			var err error
+			it.CreatedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_lte":
+			var err error
+			it.CreatedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_in":
+			var err error
+			it.CreatedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "admin":
+			var err error
+			it.Admin, err = ec.unmarshalOAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "roles":
+			var err error
+			it.Roles, err = ec.unmarshalORoleFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputRoleFilterType(ctx context.Context, obj interface{}) (RoleFilterType, error) {
+	var it RoleFilterType
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "AND":
+			var err error
+			it.And, err = ec.unmarshalORoleFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "OR":
+			var err error
+			it.Or, err = ec.unmarshalORoleFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id":
+			var err error
+			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_ne":
+			var err error
+			it.IDNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_gt":
+			var err error
+			it.IDGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_lt":
+			var err error
+			it.IDLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_gte":
+			var err error
+			it.IDGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_lte":
+			var err error
+			it.IDLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id_in":
+			var err error
+			it.IDIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name":
+			var err error
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_ne":
+			var err error
+			it.NameNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_gt":
+			var err error
+			it.NameGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_lt":
+			var err error
+			it.NameLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_gte":
+			var err error
+			it.NameGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_lte":
+			var err error
+			it.NameLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_in":
+			var err error
+			it.NameIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_like":
+			var err error
+			it.NameLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_prefix":
+			var err error
+			it.NamePrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Name_suffix":
+			var err error
+			it.NameSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid":
+			var err error
+			it.Pid, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_ne":
+			var err error
+			it.PidNe, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_gt":
+			var err error
+			it.PidGt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_lt":
+			var err error
+			it.PidLt, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_gte":
+			var err error
+			it.PidGte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_lte":
+			var err error
+			it.PidLte, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_in":
+			var err error
+			it.PidIn, err = ec.unmarshalOString2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_like":
+			var err error
+			it.PidLike, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_prefix":
+			var err error
+			it.PidPrefix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Pid_suffix":
+			var err error
+			it.PidSuffix, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state":
+			var err error
+			it.State, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_ne":
+			var err error
+			it.StateNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_gt":
+			var err error
+			it.StateGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_lt":
+			var err error
+			it.StateLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_gte":
+			var err error
+			it.StateGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_lte":
+			var err error
+			it.StateLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state_in":
+			var err error
+			it.StateIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del":
+			var err error
+			it.Del, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_ne":
+			var err error
+			it.DelNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gt":
+			var err error
+			it.DelGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lt":
+			var err error
+			it.DelLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gte":
+			var err error
+			it.DelGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lte":
+			var err error
+			it.DelLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_in":
+			var err error
+			it.DelIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt":
+			var err error
+			it.UpdatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_ne":
+			var err error
+			it.UpdatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_gt":
+			var err error
+			it.UpdatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_lt":
+			var err error
+			it.UpdatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_gte":
+			var err error
+			it.UpdatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_lte":
+			var err error
+			it.UpdatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt_in":
+			var err error
+			it.UpdatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt":
+			var err error
+			it.CreatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_ne":
+			var err error
+			it.CreatedAtNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_gt":
+			var err error
+			it.CreatedAtGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_lt":
+			var err error
+			it.CreatedAtLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_gte":
+			var err error
+			it.CreatedAtGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_lte":
+			var err error
+			it.CreatedAtLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt_in":
+			var err error
+			it.CreatedAtIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy":
+			var err error
+			it.DeletedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_ne":
+			var err error
+			it.DeletedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gt":
+			var err error
+			it.DeletedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lt":
+			var err error
+			it.DeletedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_gte":
+			var err error
+			it.DeletedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_lte":
+			var err error
+			it.DeletedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "deletedBy_in":
+			var err error
+			it.DeletedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy":
+			var err error
+			it.UpdatedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_ne":
+			var err error
+			it.UpdatedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_gt":
+			var err error
+			it.UpdatedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_lt":
+			var err error
+			it.UpdatedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_gte":
+			var err error
+			it.UpdatedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_lte":
+			var err error
+			it.UpdatedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedBy_in":
+			var err error
+			it.UpdatedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy":
+			var err error
+			it.CreatedBy, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_ne":
+			var err error
+			it.CreatedByNe, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_gt":
+			var err error
+			it.CreatedByGt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_lt":
+			var err error
+			it.CreatedByLt, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_gte":
+			var err error
+			it.CreatedByGte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_lte":
+			var err error
+			it.CreatedByLte, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdBy_in":
+			var err error
+			it.CreatedByIn, err = ec.unmarshalOID2ᚕstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "admin":
+			var err error
+			it.Admin, err = ec.unmarshalOAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "group":
+			var err error
+			it.Group, err = ec.unmarshalOAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputTaskFilterType(ctx context.Context, obj interface{}) (TaskFilterType, error) {
 	var it TaskFilterType
 	var asMap = obj.(map[string]interface{})
@@ -4618,6 +11197,48 @@ func (ec *executionContext) unmarshalInputTaskFilterType(ctx context.Context, ob
 		case "state_in":
 			var err error
 			it.StateIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del":
+			var err error
+			it.Del, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_ne":
+			var err error
+			it.DelNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gt":
+			var err error
+			it.DelGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lt":
+			var err error
+			it.DelLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gte":
+			var err error
+			it.DelGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lte":
+			var err error
+			it.DelLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_in":
+			var err error
+			it.DelIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5125,6 +11746,48 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
+		case "del":
+			var err error
+			it.Del, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_ne":
+			var err error
+			it.DelNe, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gt":
+			var err error
+			it.DelGt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lt":
+			var err error
+			it.DelLt, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_gte":
+			var err error
+			it.DelGte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_lte":
+			var err error
+			it.DelLte, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "del_in":
+			var err error
+			it.DelIn, err = ec.unmarshalOInt2ᚕint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "updatedAt":
 			var err error
 			it.UpdatedAt, err = ec.unmarshalOInt2ᚖint(ctx, v)
@@ -5355,6 +12018,356 @@ func (ec *executionContext) unmarshalInputUserFilterType(ctx context.Context, ob
 
 // region    **************************** object.gotpl ****************************
 
+var adminImplementors = []string{"Admin"}
+
+func (ec *executionContext) _Admin(ctx context.Context, sel ast.SelectionSet, obj *Admin) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, adminImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Admin")
+		case "id":
+			out.Values[i] = ec._Admin_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "Phone":
+			out.Values[i] = ec._Admin_Phone(ctx, field, obj)
+		case "Password":
+			out.Values[i] = ec._Admin_Password(ctx, field, obj)
+		case "Username":
+			out.Values[i] = ec._Admin_Username(ctx, field, obj)
+		case "Money":
+			out.Values[i] = ec._Admin_Money(ctx, field, obj)
+		case "Sex":
+			out.Values[i] = ec._Admin_Sex(ctx, field, obj)
+		case "Super":
+			out.Values[i] = ec._Admin_Super(ctx, field, obj)
+		case "LoginCount":
+			out.Values[i] = ec._Admin_LoginCount(ctx, field, obj)
+		case "LoginIp":
+			out.Values[i] = ec._Admin_LoginIp(ctx, field, obj)
+		case "LastIp":
+			out.Values[i] = ec._Admin_LastIp(ctx, field, obj)
+		case "groups":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Admin_groups(ctx, field, obj)
+				return res
+			})
+		case "roles":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Admin_roles(ctx, field, obj)
+				return res
+			})
+		case "state":
+			out.Values[i] = ec._Admin_state(ctx, field, obj)
+		case "del":
+			out.Values[i] = ec._Admin_del(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Admin_updatedAt(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._Admin_createdAt(ctx, field, obj)
+		case "deletedBy":
+			out.Values[i] = ec._Admin_deletedBy(ctx, field, obj)
+		case "updatedBy":
+			out.Values[i] = ec._Admin_updatedBy(ctx, field, obj)
+		case "createdBy":
+			out.Values[i] = ec._Admin_createdBy(ctx, field, obj)
+		case "groupsIds":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Admin_groupsIds(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "rolesIds":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Admin_rolesIds(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var adminResultTypeImplementors = []string{"AdminResultType"}
+
+func (ec *executionContext) _AdminResultType(ctx context.Context, sel ast.SelectionSet, obj *AdminResultType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, adminResultTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AdminResultType")
+		case "data":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AdminResultType_data(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "total":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AdminResultType_total(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "current_page":
+			out.Values[i] = ec._AdminResultType_current_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "per_page":
+			out.Values[i] = ec._AdminResultType_per_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "total_page":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AdminResultType_total_page(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var groupImplementors = []string{"Group"}
+
+func (ec *executionContext) _Group(ctx context.Context, sel ast.SelectionSet, obj *Group) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, groupImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Group")
+		case "id":
+			out.Values[i] = ec._Group_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "Name":
+			out.Values[i] = ec._Group_Name(ctx, field, obj)
+		case "admin":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Group_admin(ctx, field, obj)
+				return res
+			})
+		case "roles":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Group_roles(ctx, field, obj)
+				return res
+			})
+		case "state":
+			out.Values[i] = ec._Group_state(ctx, field, obj)
+		case "del":
+			out.Values[i] = ec._Group_del(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Group_updatedAt(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._Group_createdAt(ctx, field, obj)
+		case "deletedBy":
+			out.Values[i] = ec._Group_deletedBy(ctx, field, obj)
+		case "updatedBy":
+			out.Values[i] = ec._Group_updatedBy(ctx, field, obj)
+		case "createdBy":
+			out.Values[i] = ec._Group_createdBy(ctx, field, obj)
+		case "adminIds":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Group_adminIds(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "rolesIds":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Group_rolesIds(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var groupResultTypeImplementors = []string{"GroupResultType"}
+
+func (ec *executionContext) _GroupResultType(ctx context.Context, sel ast.SelectionSet, obj *GroupResultType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, groupResultTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("GroupResultType")
+		case "data":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._GroupResultType_data(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "total":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._GroupResultType_total(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "current_page":
+			out.Values[i] = ec._GroupResultType_current_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "per_page":
+			out.Values[i] = ec._GroupResultType_per_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "total_page":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._GroupResultType_total_page(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -5407,6 +12420,66 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteAllTasks":
 			out.Values[i] = ec._Mutation_deleteAllTasks(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createAdmin":
+			out.Values[i] = ec._Mutation_createAdmin(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateAdmin":
+			out.Values[i] = ec._Mutation_updateAdmin(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteAdmin":
+			out.Values[i] = ec._Mutation_deleteAdmin(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteAllAdmins":
+			out.Values[i] = ec._Mutation_deleteAllAdmins(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createGroup":
+			out.Values[i] = ec._Mutation_createGroup(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateGroup":
+			out.Values[i] = ec._Mutation_updateGroup(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteGroup":
+			out.Values[i] = ec._Mutation_deleteGroup(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteAllGroups":
+			out.Values[i] = ec._Mutation_deleteAllGroups(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createRole":
+			out.Values[i] = ec._Mutation_createRole(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateRole":
+			out.Values[i] = ec._Mutation_updateRole(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteRole":
+			out.Values[i] = ec._Mutation_deleteRole(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteAllRoles":
+			out.Values[i] = ec._Mutation_deleteAllRoles(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -5496,10 +12569,245 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_tasks(ctx, field)
 				return res
 			})
+		case "admin":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_admin(ctx, field)
+				return res
+			})
+		case "admins":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_admins(ctx, field)
+				return res
+			})
+		case "group":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_group(ctx, field)
+				return res
+			})
+		case "groups":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_groups(ctx, field)
+				return res
+			})
+		case "role":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_role(ctx, field)
+				return res
+			})
+		case "roles":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_roles(ctx, field)
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var roleImplementors = []string{"Role"}
+
+func (ec *executionContext) _Role(ctx context.Context, sel ast.SelectionSet, obj *Role) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, roleImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Role")
+		case "id":
+			out.Values[i] = ec._Role_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "Name":
+			out.Values[i] = ec._Role_Name(ctx, field, obj)
+		case "admin":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Role_admin(ctx, field, obj)
+				return res
+			})
+		case "group":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Role_group(ctx, field, obj)
+				return res
+			})
+		case "Pid":
+			out.Values[i] = ec._Role_Pid(ctx, field, obj)
+		case "state":
+			out.Values[i] = ec._Role_state(ctx, field, obj)
+		case "del":
+			out.Values[i] = ec._Role_del(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Role_updatedAt(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._Role_createdAt(ctx, field, obj)
+		case "deletedBy":
+			out.Values[i] = ec._Role_deletedBy(ctx, field, obj)
+		case "updatedBy":
+			out.Values[i] = ec._Role_updatedBy(ctx, field, obj)
+		case "createdBy":
+			out.Values[i] = ec._Role_createdBy(ctx, field, obj)
+		case "adminIds":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Role_adminIds(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "groupIds":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Role_groupIds(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var roleResultTypeImplementors = []string{"RoleResultType"}
+
+func (ec *executionContext) _RoleResultType(ctx context.Context, sel ast.SelectionSet, obj *RoleResultType) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, roleResultTypeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RoleResultType")
+		case "data":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._RoleResultType_data(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "total":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._RoleResultType_total(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "current_page":
+			out.Values[i] = ec._RoleResultType_current_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "per_page":
+			out.Values[i] = ec._RoleResultType_per_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "total_page":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._RoleResultType_total_page(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5548,6 +12856,8 @@ func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = ec._Task_assigneeId(ctx, field, obj)
 		case "state":
 			out.Values[i] = ec._Task_state(ctx, field, obj)
+		case "del":
+			out.Values[i] = ec._Task_del(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._Task_updatedAt(ctx, field, obj)
 		case "createdAt":
@@ -5681,6 +12991,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			})
 		case "state":
 			out.Values[i] = ec._User_state(ctx, field, obj)
+		case "del":
+			out.Values[i] = ec._User_del(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._User_updatedAt(ctx, field, obj)
 		case "createdAt":
@@ -6059,6 +13371,92 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) marshalNAdmin2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx context.Context, sel ast.SelectionSet, v Admin) graphql.Marshaler {
+	return ec._Admin(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAdmin2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx context.Context, sel ast.SelectionSet, v []*Admin) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx context.Context, sel ast.SelectionSet, v *Admin) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Admin(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNAdminCreateInput2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return v.(map[string]interface{}), nil
+}
+
+func (ec *executionContext) unmarshalNAdminFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx context.Context, v interface{}) (AdminFilterType, error) {
+	return ec.unmarshalInputAdminFilterType(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx context.Context, v interface{}) (*AdminFilterType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalNAdminFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) unmarshalNAdminSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminSortType(ctx context.Context, v interface{}) (AdminSortType, error) {
+	var res AdminSortType
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNAdminSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminSortType(ctx context.Context, sel ast.SelectionSet, v AdminSortType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNAdminUpdateInput2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return v.(map[string]interface{}), nil
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	return graphql.UnmarshalBoolean(v)
 }
@@ -6071,6 +13469,92 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNGroup2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx context.Context, sel ast.SelectionSet, v Group) graphql.Marshaler {
+	return ec._Group(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNGroup2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx context.Context, sel ast.SelectionSet, v []*Group) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx context.Context, sel ast.SelectionSet, v *Group) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Group(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNGroupCreateInput2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return v.(map[string]interface{}), nil
+}
+
+func (ec *executionContext) unmarshalNGroupFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx context.Context, v interface{}) (GroupFilterType, error) {
+	return ec.unmarshalInputGroupFilterType(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNGroupFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx context.Context, v interface{}) (*GroupFilterType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalNGroupFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) unmarshalNGroupSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupSortType(ctx context.Context, v interface{}) (GroupSortType, error) {
+	var res GroupSortType
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNGroupSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupSortType(ctx context.Context, sel ast.SelectionSet, v GroupSortType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNGroupUpdateInput2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return v.(map[string]interface{}), nil
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
@@ -6146,6 +13630,92 @@ func (ec *executionContext) marshalNInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	return ec.marshalNInt2int(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalNRole2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx context.Context, sel ast.SelectionSet, v Role) graphql.Marshaler {
+	return ec._Role(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNRole2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx context.Context, sel ast.SelectionSet, v []*Role) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNRole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNRole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx context.Context, sel ast.SelectionSet, v *Role) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Role(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNRoleCreateInput2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return v.(map[string]interface{}), nil
+}
+
+func (ec *executionContext) unmarshalNRoleFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx context.Context, v interface{}) (RoleFilterType, error) {
+	return ec.unmarshalInputRoleFilterType(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNRoleFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx context.Context, v interface{}) (*RoleFilterType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalNRoleFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) unmarshalNRoleSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleSortType(ctx context.Context, v interface{}) (RoleSortType, error) {
+	var res RoleSortType
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNRoleSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleSortType(ctx context.Context, sel ast.SelectionSet, v RoleSortType) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNRoleUpdateInput2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
+	if v == nil {
+		return nil, nil
+	}
+	return v.(map[string]interface{}), nil
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -6606,6 +14176,160 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
+func (ec *executionContext) marshalOAdmin2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx context.Context, sel ast.SelectionSet, v Admin) graphql.Marshaler {
+	return ec._Admin(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOAdmin2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx context.Context, sel ast.SelectionSet, v []*Admin) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOAdmin2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdmin(ctx context.Context, sel ast.SelectionSet, v *Admin) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Admin(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOAdminFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx context.Context, v interface{}) (AdminFilterType, error) {
+	return ec.unmarshalInputAdminFilterType(ctx, v)
+}
+
+func (ec *executionContext) unmarshalOAdminFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx context.Context, v interface{}) ([]*AdminFilterType, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*AdminFilterType, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOAdminFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx context.Context, v interface{}) (*AdminFilterType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOAdminFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminFilterType(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOAdminResultType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminResultType(ctx context.Context, sel ast.SelectionSet, v AdminResultType) graphql.Marshaler {
+	return ec._AdminResultType(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOAdminResultType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminResultType(ctx context.Context, sel ast.SelectionSet, v *AdminResultType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AdminResultType(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOAdminSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminSortType(ctx context.Context, v interface{}) ([]AdminSortType, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]AdminSortType, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNAdminSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminSortType(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOAdminSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminSortType(ctx context.Context, sel ast.SelectionSet, v []AdminSortType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAdminSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐAdminSortType(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v interface{}) (interface{}, error) {
 	if v == nil {
 		return nil, nil
@@ -6688,6 +14412,160 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOGroup2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx context.Context, sel ast.SelectionSet, v Group) graphql.Marshaler {
+	return ec._Group(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx context.Context, sel ast.SelectionSet, v []*Group) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalOGroup2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroup(ctx context.Context, sel ast.SelectionSet, v *Group) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Group(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOGroupFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx context.Context, v interface{}) (GroupFilterType, error) {
+	return ec.unmarshalInputGroupFilterType(ctx, v)
+}
+
+func (ec *executionContext) unmarshalOGroupFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx context.Context, v interface{}) ([]*GroupFilterType, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*GroupFilterType, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNGroupFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOGroupFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx context.Context, v interface{}) (*GroupFilterType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOGroupFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupFilterType(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOGroupResultType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupResultType(ctx context.Context, sel ast.SelectionSet, v GroupResultType) graphql.Marshaler {
+	return ec._GroupResultType(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOGroupResultType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupResultType(ctx context.Context, sel ast.SelectionSet, v *GroupResultType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._GroupResultType(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOGroupSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupSortType(ctx context.Context, v interface{}) ([]GroupSortType, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]GroupSortType, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNGroupSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupSortType(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOGroupSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupSortType(ctx context.Context, sel ast.SelectionSet, v []GroupSortType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNGroupSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐGroupSortType(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
@@ -6821,6 +14699,160 @@ func (ec *executionContext) marshalOInt2ᚖint64(ctx context.Context, sel ast.Se
 		return graphql.Null
 	}
 	return ec.marshalOInt2int64(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalORole2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx context.Context, sel ast.SelectionSet, v Role) graphql.Marshaler {
+	return ec._Role(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalORole2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx context.Context, sel ast.SelectionSet, v []*Role) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNRole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalORole2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRole(ctx context.Context, sel ast.SelectionSet, v *Role) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Role(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalORoleFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx context.Context, v interface{}) (RoleFilterType, error) {
+	return ec.unmarshalInputRoleFilterType(ctx, v)
+}
+
+func (ec *executionContext) unmarshalORoleFilterType2ᚕᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx context.Context, v interface{}) ([]*RoleFilterType, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*RoleFilterType, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNRoleFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalORoleFilterType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx context.Context, v interface{}) (*RoleFilterType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalORoleFilterType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleFilterType(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalORoleResultType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleResultType(ctx context.Context, sel ast.SelectionSet, v RoleResultType) graphql.Marshaler {
+	return ec._RoleResultType(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalORoleResultType2ᚖgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleResultType(ctx context.Context, sel ast.SelectionSet, v *RoleResultType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._RoleResultType(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalORoleSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleSortType(ctx context.Context, v interface{}) ([]RoleSortType, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]RoleSortType, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNRoleSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleSortType(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalORoleSortType2ᚕgithubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleSortType(ctx context.Context, sel ast.SelectionSet, v []RoleSortType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		rctx := &graphql.ResolverContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNRoleSortType2githubᚗcomᚋmaiguangyangᚋgraphqlᚑgormᚋgenᚐRoleSortType(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

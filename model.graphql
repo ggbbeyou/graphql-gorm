@@ -7,11 +7,39 @@ type User {
 	lastName: String
 	tasks: [Task!]! @relationship(inverse:"assignee")
 }
+
 type Task {
-	title: String
-	completed: Boolean
-	dueDate: Time
-	assignee: User @relationship(inverse:"tasks")
+  title: String
+  completed: Boolean
+  dueDate: Time
+  assignee: User @relationship(inverse:"tasks")
+}
+
+type Admin {
+  Phone: String @column(gorm: "type:varchar(32) comment '手机号码';NOT NULL;") @validator(required: "true", type: "phone")
+  Password: String @column(gorm: "type:varchar(64) comment '登录密码';NOT NULL;") @validator(required: "true", type: "password")
+  Username: String @column(gorm: "type:varchar(64) comment '姓名';NOT NULL;")
+  Money: Int @column(gorm: "type:int(11) comment '账户余额';default:0;") @validator(required: "true", type: "justInt")
+  Sex: Int @column(gorm: "type:int(2) comment '性别：0/未知、1/男、2/女';default:0;") @validator(required: "true", type: "sex")
+  Super: Int @column(gorm: "type:int(2) comment '超级账户：1/否，2/是';default:1;") @validator(required: "true", type: "noOrYes")
+  LoginCount: Int @column(gorm: "type:int(11) comment '登陆次数';default:0;") @validator(required: "true", type: "justInt")
+  LoginIp: String @column(gorm: "type:varchar(64) comment '登录Ip';default:null;")
+  LastIp: String @column(gorm: "type:varchar(64) comment '上次登陆Ip';default:null;")
+  groups: [Group!] @relationship(inverse:"admin")
+  roles: [Role!] @relationship(inverse:"admin")
+}
+
+type Group {
+  Name: String @column(gorm: "type:varchar(255) comment '部门名称';NOT NULL;")
+  admin: [Admin!] @relationship(inverse:"groups")
+  roles: [Role!] @relationship(inverse:"group")
+}
+
+type Role {
+  Name: String @column(gorm: "type:varchar(255) comment '部门名称';NOT NULL;")
+  admin: [Admin!] @relationship(inverse:"roles")
+  group: [Admin] @relationship(inverse:"roles")
+  Pid: String @column(gorm: "type:varchar(36) comment '所属上级：0/一级，其他对应该表的id字段';NOT NULL;")
 }
 
 extend type Mutation {

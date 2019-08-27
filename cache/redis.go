@@ -9,7 +9,7 @@ import (
 )
 
 var RidesKeys = map[string]string{
-  "userInfo": "user_info", // 用户登录
+  "userInfo": "userInfo_", // 用户登录
 }
 
 type Cache struct {
@@ -45,7 +45,6 @@ func (c *Cache) Get(ctx context.Context, hash string) (string, bool) {
 // 设置hast 类型缓存
 func (c *Cache) HMSet(key string, fields map[string]interface{}) {
   fmt.Println(key)
-  fmt.Println(fields)
   c.client.HMSet(key, fields)
 }
 

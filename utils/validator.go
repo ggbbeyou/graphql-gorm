@@ -9,7 +9,7 @@ import(
 	"github.com/vektah/gqlparser/gqlerror"
 )
 
-func Validator(table interface{}) (gqlerror.Error, error) {
+func Validator(table interface{}, checkTye string) (gqlerror.Error, error) {
 
   data := reflect.ValueOf(table)
   elem := data.Elem()
@@ -44,9 +44,9 @@ func Validator(table interface{}) (gqlerror.Error, error) {
     	}
 
     	// 字段验证
-    	if res, resErr := checkField(resData, value, json); resErr != nil {
-    		errText.Path = append(errText.Path, res)
-    	}
+	    	if res, resErr := checkField(resData, value, json, checkTye); resErr != nil {
+	    		errText.Path = append(errText.Path, res)
+	    	}
     }
   }
 
@@ -64,7 +64,7 @@ func Validator(table interface{}) (gqlerror.Error, error) {
  * @param  {[type]} json    string)                  (gqlerror.Error, error [description]
  * @return {[type]}         [description]
  */
-func checkField(resData map[string]interface{}, value interface{}, json string) (string, error) {
+func checkField(resData map[string]interface{}, value interface{}, json, checkTye string) (string, error) {
   // var errText gqlerror.Error
   var errText string
 
@@ -97,9 +97,9 @@ func checkField(resData map[string]interface{}, value interface{}, json string) 
 
 
   // 正则格式校验
-	if resData["required"] == "true" && IsEmpty(newValue) {
+	if resData["required"] == "true" && checkTye != "update" && IsEmpty(newValue) {
 		errText = json + "不能为空"
-	} else if resData["type"] != "" {
+	} else if resData["type"] != "" && !IsEmpty(newValue) {
 		var bool bool
 		rl := Rule[resData["type"].(string)]
 		bool = regexp.MustCompile(rl["rgx"].(string)).MatchString(fmt.Sprint(newValue))

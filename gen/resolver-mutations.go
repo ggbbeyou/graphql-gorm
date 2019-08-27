@@ -20,6 +20,11 @@ func CreateUserHandler(ctx context.Context, r *GeneratedResolver, input map[stri
 	now := time.Now()
 	item = &User{ID: uuid.Must(uuid.NewV4()).String(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeCreated,
@@ -73,27 +78,27 @@ func CreateUserHandler(ctx context.Context, r *GeneratedResolver, input map[stri
 		event.AddNewValue("del", changes.Del)
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "create")
 	if resErr != nil {
 		return item, &errText
 	}
 
-	if err = tx.Create(item).Error; err != nil {
+	if err := tx.Create(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
+	tasks := []Task{}
 	if ids, ok := input["tasksIds"].([]interface{}); ok {
-		items := []Task{}
-		tx.Find(&items, "id IN (?)", ids)
-
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+		tx.Find(&tasks, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Tasks")
-		association.Replace(items)
+		association.Replace(tasks)
+	}
+
+	if err := tx.Model(&tasks).Where("assigneeId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -116,6 +121,11 @@ func UpdateUserHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 	item = &User{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeUpdated,
@@ -169,7 +179,7 @@ func UpdateUserHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 		item.Del = changes.Del
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "update")
 	if resErr != nil {
 		return item, &errText
 	}
@@ -177,22 +187,28 @@ func UpdateUserHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 	item.UpdatedBy = principalID
 	item.ID = id
 
-	if err = tx.Model(&item).Updates(item).Error; err != nil {
+	if err := tx.Model(&item).Updates(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
-	if ids, ok := input["tasksIds"].([]interface{}); ok {
-		items := []Task{}
-		tx.Find(&items, "id IN (?)", ids)
+	tasks := []Task{}
 
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+	if ids, ok := input["tasksIds"].([]interface{}); ok {
+		tx.Find(&tasks, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Tasks")
-		association.Replace(items)
+		association.Replace(tasks)
+	}
+
+	if err := tx.Model(&tasks).Where("assigneeId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
+
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -217,10 +233,14 @@ func DeleteUserHandler(ctx context.Context, r *GeneratedResolver, id string) (it
 	item = &User{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
-	err = resolvers.GetItem(ctx, tx, item, &id)
-	if err != nil {
-		return
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		return item, err
 	}
 
 	// 2为删除
@@ -239,15 +259,15 @@ func DeleteUserHandler(ctx context.Context, r *GeneratedResolver, id string) (it
 
 	// err = tx.Delete(item, "users.id = ?", id).Error
 
-	if err = tx.Save(item).Error; err != nil {
+	if err := tx.Save(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	tasks := []Task{}
-	if err = tx.Model(&tasks).Where("assigneeId = ?", id).Update("del", del).Error; err != nil {
+	if err := tx.Model(&tasks).Where("assigneeId = ?", id).Update("del", del).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -276,6 +296,11 @@ func CreateTaskHandler(ctx context.Context, r *GeneratedResolver, input map[stri
 	now := time.Now()
 	item = &Task{ID: uuid.Must(uuid.NewV4()).String(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeCreated,
@@ -334,14 +359,14 @@ func CreateTaskHandler(ctx context.Context, r *GeneratedResolver, input map[stri
 		event.AddNewValue("del", changes.Del)
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "create")
 	if resErr != nil {
 		return item, &errText
 	}
 
-	if err = tx.Create(item).Error; err != nil {
+	if err := tx.Create(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -364,6 +389,11 @@ func UpdateTaskHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 	item = &Task{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeUpdated,
@@ -423,7 +453,7 @@ func UpdateTaskHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 		item.Del = changes.Del
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "update")
 	if resErr != nil {
 		return item, &errText
 	}
@@ -431,9 +461,14 @@ func UpdateTaskHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 	item.UpdatedBy = principalID
 	item.ID = id
 
-	if err = tx.Model(&item).Updates(item).Error; err != nil {
+	if err := tx.Model(&item).Updates(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
+	}
+
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -458,10 +493,14 @@ func DeleteTaskHandler(ctx context.Context, r *GeneratedResolver, id string) (it
 	item = &Task{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
-	err = resolvers.GetItem(ctx, tx, item, &id)
-	if err != nil {
-		return
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		return item, err
 	}
 
 	// 2为删除
@@ -480,9 +519,9 @@ func DeleteTaskHandler(ctx context.Context, r *GeneratedResolver, id string) (it
 
 	// err = tx.Delete(item, "tasks.id = ?", id).Error
 
-	if err = tx.Save(item).Error; err != nil {
+	if err := tx.Save(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -511,6 +550,11 @@ func CreateAdminHandler(ctx context.Context, r *GeneratedResolver, input map[str
 	now := time.Now()
 	item = &Admin{ID: uuid.Must(uuid.NewV4()).String(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeCreated,
@@ -594,40 +638,40 @@ func CreateAdminHandler(ctx context.Context, r *GeneratedResolver, input map[str
 		event.AddNewValue("del", changes.Del)
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "create")
 	if resErr != nil {
 		return item, &errText
 	}
 
-	if err = tx.Create(item).Error; err != nil {
+	if err := tx.Create(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
+	groups := []Group{}
 	if ids, ok := input["groupsIds"].([]interface{}); ok {
-		items := []Group{}
-		tx.Find(&items, "id IN (?)", ids)
-
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+		tx.Find(&groups, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Groups")
-		association.Replace(items)
+		association.Replace(groups)
 	}
 
-	if ids, ok := input["rolesIds"].([]interface{}); ok {
-		items := []Role{}
-		tx.Find(&items, "id IN (?)", ids)
+	if err := tx.Model(&groups).Where("adminId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
 
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+	roles := []Role{}
+	if ids, ok := input["rolesIds"].([]interface{}); ok {
+		tx.Find(&roles, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Roles")
-		association.Replace(items)
+		association.Replace(roles)
+	}
+
+	if err := tx.Model(&roles).Where("adminId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -650,6 +694,11 @@ func UpdateAdminHandler(ctx context.Context, r *GeneratedResolver, id string, in
 	item = &Admin{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeUpdated,
@@ -739,7 +788,7 @@ func UpdateAdminHandler(ctx context.Context, r *GeneratedResolver, id string, in
 		item.Del = changes.Del
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "update")
 	if resErr != nil {
 		return item, &errText
 	}
@@ -747,35 +796,42 @@ func UpdateAdminHandler(ctx context.Context, r *GeneratedResolver, id string, in
 	item.UpdatedBy = principalID
 	item.ID = id
 
-	if err = tx.Model(&item).Updates(item).Error; err != nil {
+	if err := tx.Model(&item).Updates(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
+
+	groups := []Group{}
 
 	if ids, ok := input["groupsIds"].([]interface{}); ok {
-		items := []Group{}
-		tx.Find(&items, "id IN (?)", ids)
-
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+		tx.Find(&groups, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Groups")
-		association.Replace(items)
+		association.Replace(groups)
 	}
 
-	if ids, ok := input["rolesIds"].([]interface{}); ok {
-		items := []Role{}
-		tx.Find(&items, "id IN (?)", ids)
+	if err := tx.Model(&groups).Where("adminId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
 
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+	roles := []Role{}
+
+	if ids, ok := input["rolesIds"].([]interface{}); ok {
+		tx.Find(&roles, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Roles")
-		association.Replace(items)
+		association.Replace(roles)
+	}
+
+	if err := tx.Model(&roles).Where("adminId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
+
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -800,10 +856,14 @@ func DeleteAdminHandler(ctx context.Context, r *GeneratedResolver, id string) (i
 	item = &Admin{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
-	err = resolvers.GetItem(ctx, tx, item, &id)
-	if err != nil {
-		return
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		return item, err
 	}
 
 	// 2为删除
@@ -822,21 +882,21 @@ func DeleteAdminHandler(ctx context.Context, r *GeneratedResolver, id string) (i
 
 	// err = tx.Delete(item, "admins.id = ?", id).Error
 
-	if err = tx.Save(item).Error; err != nil {
+	if err := tx.Save(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	groups := []Group{}
-	if err = tx.Model(&groups).Where("adminId = ?", id).Update("del", del).Error; err != nil {
+	if err := tx.Model(&groups).Where("adminId = ?", id).Update("del", del).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	roles := []Role{}
-	if err = tx.Model(&roles).Where("adminId = ?", id).Update("del", del).Error; err != nil {
+	if err := tx.Model(&roles).Where("adminId = ?", id).Update("del", del).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -865,6 +925,11 @@ func CreateGroupHandler(ctx context.Context, r *GeneratedResolver, input map[str
 	now := time.Now()
 	item = &Group{ID: uuid.Must(uuid.NewV4()).String(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeCreated,
@@ -908,40 +973,40 @@ func CreateGroupHandler(ctx context.Context, r *GeneratedResolver, input map[str
 		event.AddNewValue("del", changes.Del)
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "create")
 	if resErr != nil {
 		return item, &errText
 	}
 
-	if err = tx.Create(item).Error; err != nil {
+	if err := tx.Create(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
+	admin := []Admin{}
 	if ids, ok := input["adminIds"].([]interface{}); ok {
-		items := []Admin{}
-		tx.Find(&items, "id IN (?)", ids)
-
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+		tx.Find(&admin, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Admin")
-		association.Replace(items)
+		association.Replace(admin)
 	}
 
-	if ids, ok := input["rolesIds"].([]interface{}); ok {
-		items := []Role{}
-		tx.Find(&items, "id IN (?)", ids)
+	if err := tx.Model(&admin).Where("groupsId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
 
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+	roles := []Role{}
+	if ids, ok := input["rolesIds"].([]interface{}); ok {
+		tx.Find(&roles, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Roles")
-		association.Replace(items)
+		association.Replace(roles)
+	}
+
+	if err := tx.Model(&roles).Where("groupId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -964,6 +1029,11 @@ func UpdateGroupHandler(ctx context.Context, r *GeneratedResolver, id string, in
 	item = &Group{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeUpdated,
@@ -1005,7 +1075,7 @@ func UpdateGroupHandler(ctx context.Context, r *GeneratedResolver, id string, in
 		item.Del = changes.Del
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "update")
 	if resErr != nil {
 		return item, &errText
 	}
@@ -1013,35 +1083,42 @@ func UpdateGroupHandler(ctx context.Context, r *GeneratedResolver, id string, in
 	item.UpdatedBy = principalID
 	item.ID = id
 
-	if err = tx.Model(&item).Updates(item).Error; err != nil {
+	if err := tx.Model(&item).Updates(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
+
+	admin := []Admin{}
 
 	if ids, ok := input["adminIds"].([]interface{}); ok {
-		items := []Admin{}
-		tx.Find(&items, "id IN (?)", ids)
-
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+		tx.Find(&admin, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Admin")
-		association.Replace(items)
+		association.Replace(admin)
 	}
 
-	if ids, ok := input["rolesIds"].([]interface{}); ok {
-		items := []Role{}
-		tx.Find(&items, "id IN (?)", ids)
+	if err := tx.Model(&admin).Where("groupsId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
 
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+	roles := []Role{}
+
+	if ids, ok := input["rolesIds"].([]interface{}); ok {
+		tx.Find(&roles, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Roles")
-		association.Replace(items)
+		association.Replace(roles)
+	}
+
+	if err := tx.Model(&roles).Where("groupId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
+
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -1066,10 +1143,14 @@ func DeleteGroupHandler(ctx context.Context, r *GeneratedResolver, id string) (i
 	item = &Group{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
-	err = resolvers.GetItem(ctx, tx, item, &id)
-	if err != nil {
-		return
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		return item, err
 	}
 
 	// 2为删除
@@ -1088,21 +1169,21 @@ func DeleteGroupHandler(ctx context.Context, r *GeneratedResolver, id string) (i
 
 	// err = tx.Delete(item, "groups.id = ?", id).Error
 
-	if err = tx.Save(item).Error; err != nil {
+	if err := tx.Save(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	admin := []Admin{}
-	if err = tx.Model(&admin).Where("groupsId = ?", id).Update("del", del).Error; err != nil {
+	if err := tx.Model(&admin).Where("groupsId = ?", id).Update("del", del).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	roles := []Role{}
-	if err = tx.Model(&roles).Where("groupId = ?", id).Update("del", del).Error; err != nil {
+	if err := tx.Model(&roles).Where("groupId = ?", id).Update("del", del).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -1131,6 +1212,11 @@ func CreateRoleHandler(ctx context.Context, r *GeneratedResolver, input map[stri
 	now := time.Now()
 	item = &Role{ID: uuid.Must(uuid.NewV4()).String(), CreatedBy: principalID}
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeCreated,
@@ -1179,40 +1265,40 @@ func CreateRoleHandler(ctx context.Context, r *GeneratedResolver, input map[stri
 		event.AddNewValue("del", changes.Del)
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "create")
 	if resErr != nil {
 		return item, &errText
 	}
 
-	if err = tx.Create(item).Error; err != nil {
+	if err := tx.Create(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
+	admin := []Admin{}
 	if ids, ok := input["adminIds"].([]interface{}); ok {
-		items := []Admin{}
-		tx.Find(&items, "id IN (?)", ids)
-
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+		tx.Find(&admin, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Admin")
-		association.Replace(items)
+		association.Replace(admin)
 	}
 
-	if ids, ok := input["groupIds"].([]interface{}); ok {
-		items := []Admin{}
-		tx.Find(&items, "id IN (?)", ids)
+	if err := tx.Model(&admin).Where("rolesId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
 
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+	group := []Admin{}
+	if ids, ok := input["groupIds"].([]interface{}); ok {
+		tx.Find(&group, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Group")
-		association.Replace(items)
+		association.Replace(group)
+	}
+
+	if err := tx.Model(&group).Where("rolesId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -1235,6 +1321,11 @@ func UpdateRoleHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 	item = &Role{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
 	event := events.NewEvent(events.EventMetadata{
 		Type:        events.EventTypeUpdated,
@@ -1282,7 +1373,7 @@ func UpdateRoleHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 		item.Del = changes.Del
 	}
 
-	errText, resErr := utils.Validator(item)
+	errText, resErr := utils.Validator(item, "update")
 	if resErr != nil {
 		return item, &errText
 	}
@@ -1290,35 +1381,42 @@ func UpdateRoleHandler(ctx context.Context, r *GeneratedResolver, id string, inp
 	item.UpdatedBy = principalID
 	item.ID = id
 
-	if err = tx.Model(&item).Updates(item).Error; err != nil {
+	if err := tx.Model(&item).Updates(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
+
+	admin := []Admin{}
 
 	if ids, ok := input["adminIds"].([]interface{}); ok {
-		items := []Admin{}
-		tx.Find(&items, "id IN (?)", ids)
-
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+		tx.Find(&admin, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Admin")
-		association.Replace(items)
+		association.Replace(admin)
 	}
 
-	if ids, ok := input["groupIds"].([]interface{}); ok {
-		items := []Admin{}
-		tx.Find(&items, "id IN (?)", ids)
+	if err := tx.Model(&admin).Where("rolesId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
 
-		for k, _ := range items {
-			items[k].State = item.State
-			items[k].Del = item.Del
-		}
+	group := []Admin{}
+
+	if ids, ok := input["groupIds"].([]interface{}); ok {
+		tx.Find(&group, "id IN (?)", ids)
 
 		association := tx.Model(&item).Association("Group")
-		association.Replace(items)
+		association.Replace(group)
+	}
+
+	if err := tx.Model(&group).Where("rolesId = ?", item.ID).Update("state", item.State).Error; err != nil {
+		tx.Rollback()
+		return item, err
+	}
+
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		tx.Rollback()
+		return item, err
 	}
 
 	err = tx.Commit().Error
@@ -1343,10 +1441,14 @@ func DeleteRoleHandler(ctx context.Context, r *GeneratedResolver, id string) (it
 	item = &Role{}
 	now := time.Now()
 	tx := r.DB.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 
-	err = resolvers.GetItem(ctx, tx, item, &id)
-	if err != nil {
-		return
+	if err := resolvers.GetItem(ctx, tx, item, &id); err != nil {
+		return item, err
 	}
 
 	// 2为删除
@@ -1365,21 +1467,21 @@ func DeleteRoleHandler(ctx context.Context, r *GeneratedResolver, id string) (it
 
 	// err = tx.Delete(item, "roles.id = ?", id).Error
 
-	if err = tx.Save(item).Error; err != nil {
+	if err := tx.Save(item).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	admin := []Admin{}
-	if err = tx.Model(&admin).Where("rolesId = ?", id).Update("del", del).Error; err != nil {
+	if err := tx.Model(&admin).Where("rolesId = ?", id).Update("del", del).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	group := []Admin{}
-	if err = tx.Model(&group).Where("rolesId = ?", id).Update("del", del).Error; err != nil {
+	if err := tx.Model(&group).Where("rolesId = ?", id).Update("del", del).Error; err != nil {
 		tx.Rollback()
-		return
+		return item, err
 	}
 
 	err = tx.Commit().Error

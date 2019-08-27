@@ -134,7 +134,7 @@ func (r *GeneratedUserResolver) Tasks(ctx context.Context, obj *User) (res []*Ta
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Tasks"))
 
 	items := []*Task{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Tasks").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Tasks").Error
 	res = items
 
 	return
@@ -144,7 +144,7 @@ func UserTasksHandler(ctx context.Context, r *GeneratedUserResolver, obj *User) 
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Tasks"))
 
 	items := []*Task{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Tasks").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Tasks").Error
 	res = items
 
 	return
@@ -423,7 +423,7 @@ func (r *GeneratedAdminResolver) Groups(ctx context.Context, obj *Admin) (res []
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Groups"))
 
 	items := []*Group{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Groups").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Groups").Error
 	res = items
 
 	return
@@ -433,7 +433,7 @@ func AdminGroupsHandler(ctx context.Context, r *GeneratedAdminResolver, obj *Adm
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Groups"))
 
 	items := []*Group{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Groups").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Groups").Error
 	res = items
 
 	return
@@ -457,7 +457,7 @@ func (r *GeneratedAdminResolver) Roles(ctx context.Context, obj *Admin) (res []*
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Roles"))
 
 	items := []*Role{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Roles").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Roles").Error
 	res = items
 
 	return
@@ -467,7 +467,7 @@ func AdminRolesHandler(ctx context.Context, r *GeneratedAdminResolver, obj *Admi
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Roles"))
 
 	items := []*Role{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Roles").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Roles").Error
 	res = items
 
 	return
@@ -606,7 +606,7 @@ func (r *GeneratedGroupResolver) Admin(ctx context.Context, obj *Group) (res []*
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Admin"))
 
 	items := []*Admin{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Admin").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Admin").Error
 	res = items
 
 	return
@@ -616,7 +616,7 @@ func GroupAdminHandler(ctx context.Context, r *GeneratedGroupResolver, obj *Grou
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Admin"))
 
 	items := []*Admin{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Admin").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Admin").Error
 	res = items
 
 	return
@@ -640,7 +640,7 @@ func (r *GeneratedGroupResolver) Roles(ctx context.Context, obj *Group) (res []*
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Roles"))
 
 	items := []*Role{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Roles").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Roles").Error
 	res = items
 
 	return
@@ -650,7 +650,7 @@ func GroupRolesHandler(ctx context.Context, r *GeneratedGroupResolver, obj *Grou
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Roles"))
 
 	items := []*Role{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Roles").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Roles").Error
 	res = items
 
 	return
@@ -789,7 +789,7 @@ func (r *GeneratedRoleResolver) Admin(ctx context.Context, obj *Role) (res []*Ad
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Admin"))
 
 	items := []*Admin{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Admin").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Admin").Error
 	res = items
 
 	return
@@ -799,7 +799,7 @@ func RoleAdminHandler(ctx context.Context, r *GeneratedRoleResolver, obj *Role) 
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Admin"))
 
 	items := []*Admin{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Admin").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Admin").Error
 	res = items
 
 	return
@@ -823,7 +823,7 @@ func (r *GeneratedRoleResolver) Group(ctx context.Context, obj *Role) (res []*Ad
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Group"))
 
 	items := []*Admin{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Group").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Group").Error
 	res = items
 
 	return
@@ -833,7 +833,7 @@ func RoleGroupHandler(ctx context.Context, r *GeneratedRoleResolver, obj *Role) 
 	selects := resolvers.GetFieldsRequested(ctx, strings.ToLower("Group"))
 
 	items := []*Admin{}
-	err = r.DB.Query().Where("state = ?", 1).Select(selects).Model(obj).Related(&items, "Group").Error
+	err = r.DB.Query().Select(selects).Model(obj).Related(&items, "Group").Error
 	res = items
 
 	return
